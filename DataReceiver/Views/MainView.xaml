@@ -4,15 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataReceiver.Views"
+        xmlns:vm="clr-namespace:DataReceiver.ViewModels"
         mc:Ignorable="d"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="MainView" Height="450" Width="800">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MaxWidth="70"/>
-            <ColumnDefinition Width="12*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <ListBox ItemsSource="{Binding Navigator}" SelectionMode="Single">
+            <!--<EventTrigger RoutedEvent="IsMouse">
+                
+            </EventTrigger>-->
+
+        </ListBox>
+
+        <Frame Source="SocketView.xaml" Grid.Column="1"/>
 
     </Grid>
 </Window>

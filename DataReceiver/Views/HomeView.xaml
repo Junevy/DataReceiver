@@ -18,59 +18,10 @@
 
         <hc:ScrollViewer IsInertiaEnabled="True">
             <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10" VerticalAlignment="Stretch">
-                <TextBlock Text="IP" Margin="5" VerticalAlignment="Center"/>
-                <ComboBox Width="120" Height="20" Margin="10" IsEditable="True" VerticalAlignment="Center"/>
-                <ComboBox Width="120" Height="20" Margin="10" IsEditable="True" VerticalAlignment="Center"/>
-                <ComboBox Width="120" Height="20" Margin="10" IsEditable="True" VerticalAlignment="Center"/>
-                <TextBlock Text="Port" Margin="5" VerticalAlignment="Center"/>
-                <TextBox Width="120" Height="20" Margin="10"/>
-                <CheckBox Content="AutoHeartBeat" Margin="10" VerticalAlignment="Center"/>
-                <Button Content="Connect" Width="100" Height="20" Margin="10"/>
-                <hc:NotifyIcon Text="HandyControl" IsBlink="true" Visibility="Visible" Icon="/Assets/SiderBarICon/Home.png"/>
+                
 
-                <!--<hc:ComboBox  ItemsSource="{Binding DataList}" SelectedIndex="0"/>
-                <hc:ComboBox ItemsSource="{Binding DataList}" Margin="0,16,0,0" SelectedIndex="0" IsEnabled="False"/>
-                <hc:ComboBox ItemsSource="{Binding DataList}" SelectedIndex="0" Margin="0,16,0,0" IsEditable="True"/>
-                -->
-                <!--<hc:ComboBox-->
-                <CheckBox IsChecked="{Binding IsOpen,ElementName=DrawerLeft}" Content="Try it"/>
+                <Button Content="Text"/>
 
-                <hc:Drawer Name="DrawerLeft" Dock="Left" ShowMode="Push">
-                    <Border Background="{DynamicResource RegionBrush}" Width="300" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderBrush}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Margin="10,0,0,0" Text="Header" Style="{StaticResource TextBlockTitle}" HorizontalAlignment="Left"/>
-                            <Button Command="hc:ControlCommands.Close" Grid.Row="0" HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextBrush}" Style="{StaticResource ButtonIcon}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"/>
-                        </Grid>
-                    </Border>
-                </hc:Drawer>
-                <TextBlock HorizontalAlignment="Left" Margin="5" Text="TextBlockHeader" Style="{StaticResource TextBlockTitle}"/>
-                <TextBlock HorizontalAlignment="Left" Margin="5" Text="TextBlockLargeBold" Style="{StaticResource TextBlockLargeBold}"/>
-
-                <hc:ComboBox IsEditable="True" SelectedIndex="1" Text="Test"/>
-                <hc:ComboBox AutoComplete="True" hc:InfoElement.ShowClearButton="True" ItemsSource="{Binding DataList}" IsEditable="True" Width="380" hc:InfoElement.TitleWidth="140" hc:InfoElement.Placeholder="test" hc:InfoElement.TitlePlacement="Left" hc:InfoElement.Title="title" hc:InfoElement.Necessary="True" Margin="0,16,0,0" Style="{StaticResource ComboBoxPlus.Small}"/>
-                <hc:ComboBox AutoComplete="True" 
-                             FontSize="20"
-                             hc:InfoElement.ShowClearButton="True" 
-                             ItemsSource="{Binding DataList}" 
-                             IsEditable="True" Width="380"
-                             hc:InfoElement.TitleWidth="50" 
-                             hc:InfoElement.Symbol="*"
-                             hc:InfoElement.Placeholder="IP" 
-                             hc:InfoElement.TitlePlacement="Left" 
-                             hc:InfoElement.Title="IP" 
-                             hc:InfoElement.Necessary="True" Margin="0,16,0,0"/>
-
-                <ListBox>
-                    <ListBoxItem Content="Hello"/>
-                    <ListBoxItem Content="Hello"/>
-                    <ListBoxItem Content="Hello"/>
-                    <ListBoxItem Content="Hello"/>
-
-                </ListBox>
             </StackPanel>
         </hc:ScrollViewer>
 

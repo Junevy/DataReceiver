@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace DataReceiver
 {
@@ -14,31 +15,53 @@ namespace DataReceiver
     public partial class App : Application
     {
 
-        public static new App Current = (App)Application.Current;
+        public static new App Current => (App)Application.Current;
         public IServiceProvider Services;
-        //private Style;
 
-        public App()
+        // Current 一直为 Null
+        //public App()
+        //{
+           
+        //}
+
+        private void BuildServices()
         {
             var container = new ServiceCollection();
+
             container.AddSingleton<MainView>();
-            container.AddSingleton<MainViewModels>();
+            container.AddSingleton<MainViewModel>();
             container.AddSingleton<DataView>();
-            container.AddSingleton<DataViewModel>(); 
+            container.AddSingleton<DataViewModel>();
             container.AddSingleton<SocketView>();
             container.AddSingleton<SocketViewModel>();
 
             Services = container.BuildServiceProvider();
         }
 
-        public Style? LoadResource(string styleName)
+        protected override void OnStartup(StartupEventArgs e)
         {
-            return Application.Current.Resources[styleName] as Style;
+            base.OnStartup(e);
+            BuildServices();
+            MainWindow = Services.GetService<MainView>();
+            MainWindow!.Show();
         }
 
-        public Style? LoadResource<T>()
+
+        //protected override void OnLoadCompleted(NavigationEventArgs e)
+        //{
+        //    base.OnLoadCompleted(e);
+        //    App.Current.LoadResource("data_geom");
+        //}
+
+
+        public T? LoadResource<T>(string styleName) where T : class
         {
-            return Application.Current.Resources[typeof(T)] as Style;
+            return Application.Current.Resources[styleName] as T;
+        }
+
+        public T? LoadResource<T>() where T : class
+        {
+            return Application.Current.Resources[typeof(T)] as T;
         }
     }
 

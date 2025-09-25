@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:o="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+    <Geometry x:Key="data_geom">
+
+            M562.9 80.9C535.4 56 493.5 56 466 80.9L74 453.1c-14.7 13.5-15.7 36.4-2.2 51.1 13.3 14.5 35.8 15.7 50.6 2.6l6.2-5.9v388.4c0 39.9 32.3 72.4 72.2 72.4h210.5V744c0-28.1 22.7-50.9 50.8-51h99.1c28.1 0 50.9 22.8 50.9 50.9V961.7h215.4c39.9 0 72.3-32.4 72.3-72.3V505.7c16.1 14.5 38.9 13.4 52.2-1.5 13.4-14.8 12.2-37.7-2.6-51.1L562.9 80.9z
+    </Geometry>
+    
+</ResourceDictionary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataReceiver.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,10 @@ namespace DataReceiver.Views
     /// </summary>
     public partial class MainView : Window
     {
-        public MainView()
+        public MainView(MainViewModel mainViewModel)
         {
             InitializeComponent();
+            this.DataContext = mainViewModel;
         }
     }
 }

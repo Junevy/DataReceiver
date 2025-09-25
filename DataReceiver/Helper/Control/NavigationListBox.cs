@@ -7,10 +7,15 @@ using System.Windows.Controls;
 
 namespace DataReceiver.Helper.Control
 {
-    public sealed class NavigationListBox : ListView
+    public sealed class NavigationListBox : ListBoxItem
     {
-        private Image _icon;
-        private string _content;
+        //private Uri _icon;
+        //private string _content;
+
+        public NavigationListBox(Uri icon, string content)
+        {
+            Content = icon;
+        }
 
     }
 }
