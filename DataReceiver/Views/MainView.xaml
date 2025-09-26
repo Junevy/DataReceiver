@@ -9,7 +9,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
-        Title="MainView" Height="450" Width="800">
+        Title="MainView" Height="650" Width="1200">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -18,19 +18,43 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition MaxHeight="30"/>
+        </Grid.RowDefinitions>
 
-        <ListBox ItemsSource="{Binding Navigator}" SelectionMode="Single">
-            <!--<EventTrigger RoutedEvent="IsMouse">
-                
-            </EventTrigger>-->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!--sider bar-->
+            <ListBox Grid.Column="0" ItemsSource="{Binding NaviList}" SelectionMode="Single"/>
+            
+            <!--main region-->
+            <ContentControl Grid.Column="1" x:Name="MainFrameContainer"/>
+        </Grid>
 
-        </ListBox>
+        <!--bottom bar-->
+        <Grid Grid.Row="1">
+            <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Width="auto">
+                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                    <Path Data="{StaticResource home_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                </hc:Badge>
 
-        <Frame Source="SocketView.xaml" Grid.Column="1"/>
+                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                    <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                </hc:Badge>
 
+                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                    <Path Data="{StaticResource socket_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                </hc:Badge>
+
+                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                    <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                </hc:Badge>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

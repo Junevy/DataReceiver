@@ -1,7 +1,10 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-                    >
+                    xmlns:helper="clr-namespace:DataReceiver.Helper" >
+    <helper:BoolToColorConverter x:Key="BoolToColor"/>
 
     <Style x:Key="SiderBar_Style" TargetType="ListBoxItem">
         <Setter Property="Template">
@@ -18,13 +21,11 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
                                 <i:InvokeCommandAction 
-                                Command="{Binding DataContext.TestCommand, 
+                                Command="{Binding DataContext.NavigateCommand, 
                                                   RelativeSource={RelativeSource AncestorType=ListBox}}"
                                 CommandParameter="{Binding Name, RelativeSource={RelativeSource TemplatedParent}}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-
-
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -37,26 +38,45 @@
                                     Width="5" 
                                     Height="20"
                                     CornerRadius="2" 
-                                    Background="#7B68EE" 
+                                    Background="MediumPurple" 
                                     Margin="0,0,5,0" 
                                     Visibility="Hidden"
                                     VerticalAlignment="Stretch"/>
 
-                            <ContentPresenter Grid.Column="1"
+                            <ContentPresenter x:Name="icon" Grid.Column="1"
                                             VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"/>
+                                            HorizontalAlignment="Left"
+                                              Content="{TemplateBinding Content}"
+                                              >
+                                <ContentPresenter.ContentTemplate>
+                                    <DataTemplate>
+                                        <Path x:Name="geom_icon"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, 
+                                                    Path=IsSelected, Converter={StaticResource BoolToColor}}"
+                                              Fill="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, 
+                                                    Path=IsSelected, Converter={StaticResource BoolToColor}}"
+                                              Data="{Binding}"   
+                                              Stretch="Uniform"
+                                              Height="20"
+                                              Width="30"/>
+                                    </DataTemplate>
+                                </ContentPresenter.ContentTemplate>
+                            </ContentPresenter>
                         </Grid>
                     </Border>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="El_bg" Property="Background" Value="#DCDCDC"/>
+                            <Setter TargetName="El_bg" Property="Background" Value="#D3D3d3"/>
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <!--<Trigger Property=""-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        
+        
         <!--<Setter Property="Selector.IsSelectionActive">
             <Setter.Value>
                 <CommandBinding Command="{Binding TestCommand}"/>

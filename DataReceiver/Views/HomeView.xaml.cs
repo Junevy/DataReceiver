@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using DataReceiver.ViewModels;
+using System.Windows.Controls;
 
 namespace DataReceiver.Views
 {
@@ -7,9 +8,10 @@ namespace DataReceiver.Views
     /// </summary>
     public partial class HomeView : Page
     {
-        public HomeView()
+        public HomeView(HomeViewModel homeViewModel)
         {
             InitializeComponent();
+            this.DataContext = homeViewModel;
         }
     }
 }

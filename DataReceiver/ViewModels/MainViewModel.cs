@@ -1,54 +1,56 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Views;
 using System.Collections.ObjectModel;
-using System.Net.Sockets;
-using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 
 namespace DataReceiver.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<ListBoxItem> Navigator { get; private set; } = [];
+        public ObservableCollection<ListBoxItem> NaviList { get; private set; } = [];
+        private readonly Services.NavigationService Navigator;
 
         [ObservableProperty]
         private string message = "test";
 
+        public MainViewModel(Services.NavigationService navigator)
+        {
+            this.Navigator = navigator;
+        }
+
+        /// <summary>
+        /// Load the bar When window initialized
+        /// </summary>
         [RelayCommand]
         public void OnWindowLoaded()
         {
-            AddItem("data_geom", "SocketView");
-            AddItem("data_geom", "HomeView");
+            Navigator.NavigateTo<HomeView>();
+
+            AddItem("home_geom", "HomeView");
+            AddItem("socket_geom", "SocketView");
             AddItem("data_geom", "DataView");
         }
 
         [RelayCommand]
-        public void FindView(object? viewName)
+        public void Navigate(object? viewName)
         {
-            string str = "DataReceiver.Views";
-            var test = str + "." + viewName as string;
-
             if (viewName is null) return;
-
-            //Activator.CreateInstance(viewName);
-            var type = Type.GetType(test);
-
-        }
-
-
-        [RelayCommand]
-        public void Test(object? param)
-        {
-            if (param == null)
-                MessageBox.Show("TEst");
-            else
-                MessageBox.Show(param as string);
-            FindView(param as string);
+            switch (viewName)
+            {
+                case "HomeView":
+                    Navigator.NavigateTo<HomeView>(); break;
+                case "DataView":
+                    Navigator.NavigateTo<DataView>(); break;
+                case "SocketView":
+                    Navigator.NavigateTo<SocketView>(); break;
+                default:
+                    return;
+            }
         }
 
         /// <summary>
@@ -61,25 +63,15 @@ namespace DataReceiver.ViewModels
         public void AddItem(string resourceName, string viewName, int width = 40, int height = 40)
         {
             var geometry = App.Current.LoadResource<Geometry>(resourceName);
-
-            Navigator.Add(new ListBoxItem
+            NaviList.Add(new ListBoxItem
             {
                 Name = viewName,
-                Width = width +10,
-                Height = height +10,
-                Content = new Path
-                {
-                    Data = geometry,
-                    Stroke = Brushes.Gray,
-                    Fill = Brushes.Gray,
-                    Stretch = Stretch.Uniform,
-                    Width = 30,
-                    Height = 20,
-                },
+                Width = width + 10,
+                Height = height + 5,
+                Content = geometry,
                 Style = App.Current.LoadResource<Style>("SiderBar_Style"),
             });
-
-            Navigator[0].IsSelected = true;
+            //NaviList[0].IsSelected = true;
         }
     }
 }

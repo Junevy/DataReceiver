@@ -1,13 +1,14 @@
 ﻿<Application x:Class="DataReceiver.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helper="clr-namespace:DataReceiver.Helper"
              xmlns:local="clr-namespace:DataReceiver">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Resources/Style.xaml"/>
                 <ResourceDictionary Source="/Assets/Resources/LB_Style.xaml"/>
-                <ResourceDictionary Source="/Assets/Geometry.xaml"/>
+                <ResourceDictionary Source="/Assets/Resources/Geometry.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>

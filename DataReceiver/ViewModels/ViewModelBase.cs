@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataReceiver.ViewModels
 {
-    public partial class DataViewModel : ViewModelBase
+    public partial class ViewModelBase : ObservableObject
     {
-        [ObservableProperty]
-        private string message = "hello DataView";
     }
 }
