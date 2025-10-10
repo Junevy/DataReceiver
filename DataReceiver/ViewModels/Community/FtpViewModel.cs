@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataReceiver.ViewModels
+namespace DataReceiver.ViewModels.Community
 {
-    public partial class HomeViewModel : ViewModelBase
+    public partial class FtpViewModel : SubViewModelBase
     {
         [ObservableProperty]
-        private string message = "hello world";
+        private string message = "hello FtpView";
     }
 }

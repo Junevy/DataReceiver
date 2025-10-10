@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Services.Navigation;
+using DataReceiver.ViewModels.Base;
 using DataReceiver.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 
 namespace DataReceiver.ViewModels
@@ -13,12 +14,9 @@ namespace DataReceiver.ViewModels
     public partial class MainViewModel : ViewModelBase
     {
         public ObservableCollection<ListBoxItem> NaviList { get; private set; } = [];
-        private readonly Services.NavigationService Navigator;
+        private readonly NavigationService Navigator;
 
-        [ObservableProperty]
-        private string message = "test";
-
-        public MainViewModel(Services.NavigationService navigator)
+        public MainViewModel(NavigationService navigator)
         {
             this.Navigator = navigator;
         }
@@ -47,7 +45,7 @@ namespace DataReceiver.ViewModels
                 case "DataView":
                     Navigator.NavigateTo<DataView>(); break;
                 case "SocketView":
-                    Navigator.NavigateTo<SocketView>(); break;
+                    Navigator.NavigateTo<CommunityView>(); break;
                 default:
                     return;
             }

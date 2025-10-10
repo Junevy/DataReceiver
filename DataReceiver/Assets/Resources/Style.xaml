@@ -37,4 +37,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--<Style x:Key="Text"-->
 </ResourceDictionary>

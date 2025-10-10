@@ -16,13 +16,12 @@ using System.Windows.Shapes;
 namespace DataReceiver.Views
 {
     /// <summary>
-    /// SocketSubView.xaml 的交互逻辑
+    /// TcpView.xaml 的交互逻辑
     /// </summary>
-    public partial class SocketSubView : UserControl
+    public partial class TcpView : UserControl
     {
-        public SocketSubView()
+        public TcpView()
         {
-            
             InitializeComponent();
         }
     }

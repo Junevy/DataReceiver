@@ -1,4 +1,5 @@
 ﻿using DataReceiver.ViewModels;
+using DataReceiver.ViewModels.Community;
 using System.Windows.Controls;
 
 namespace DataReceiver.Views
@@ -6,15 +7,15 @@ namespace DataReceiver.Views
     /// <summary>
     /// SocketView.xaml 的交互逻辑
     /// </summary>
-    public partial class SocketView : Page
+    public partial class CommunityView : Page
     {
-        public SocketView(SocketViewModel socketViewModel)
+        public CommunityView(CommunityViewModel socketViewModel)
         {
             InitializeComponent();
             this.DataContext = socketViewModel;
         }
 
-        public SocketView()
+        public CommunityView()
         {
             InitializeComponent();
 

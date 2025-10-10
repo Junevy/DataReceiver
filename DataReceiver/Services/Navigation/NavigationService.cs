@@ -2,18 +2,22 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-namespace DataReceiver.Services
+namespace DataReceiver.Services.Navigation
 {
-    public class NavigationService
+    public class NavigationService : INavigation
     {
         private const string PackagePath = "DataReceiver.Views";
         private readonly Frame mainFrame;
 
         public NavigationService(Frame frame)
         {
-            this.mainFrame = frame;
+            mainFrame = frame;
         }
 
+        /// <summary>
+        /// 导航实现
+        /// </summary>
+        /// <typeparam name="T"> 需要导航的Page </typeparam>
         public void NavigateTo<T>() where T : class
         {
             //var view = FindView<T>();

@@ -1,5 +1,5 @@
-﻿using DataReceiver.Services;
-using DataReceiver.ViewModels;
+﻿using DataReceiver.ViewModels;
+using DataReceiver.ViewModels.Community;
 using DataReceiver.Views;
 using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using DataView = DataReceiver.Views.DataView;
-using NavigationService = DataReceiver.Services.NavigationService;
+using NavigationService = DataReceiver.Services.Navigation.NavigationService;
 
 namespace DataReceiver
 {
@@ -30,16 +30,20 @@ namespace DataReceiver
             container.AddSingleton<MainView>();
             container.AddSingleton<DataView>();
             container.AddSingleton<HomeView>();
-            container.AddSingleton<SocketView>();
+            container.AddSingleton<CommunityView>();
+            container.AddTransient<TcpView>();
+            container.AddTransient<FtpView>();
 
             container.AddTransient<MainViewModel>();
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
-            container.AddTransient<SocketViewModel>();
+            container.AddTransient<CommunityViewModel>();
+            container.AddTransient<TcpViewModel>();
+            container.AddTransient<FtpViewModel>();
 
-            container.AddSingleton<NavigationService>();
+            container.AddTransient<NavigationService>();
 
-            Services = container.BuildServiceProvider();
+            Services = container.BuildServiceProvider()!;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -49,7 +53,7 @@ namespace DataReceiver
             //var converter = this.TryFindResource("BoolToColor");
             //if (converter == null)
             //{
-            //    throw new Exception("❌ BoolToColor 转换器未正确注册！");
+            //    throw new Exception(" BoolToColor 转换器未正确注册！");
             //}
 
             BuildServices();

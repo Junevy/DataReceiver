@@ -10,19 +10,10 @@
       Title="HomeView">
 
     <hc:ScrollViewer Style="{StaticResource ScrollViewerUpDown}">
-        <!--<StackPanel Grid.Row="0" Orientation="Vertical" Margin="10" VerticalAlignment="Stretch">
-            <TextBlock Text="{Binding Message}" FontSize="40"/>
-
-
-            <Button Content="Text"/>
-
-        </StackPanel>-->
+        
 
         <StackPanel Height="500">
-            <TextBlock Text="内容区域" Height="1250"></TextBlock>
-            <TextBlock Text="内容区域" Height="250"></TextBlock>
-            <TextBlock Text="内容区域"></TextBlock>
-            <TextBlock Text="内容区域"></TextBlock>
+            <TextBlock Text="内容区域" Height="200"></TextBlock>
         </StackPanel>
     </hc:ScrollViewer>
 </Page>
