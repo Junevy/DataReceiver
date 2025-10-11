@@ -1,10 +1,7 @@
 ﻿using DataReceiver.ViewModels;
 using DataReceiver.ViewModels.Community;
 using DataReceiver.Views;
-using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -13,9 +10,6 @@ using NavigationService = DataReceiver.Services.Navigation.NavigationService;
 
 namespace DataReceiver
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public static new App Current => (App)Application.Current;
@@ -25,7 +19,7 @@ namespace DataReceiver
         {
             var container = new ServiceCollection();
 
-            container.AddSingleton<Frame>(_ 
+            container.AddSingleton<Frame>(_
                 => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
             container.AddSingleton<MainView>();
             container.AddSingleton<DataView>();
@@ -40,7 +34,6 @@ namespace DataReceiver
             container.AddTransient<CommunityViewModel>();
             container.AddTransient<TcpViewModel>();
             container.AddTransient<FtpViewModel>();
-
             container.AddTransient<NavigationService>();
 
             Services = container.BuildServiceProvider()!;
@@ -60,11 +53,9 @@ namespace DataReceiver
             MainWindow = Services.GetService<MainView>();
             MainWindow!.Show();
         }
-
         public T? LoadResource<T>(string? styleName = null) where T : class
         {
             return Application.Current.Resources[styleName] as T;
         }
     }
-
 }

@@ -10,5 +10,8 @@ namespace DataReceiver.Services.Interface
     {
         void Start();
         void Stop();
+        void Send();
+        void Receive();
+        void ReStart();
     }
 }

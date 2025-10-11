@@ -18,6 +18,11 @@ namespace DataReceiver.ViewModels.Community
             throw new NotImplementedException();
         }
 
+        public override void ReStart()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Send()
         {
             throw new NotImplementedException();

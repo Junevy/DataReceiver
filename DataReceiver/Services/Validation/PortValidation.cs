@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace DataReceiver.Services.Validation
 {
-    public class NumValidation : ValidationRule
+    public class PortValidation : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

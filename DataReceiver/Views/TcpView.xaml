@@ -71,7 +71,7 @@
                                  UpdateSourceTrigger="PropertyChanged"
                                  Mode="TwoWay">
                                     <Binding.ValidationRules>
-                                        <vl:NumValidation />
+                                        <vl:PortValidation />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </hc:ComboBox.Text>

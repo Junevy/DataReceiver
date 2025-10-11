@@ -18,10 +18,17 @@ namespace DataReceiver.Services.Validation
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            //string ip = value as string ?? "None";
-            return System.Net.IPAddress.TryParse(value as string, out var address)
-                ? ValidationResult.ValidResult
-                : new ValidationResult(false, "请输入正确的IP地址");
+            var ip = value as string ?? "None";
+            var result = System.Net.IPAddress.TryParse(ip, out _);
+
+            if (ip is not null && result)
+            {
+                var splited = ip.Split('.');
+                if (splited.Length != 4 || splited.All( x => int.Parse(x) <= 0 && int.Parse(x) >= 255))
+                    return new ValidationResult(false, "请输入正确的IP地址");
+                return ValidationResult.ValidResult;
+            }
+            return new ValidationResult(false, "请输入正确的IP地址");
         }
     }
 }

@@ -18,9 +18,6 @@ namespace DataReceiver.ViewModels.Community
         [ObservableProperty]
         public ObservableCollection<string> receivedMessages = [];
 
-        [ObservableProperty]
-        public string sendMessage = string.Empty;
-
         public SubViewModelBase(string? title = null)
         {
             count++;
@@ -34,5 +31,7 @@ namespace DataReceiver.ViewModels.Community
         public abstract void Send();
 
         public abstract void Receive();
+
+        public abstract void ReStart();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models;
-using DataReceiver.Services.Interface;
 using System.Windows;
 
 namespace DataReceiver.ViewModels.Community
@@ -29,23 +28,24 @@ namespace DataReceiver.ViewModels.Community
         [ObservableProperty]
         private bool isHeartBeat = false;
 
+        [ObservableProperty]
+        public string sendMessage = string.Empty;
+
+        private bool CanStartExecute => !string.IsNullOrWhiteSpace(Ip)
+            && !string.IsNullOrWhiteSpace(Port) && !IsConnected;
         #endregion
 
         public TcpViewModel()
         {
             model = new();
-            Title = "TCP Client" + "-" +  count;
+            Title = "TCP Client" + "-" + count;
         }
-
-        private bool CanStartExecute => !string.IsNullOrWhiteSpace(Ip)
-            && !string.IsNullOrWhiteSpace(Port) && !IsConnected;
 
         [RelayCommand(CanExecute = nameof(CanStartExecute))]
         public override void Start()
         {
             IsConnected = true;
-            MessageBox.Show($"Start TCP Server at {Ip}:{Port}");
-            ReceivedMessages.Add($"Connect Success : [{Ip}] : [{Port}]");
+            ReceivedMessages.Add($"Connect Success : [{Ip} : {Port}]");
         }
 
         [RelayCommand(CanExecute = nameof(IsConnected))]
@@ -60,6 +60,11 @@ namespace DataReceiver.ViewModels.Community
         }
 
         public override void Receive()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ReStart()
         {
             throw new NotImplementedException();
         }
@@ -104,6 +109,13 @@ namespace DataReceiver.ViewModels.Community
         {
             model.IsAutoConnect = value;
         }
+
+        partial void OnSendMessageChanged(string value)
+        {
+
+        }
+
+
         #endregion
     }
 }

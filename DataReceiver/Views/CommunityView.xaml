@@ -27,46 +27,66 @@
                 <RowDefinition Height="*" MaxHeight="50"/>
             </Grid.RowDefinitions>
 
+            <!--添加按钮-->
             <Grid Grid.Row="1">
                 <Button Margin="0,5,0,5" 
                         Width="110" 
                         Height="30" 
-                        Content="Add Socket" 
+                        Content="Add" 
                         Command="{Binding AddSubPageCommand}"
                         Style="{StaticResource ButtonPrimary}"/>
             </Grid>
 
+            <!--侧边栏-->
             <hc:TransitioningContentControl Grid.Row="0" >
-                <hc:SideMenu BorderThickness="1" Width="200">
-
+                <hc:SideMenu BorderThickness="1" Width="200" 
+                             ExpandMode="ShowAll" AutoSelect="True">
                     <hc:Interaction.Triggers>
                         <hc:EventTrigger EventName="SelectionChanged">
-                            <hc:EventToCommand Command="{Binding SwitchItemCmd}" PassEventArgsToCommand="True" />
+                            <hc:EventToCommand Command="{Binding GetCurrentItemCommand}"
+                                               PassEventArgsToCommand="True" />
                         </hc:EventTrigger>
                     </hc:Interaction.Triggers>
 
-                    <hc:SideMenuItem Header="常用协议">
+                    <hc:SideMenuItem Header="常用协议" FontSize="14" >
                         <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
+                            <Path Data="{StaticResource menu_geom}" 
+                                  Stroke="#000080" 
+                                  Stretch="Uniform" Fill="#000080" 
+                                  Width="25" 
+                                  Height="25"/>
                         </hc:SideMenuItem.Icon>
 
-                        <hc:SideMenuItem Header="TCP" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
+                        <hc:SideMenuItem Header="TCP" x:Name="TCP">
                             <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
+                                <Path Data="{StaticResource tcp_geom}" 
+                                      Stroke="#696969" 
+                                      Stretch="Uniform" Fill="#696969" 
+                                      Width="20" 
+                                      Height="20"/>
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
 
-                        <hc:SideMenuItem Header="FTP" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
+                        <hc:SideMenuItem Header="FTP" x:Name="FTP">
                             <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
+                                <Path Data="{StaticResource ftp_geom}" 
+                                  Stroke="#696969" 
+                                  Stretch="Uniform" Fill="#696969" 
+                                  Width="20" 
+                                  Height="20"/>
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
 
-                        <hc:SideMenuItem Header="UDP" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
+                        <hc:SideMenuItem Header="UDP" x:Name="UDP">
                             <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
+                                <Path Data="{StaticResource udp_geom}" 
+                                  Stroke="#696969" 
+                                  Stretch="Uniform" Fill="#696969" 
+                                  Width="20" 
+                                  Height="20"/>
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
+                        
                     </hc:SideMenuItem>
                 </hc:SideMenu>
             </hc:TransitioningContentControl>
@@ -81,7 +101,6 @@
                                    IsDraggable="True" >
                         <hc:TabControl.ItemTemplate>
                             <DataTemplate>
-                                
                                 <TextBlock Text="{Binding Title}"/>
                             </DataTemplate>
                         </hc:TabControl.ItemTemplate>
@@ -105,12 +124,8 @@
                             </DataTemplate>
                         </hc:TabControl.Resources>
                     </hc:TabControl>
-
                 </Border>
             </hc:TransitioningContentControl>
         </Grid>
-
-
     </Grid>
-
 </Page>
