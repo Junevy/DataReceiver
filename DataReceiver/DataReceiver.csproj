@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Assets\Icon\FTP.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

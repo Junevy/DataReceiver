@@ -69,7 +69,6 @@ namespace DataReceiver.ViewModels
                 Content = geometry,
                 Style = App.Current.LoadResource<Style>("SiderBar_Style"),
             });
-            //NaviList[0].IsSelected = true;
         }
     }
 }

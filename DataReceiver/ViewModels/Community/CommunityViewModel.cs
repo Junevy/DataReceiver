@@ -1,8 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Services.Interface;
 using DataReceiver.ViewModels.Base;
-using DataReceiver.Views;
+using HandyControl.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace DataReceiver.ViewModels.Community
 {
@@ -17,11 +21,21 @@ namespace DataReceiver.ViewModels.Community
         [RelayCommand(CanExecute = nameof(CanAdd))]
         public void AddSubPage()
         {
-            //if (!CanAdd)
-            if( VMList.Count == 0)
+            if (VMList.Count == 0)
                 VMList.Add(App.Current.Services.GetRequiredService<TcpViewModel>());
             else
                 VMList.Add(App.Current.Services.GetRequiredService<FtpViewModel>());
         }
+
+        [RelayCommand]
+        public void Closing(object? item)
+        {
+            var tab = (item as CancelRoutedEventArgs)?.OriginalSource as SubViewModelBase;
+            VMList.Remove(tab!);
+            MessageBox.Show(tab?.Title);
+            MessageBox.Show(VMList.Count.ToString());
+        }
     }
 }
+
+

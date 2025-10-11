@@ -20,10 +20,6 @@ namespace DataReceiver.Helper
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //if((bool)value)
-            //    return Colors.Red;
-            //else
-            //    return Colors.Green;
             return (bool)value ? TrueBrush : FalseBrush;
         }
 

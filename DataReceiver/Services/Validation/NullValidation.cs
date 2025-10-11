@@ -12,7 +12,7 @@ namespace DataReceiver.Services.Validation
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return string.IsNullOrWhiteSpace(value as string) || (value as string)?.Length <= 10
+            return string.IsNullOrWhiteSpace(value as string) || (value as string)?.Length >= 10
                 ? new ValidationResult(false, "Check the HeartBeat Content!") : ValidationResult.ValidResult;
         }
     }

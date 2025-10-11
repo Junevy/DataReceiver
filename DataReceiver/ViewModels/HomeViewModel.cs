@@ -10,7 +10,7 @@ namespace DataReceiver.ViewModels
 {
     public partial class HomeViewModel : ViewModelBase
     {
-        [ObservableProperty]
-        private string message = "hello world";
+        //[ObservableProperty]
+        //private string message = "hello world";
     }
 }

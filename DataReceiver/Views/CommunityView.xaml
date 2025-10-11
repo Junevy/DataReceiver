@@ -12,12 +12,13 @@
       xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers"
       Title="SocketView">
 
-    <Grid >
+    
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="150"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <!--sider bar-->
         <Grid Grid.Column="0" HorizontalAlignment="Left">
 
@@ -36,7 +37,6 @@
             </Grid>
 
             <hc:TransitioningContentControl Grid.Row="0" >
-
                 <hc:SideMenu BorderThickness="1" Width="200">
 
                     <hc:Interaction.Triggers>
@@ -67,219 +67,12 @@
                                 <TextBlock Text="&#xe82d;"/>
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
-
                     </hc:SideMenuItem>
-
-                    <!--<hc:SideMenuItem Header="数据库">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="SQL Server" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="MySQL" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Oracle" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-                    <hc:SideMenuItem Header="PLC">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="MELSEC" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="SIMENS" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-
-                    <hc:SideMenuItem Header="Overview">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-
-                        <hc:SideMenuItem Header="Summary" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf2cb;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Dashboards" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xf246;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                        <hc:SideMenuItem Header="Wiki" Command="{Binding SelectCmd}" CommandParameter="{Binding Header,RelativeSource={RelativeSource Self}}">
-                            <hc:SideMenuItem.Icon>
-                                <TextBlock Text="&#xe82d;"/>
-                            </hc:SideMenuItem.Icon>
-                        </hc:SideMenuItem>
-
-                    </hc:SideMenuItem>
-                    
-                    <hc:SideMenuItem Header="TESTTESTTEST">
-                        <hc:SideMenuItem.Icon>
-                            <Image Source="/Assets/Icon/FTP.png" Width="24" Height="24"/>
-                        </hc:SideMenuItem.Icon>
-                    </hc:SideMenuItem>-->
-
-
                 </hc:SideMenu>
             </hc:TransitioningContentControl>
         </Grid>
 
+        
         <Grid Grid.Column="1" >
             <hc:TransitioningContentControl>
                 <Border BorderThickness="1" BorderBrush="LightGray">
@@ -288,12 +81,21 @@
                                    IsDraggable="True" >
                         <hc:TabControl.ItemTemplate>
                             <DataTemplate>
-
+                                
                                 <TextBlock Text="{Binding Title}"/>
-
                             </DataTemplate>
                         </hc:TabControl.ItemTemplate>
 
+                        <hc:Interaction.Triggers>
+                            <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closing">
+                                <hc:EventToCommand Command="{Binding ClosingCommand}" PassEventArgsToCommand="True" />
+                            </hc:RoutedEventTrigger>
+                            <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closed">
+                                <hc:EventToCommand Command="{Binding ClosedCommand}" PassEventArgsToCommand="True" />
+                            </hc:RoutedEventTrigger>
+                        </hc:Interaction.Triggers>
+                        
+                        <!--映射页面-->
                         <hc:TabControl.Resources>
                             <DataTemplate DataType="{x:Type vm:TcpViewModel}">
                                 <local:TcpView/>
