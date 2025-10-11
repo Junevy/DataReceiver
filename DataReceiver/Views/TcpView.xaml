@@ -164,10 +164,10 @@
 
                 <Separator Margin="0,15,0,0"/>
                 <ContentControl Content="Message" FontSize="27" FontWeight="Thin" FontFamily="Bell MT" Grid.Row="1" Margin="0,20,0,10"></ContentControl>
-                <hc:ScrollViewer Style="{StaticResource ScrollViewerUpDown}" Grid.Row="2">
-                    <ListBox MinHeight="200" HorizontalAlignment="Stretch" MinWidth="900"
-                             ItemsSource="{Binding ReceivedMessages}"/>
-                </hc:ScrollViewer>
+                <!--<hc:ScrollViewer Style="{StaticResource ScrollViewerUpDown}" Grid.Row="2">-->
+                    <ListBox Grid.Row="2" MinHeight="200" HorizontalAlignment="Stretch" MinWidth="900"
+                             ItemsSource="{Binding ReceivedMessages}" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                <!--</hc:ScrollViewer>-->
             </Grid>
         </Grid>
     </hc:SimplePanel>

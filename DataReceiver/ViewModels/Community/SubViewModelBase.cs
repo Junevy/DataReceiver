@@ -8,7 +8,7 @@ namespace DataReceiver.ViewModels.Community
     /// <summary>
     /// 所有Socket的基类，用于TabControl的Item绑定
     /// </summary>
-    public abstract partial class SubViewModelBase : ViewModelBase, ISocket
+    public abstract partial class SubViewModelBase : ViewModelBase
     {
         public static int count = 0;
 
@@ -18,10 +18,10 @@ namespace DataReceiver.ViewModels.Community
         [ObservableProperty]
         public ObservableCollection<string> receivedMessages = [];
 
-        public SubViewModelBase(string? title = null)
+        protected SubViewModelBase()
         {
             count++;
-            Title = title ?? "Title" + " - " + count;
+            Title = title ?? "Page" + count;
         }
 
         public abstract void Start();

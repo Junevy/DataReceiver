@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DataReceiver.Models;
 using DataReceiver.ViewModels.Base;
 using System;
 using System.Collections.Generic;
