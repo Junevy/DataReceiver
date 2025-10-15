@@ -12,5 +12,9 @@ namespace DataReceiver.ViewModels
     {
         //[ObservableProperty]
         //private string message = "hello world";
+        public override void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

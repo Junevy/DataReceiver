@@ -45,7 +45,7 @@ namespace DataReceiver.ViewModels
                 case "DataView":
                     Navigator.NavigateTo<DataView>(); break;
                 case "SocketView":
-                    Navigator.NavigateTo<CommunityView>(); break;
+                    Navigator.NavigateTo<ConnectionView>(); break;
                 default:
                     return;
             }
@@ -69,6 +69,11 @@ namespace DataReceiver.ViewModels
                 Content = geometry,
                 Style = App.Current.LoadResource<Style>("SiderBar_Style"),
             });
+        }
+
+        public override void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.ViewModels.Base;
 using HandyControl.Controls;
 using HandyControl.Data;
@@ -8,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace DataReceiver.ViewModels.Community
 {
-    public partial class CommunityViewModel : ViewModelBase
+    public partial class ConnectionViewModel : ViewModelBase
     {
         /// <summary>
         /// 用于ViewModel映射View，显示在TableControl中
@@ -19,12 +18,12 @@ namespace DataReceiver.ViewModels.Community
         public string currentItem = string.Empty;
         // 限制最大的Tab数量为2
         private bool CanAdd => VMList.Count < 2;
+        //private bool CanExecute => !Config.Reconnecting;
 
         [RelayCommand]
         public void GetCurrentItem(object? value)
         {
-            var item = (value as FunctionEventArgs<object>)?.Info as SideMenuItem;
-            if (item is null) return;
+            if ((value as FunctionEventArgs<object>)?.Info is not SideMenuItem item) return;
             currentItem = item.Name.ToString() ?? string.Empty;
         }
 
@@ -58,6 +57,12 @@ namespace DataReceiver.ViewModels.Community
         {
             var tab = (value as CancelRoutedEventArgs)?.OriginalSource as SubViewModelBase;
             VMList.Remove(tab!);
+        }
+
+        public override void Dispose()
+        {
+            VMList.Clear();
+            //VMList = null;
         }
     }
 }

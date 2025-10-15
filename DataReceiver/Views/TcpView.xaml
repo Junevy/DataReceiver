@@ -17,6 +17,7 @@
 
     <UserControl.Resources>
         <cvt:BoolToColorConverter x:Key="BoolToColor"/>
+        <cvt:NumConverter x:Key="NumConverter"/>
     </UserControl.Resources>
 
     <hc:SimplePanel Background="White">
@@ -42,18 +43,11 @@
                             hc:TitleElement.MarginOnTheLeft="10"
                             hc:InfoElement.Necessary="True"
                             FontSize="14"
-                                     Width="260"
+                            Width="260"
                             IsEditable="True"
+                            IsEnabled="{Binding IsEditAble}"
+                            Text="{Binding Config.Ip}"         
                             hc:Margin="5">
-                            <hc:ComboBox.Text>
-                                <Binding Path="Ip"
-                                 UpdateSourceTrigger="PropertyChanged"
-                                 Mode="TwoWay">
-                                    <Binding.ValidationRules>
-                                        <vl:IpValidation />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </hc:ComboBox.Text>
                         </hc:ComboBox>
 
                         <!--端口-->
@@ -63,38 +57,31 @@
                             hc:TitleElement.MarginOnTheLeft="10"
                             hc:InfoElement.Necessary="True"
                             FontSize="14"
-                                     Width="200"
+                            Width="200"
+                            Text="{Binding Config.Port}"
                             IsEditable="True"
+                            IsEnabled="{Binding IsEditAble}"
                             hc:Margin="5">
-                            <hc:ComboBox.Text>
-                                <Binding Path="Port"
-                                 UpdateSourceTrigger="PropertyChanged"
-                                 Mode="TwoWay">
-                                    <Binding.ValidationRules>
-                                        <vl:PortValidation />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </hc:ComboBox.Text>
                         </hc:ComboBox>
 
                         <!--开始按钮-->
                         <Button Width="80" Height="30" 
                                 Style="{StaticResource ButtonSuccess}" 
-                                Command="{Binding StartCommand}" 
+                                Command="{Binding ConnectCommand}" 
                                 Content="Start"
                                 Margin="30,10,10,10"/>
 
                         <!--停止按钮-->
                         <Button Width="80" Height="30"
                                 Style="{StaticResource ButtonDanger}" 
-                                Command="{Binding StopCommand}" 
+                                Command="{Binding DisconnectCommand}" 
                                 Content="Stop"
                                 Margin="10,10,30,10"/>
 
                         <!--状态图标-->
                         <Path x:Name="state_icon"
-                                Stroke="{Binding IsConnected, Converter={StaticResource BoolToColor}}"
-                                Fill="{Binding IsConnected, Converter={StaticResource BoolToColor}}"
+                                Stroke="{Binding State, Converter={StaticResource NumConverter}}"
+                                Fill="{Binding State, Converter={StaticResource NumConverter}}"
                                 Data="{StaticResource connect_geom}"   
                                 Stretch="Uniform"
                                 Height="30"
@@ -107,18 +94,18 @@
 
                         <!--选择功能区-->
                         <StackPanel Orientation="Vertical">
-                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                            <ToggleButton Style="{StaticResource ToggleButtonSwitch.Small}" 
                                 Width="auto" Margin="20,10,10,10"
                                 Content="Auto Connect"
                                 FontSize="15"
                                 FontFamily="Calibri"
-                                IsChecked="{Binding IsAutoConnect}"/>
-                            <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                IsChecked="{Binding Config.EnableReconnect}"/>
+                            <ToggleButton Style="{StaticResource ToggleButtonSwitch.Small}" 
                                 Width="auto" Margin="20,10,10,10"
                                 Content="Start HeartBeat"
                                 FontSize="15"
                                 FontFamily="Calibri"
-                                IsChecked="{Binding IsHeartBeat}"/>
+                                IsChecked="{Binding Config.HeartBeatConfig.Enable}"/>
                         </StackPanel>
 
                         <!--心跳-->
@@ -133,7 +120,7 @@
                                 hc:InfoElement.ContentHeight="40"
                                 hc:Width="220" hc:Height="65">
                                 <hc:TextBox.Text>
-                                    <Binding Path="HeartBeat"
+                                    <Binding Path="Config.HeartBeatConfig.HeartBeat"
                                      UpdateSourceTrigger="PropertyChanged"
                                      Mode="TwoWay">
                                         <Binding.ValidationRules>
@@ -146,9 +133,15 @@
 
                         <!--发送-->
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                            <hc:TextBox Margin="10,20,20,10" Width="220" hc:InfoElement.ShowClearButton="True"
-                                    hc:InfoElement.Placeholder="Input message for send" FontSize="17"/>
-                            <Button Style="{StaticResource ButtonPrimary}" Content="Send" Width="120" Height="30"/>
+                            <hc:TextBox Margin="10,20,20,10" Width="220"
+                                        Text="{Binding SendMessage}"
+                                        hc:InfoElement.ShowClearButton="True"
+                                        hc:InfoElement.Placeholder="Input message for send" FontSize="17"
+                                        IsEnabled="{Binding IsConnected}"/>
+                            
+                            <Button Style="{StaticResource ButtonPrimary}" 
+                                    Content="Send" Width="120" Height="30"
+                                    Command="{Binding SendCommand}" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>

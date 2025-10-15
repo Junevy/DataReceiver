@@ -1,151 +1,70 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DataReceiver.Models;
-using System.Net.Sockets;
-using System.Windows;
-using System.Windows.Navigation;
+using DataReceiver.Models.CommunicationCommon;
+using DataReceiver.Models.Config;
+using DataReceiver.Models.Socket;
+using System.ComponentModel;
 
 namespace DataReceiver.ViewModels.Community
 {
     public partial class TcpViewModel : SubViewModelBase
     {
-        [ObservableProperty]
-        private TcpClientModel model;
+        //[ObservableProperty]
+        //[NotifyPropertyChangedFor(nameof(CanExecute))]
 
-        #region Properties
-        [ObservableProperty]
-        private string ip = "192.168.31.163";
+        private readonly TcpClientModel model;
 
-        [ObservableProperty]
-        private string port = "9007";
+        public TcpConfig Config { get; }
 
         [ObservableProperty]
-        private bool isConnected = false;
+        private string socketMessage = string.Empty;
 
-        [ObservableProperty]
-        private bool isAutoConnect = true;
 
-        [ObservableProperty]
-        private string heartBeat = "PING";
-
-        [ObservableProperty]
-        private bool isHeartBeat = false;
-
-        [ObservableProperty]
-        public string sendMessage = string.Empty;
-
-        private bool CanStop => Model is not null && Model.IsConnected;
-        private bool CanStart => Model is not null && !Model.IsConnected;
-        #endregion
-
-        public TcpViewModel()
+        public TcpViewModel(TcpClientModel m)
         {
-            //Client = new();
-            int.TryParse(Port, out int parsedPort);
-
-            Model = new()
-            {
-                Ip = Ip,
-                Port = parsedPort,
-                IsAutoConnect = IsAutoConnect,
-                HeartBeat = HeartBeat,
-                IsHeartBeat = IsHeartBeat,
-            };
-            Title = Ip + ":" + Port;
+            model = m;
+            Title = "TCP Client" + count;
+            Config = model.Config;
+            Config.PropertyChanged += OnConfigPropertyChanged;
+            base.Subscribe(model);
         }
 
-        [RelayCommand(CanExecute = nameof(CanStart))]
-        public override void Start()
+        public override void ReceivedData(DataEventArgs<byte> args)
         {
-            //_ = Model.StartAsync();
 
-            Task.Run(async () => await Model.StartAsync());
-
-            Model.OnReceivedMessage -= OnReceivedMessage;
-            Model.OnReceivedMessage += OnReceivedMessage;
-            Model.OnStateChanged -= OnStateChanged;
-            Model.OnStateChanged += OnStateChanged;
-        }
-
-        [RelayCommand(CanExecute = nameof(CanStop))]
-        public override void Stop()
-        {
-            Model.Stop();
-        }
-
-        [RelayCommand(CanExecute = nameof(CanStop))]
-        public override void Send()
-        {
-            _ = Model.SendAsync(SendMessage);
-        }
-
-        public override void Receive()
-        {
-        }
-
-        public override void ReStart()
-        {
-            Model.ReStart();
         }
 
         [RelayCommand]
-        public void Closed()
+        public override async Task ConnectAsync()
         {
-            MessageBox.Show("TCP Closed");
+            await model.ConnectAsync();
         }
 
-        #region 属性变化时同步到Model
-
-        public void OnReceivedMessage(string message)
+        [RelayCommand]
+        public override Task SendAsync(string message)
         {
-            ReceivedMessages.Add(message);
+            throw new NotImplementedException();
         }
 
-        public void OnStateChanged(bool state)
+        [RelayCommand]
+        public override void Disconnect()
         {
-            IsConnected = state;
         }
 
-        partial void OnIpChanged(string value)
+        private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Model.Ip = value;
-            StartCommand.NotifyCanExecuteChanged();
+            if (e.PropertyName.Equals(nameof(Config.Reconnecting)))
+            {
+                ConnectCommand.NotifyCanExecuteChanged();
+            }
         }
 
-        partial void OnPortChanged(string value)
+        /// <summary>
+        /// 释放Model及ViewModel资源
+        /// </summary>
+        public override void Dispose()
         {
-            int.TryParse(Port, out int parsedPort);
-            Model.Port = parsedPort;
-            StartCommand.NotifyCanExecuteChanged();
+            Config.PropertyChanged -= OnConfigPropertyChanged;
         }
-
-        partial void OnIsConnectedChanged(bool value)
-        {
-            StartCommand.NotifyCanExecuteChanged();
-            StopCommand.NotifyCanExecuteChanged();
-            SendCommand.NotifyCanExecuteChanged();
-        }
-
-        partial void OnIsHeartBeatChanged(bool value)
-        {
-            Model.IsHeartBeat = value;
-            if(value) _ = Model.StartHeartBeatAsync();
-        }
-
-        partial void OnHeartBeatChanged(string value)
-        {
-            model.HeartBeat = value;
-        }
-
-        partial void OnIsAutoConnectChanged(bool value)
-        {
-            model.IsAutoConnect = value;
-            if(value) _ = Model.StartAutoConnectAsync();
-        }
-
-        partial void OnSendMessageChanged(string value)
-        {
-        }
-        #endregion
     }
 }

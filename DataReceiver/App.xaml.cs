@@ -1,4 +1,5 @@
-﻿using DataReceiver.ViewModels;
+﻿using DataReceiver.Models.Socket;
+using DataReceiver.ViewModels;
 using DataReceiver.ViewModels.Community;
 using DataReceiver.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,17 +25,22 @@ namespace DataReceiver
             container.AddSingleton<MainView>();
             container.AddSingleton<DataView>();
             container.AddSingleton<HomeView>();
-            container.AddSingleton<CommunityView>();
+            container.AddSingleton<ConnectionView>();
             container.AddTransient<TcpView>();
             container.AddTransient<FtpView>();
 
             container.AddTransient<MainViewModel>();
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
-            container.AddTransient<CommunityViewModel>();
+            container.AddTransient<ConnectionViewModel>();
             container.AddTransient<TcpViewModel>();
             container.AddTransient<FtpViewModel>();
             container.AddTransient<NavigationService>();
+
+            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
+
+            //container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
+
 
             Services = container.BuildServiceProvider()!;
         }

@@ -1,5 +1,4 @@
-﻿using DataReceiver.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
 namespace DataReceiver.Services.Navigation
@@ -37,7 +36,7 @@ namespace DataReceiver.Services.Navigation
             {
                 return type;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 //Log...}return null
                 return null;
