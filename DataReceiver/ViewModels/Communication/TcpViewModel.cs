@@ -5,9 +5,9 @@ using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
 using System.ComponentModel;
 
-namespace DataReceiver.ViewModels.Community
+namespace DataReceiver.ViewModels.Communication
 {
-    public partial class TcpViewModel : SubViewModelBase
+    public partial class TcpViewModel : ConnectionViewModelBase
     {
         //[ObservableProperty]
         //[NotifyPropertyChangedFor(nameof(CanExecute))]
@@ -53,10 +53,10 @@ namespace DataReceiver.ViewModels.Community
 
         private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName.Equals(nameof(Config.Reconnecting)))
-            {
-                ConnectCommand.NotifyCanExecuteChanged();
-            }
+            //if (e.PropertyName.Equals(nameof(Config.Reconnecting)))
+            //{
+            //    ConnectCommand.NotifyCanExecuteChanged();
+            //}
         }
 
         /// <summary>

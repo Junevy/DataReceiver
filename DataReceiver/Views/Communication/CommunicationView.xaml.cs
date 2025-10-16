@@ -1,20 +1,20 @@
-﻿using DataReceiver.ViewModels.Community;
+﻿using DataReceiver.ViewModels.Communication;
 using System.Windows.Controls;
 
-namespace DataReceiver.Views
+namespace DataReceiver.Views.Communication
 {
     /// <summary>
     /// SocketView.xaml 的交互逻辑
     /// </summary>
-    public partial class ConnectionView : Page
+    public partial class CommunicationView : Page
     {
-        public ConnectionView(ConnectionViewModel socketViewModel)
+        public CommunicationView(CommunicationViewModel socketViewModel)
         {
             InitializeComponent();
             this.DataContext = socketViewModel;
         }
 
-        public ConnectionView()
+        public CommunicationView()
         {
             InitializeComponent();
 

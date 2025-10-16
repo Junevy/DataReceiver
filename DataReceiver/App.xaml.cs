@@ -1,12 +1,16 @@
 ﻿using DataReceiver.Models.Socket;
 using DataReceiver.ViewModels;
-using DataReceiver.ViewModels.Community;
+using DataReceiver.ViewModels.Communication;
+using DataReceiver.ViewModels.Data;
+using DataReceiver.ViewModels.Home;
 using DataReceiver.Views;
+using DataReceiver.Views.Communication;
+using DataReceiver.Views.Data;
+using DataReceiver.Views.Home;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using DataView = DataReceiver.Views.DataView;
 using NavigationService = DataReceiver.Services.Navigation.NavigationService;
 
 namespace DataReceiver
@@ -25,21 +29,20 @@ namespace DataReceiver
             container.AddSingleton<MainView>();
             container.AddSingleton<DataView>();
             container.AddSingleton<HomeView>();
-            container.AddSingleton<ConnectionView>();
+            container.AddSingleton<CommunicationView>();
             container.AddTransient<TcpView>();
             container.AddTransient<FtpView>();
 
             container.AddTransient<MainViewModel>();
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
-            container.AddTransient<ConnectionViewModel>();
+            container.AddTransient<CommunicationViewModel>();
             container.AddTransient<TcpViewModel>();
             container.AddTransient<FtpViewModel>();
             container.AddTransient<NavigationService>();
 
             container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
 
-            //container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
 
 
             Services = container.BuildServiceProvider()!;

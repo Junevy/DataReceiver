@@ -1,4 +1,4 @@
-﻿namespace DataReceiver.Models.Socket.Base
+﻿namespace DataReceiver.Models.Socket.Interface
 {
     public interface IFileTransfer
     {

@@ -1,14 +1,14 @@
 ﻿using DataReceiver.Models.Common;
 using DataReceiver.Models.CommunicationCommon;
+using DataReceiver.Models.Socket.Interface;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace DataReceiver.Models.Socket.Base
 {
-    public abstract class SocketBase : IConnection
+    public abstract class ReactiveBase 
     {
-        public CancellationTokenSource cts = new();
         /// <summary>
         /// 当前Socket状态
         /// </summary>
@@ -20,11 +20,6 @@ namespace DataReceiver.Models.Socket.Base
             = new(new StateEventArgs(ConnectionState.Disconnected, ConnectionState.Disconnected, "未连接"));
         public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
         public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
-
-        public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
-        public abstract void Disconnect();
-        public abstract Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
-        public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
 
         protected virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
         {

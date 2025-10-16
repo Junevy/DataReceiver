@@ -1,7 +1,6 @@
-﻿using DataReceiver.ViewModels.Community;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
-namespace DataReceiver.Views
+namespace DataReceiver.Views.Communication
 {
     /// <summary>
     /// FtpView.xaml 的交互逻辑

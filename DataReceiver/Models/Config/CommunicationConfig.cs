@@ -12,12 +12,6 @@ namespace DataReceiver.Models.Config
         private bool enableReconnect = true;
 
         /// <summary>
-        /// 正在连接状态
-        /// </summary>
-        [ObservableProperty]
-        private bool reconnecting = false;
-
-        /// <summary>
         /// 重连间隔时间
         /// </summary>
         [ObservableProperty]

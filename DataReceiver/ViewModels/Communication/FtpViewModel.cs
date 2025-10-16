@@ -1,11 +1,8 @@
 ﻿using DataReceiver.Models.CommunicationCommon;
-using DataReceiver.Models.CommunicationModel;
-using System.CodeDom;
-using System.IO;
 
-namespace DataReceiver.ViewModels.Community
+namespace DataReceiver.ViewModels.Communication
 {
-    public partial class FtpViewModel : SubViewModelBase
+    public partial class FtpViewModel : ConnectionViewModelBase
     {
         public override Task ConnectAsync()
         {

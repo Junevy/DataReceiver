@@ -5,15 +5,14 @@ using DataReceiver.Models.Socket.Base;
 using DataReceiver.ViewModels.Base;
 using System.Collections.ObjectModel;
 
-namespace DataReceiver.ViewModels.Community
+namespace DataReceiver.ViewModels.Communication
 {
     /// <summary>
     /// 所有Socket的基类，用于TabControl的Item绑定
     /// </summary>
-    public abstract partial class SubViewModelBase : ViewModelBase
+    public abstract partial class ConnectionViewModelBase : ViewModelBase
     {
         protected static int count = 0;
-        //protected SocketBase Model { get; set; } = default!;
 
         [ObservableProperty]
         public string title = string.Empty;
@@ -29,13 +28,13 @@ namespace DataReceiver.ViewModels.Community
 
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
-        protected SubViewModelBase()
+        protected ConnectionViewModelBase()
         {
             count++;
             Title = title ?? "Page" + count;
         }
 
-        public virtual void Subscribe(SocketBase model)
+        public virtual void Subscribe(ReactiveBase model)
         {
             model.DataReceived.Subscribe(data =>
             {

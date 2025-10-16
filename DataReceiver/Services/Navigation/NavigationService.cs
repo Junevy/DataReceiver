@@ -3,15 +3,10 @@ using System.Windows.Controls;
 
 namespace DataReceiver.Services.Navigation
 {
-    public class NavigationService : INavigation
+    public class NavigationService(Frame frame) : INavigation
     {
         private const string PackagePath = "DataReceiver.Views";
-        private readonly Frame mainFrame;
-
-        public NavigationService(Frame frame)
-        {
-            mainFrame = frame;
-        }
+        private readonly Frame mainFrame = frame;
 
         /// <summary>
         /// 导航实现

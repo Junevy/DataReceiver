@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Services.Navigation;
 using DataReceiver.ViewModels.Base;
 using DataReceiver.Views;
+using DataReceiver.Views.Communication;
+using DataReceiver.Views.Data;
+using DataReceiver.Views.Home;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +48,7 @@ namespace DataReceiver.ViewModels
                 case "DataView":
                     Navigator.NavigateTo<DataView>(); break;
                 case "SocketView":
-                    Navigator.NavigateTo<ConnectionView>(); break;
+                    Navigator.NavigateTo<CommunicationView>(); break;
                 default:
                     return;
             }

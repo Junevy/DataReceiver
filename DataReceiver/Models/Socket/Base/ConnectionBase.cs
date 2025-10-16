@@ -1,11 +1,12 @@
-﻿using DataReceiver.Models.Config;
+﻿using DataReceiver.Models.Common;
+using DataReceiver.Models.Config;
+using DataReceiver.Models.Socket.Interface;
+using System.IO;
 
 namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ConnectionBase<TSocket, KConfig>(KConfig config)
-        : SocketBase
-        where TSocket : IDisposable
-        where KConfig : CommunicationConfig
+        : ReactiveBase, IConnection where TSocket : IDisposable where KConfig : CommunicationConfig
     {
         /// <summary>
         /// Socket对象
@@ -18,18 +19,25 @@ namespace DataReceiver.Models.Socket.Base
         public KConfig Config { get; }
             = config ?? throw new ArgumentNullException($"Socket配置文件为空: {nameof(Config)}");
 
+        protected CancellationTokenSource cts  = new();
+
+        public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
+        public abstract void Disconnect();
+        public abstract Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
+        public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
+
         /// <summary>
         /// 释放所有资源
         /// </summary>
         public override void Dispose()
         {
-            base.Dispose();
             if (cts != null && !cts.IsCancellationRequested)
             {
                 cts?.Cancel();
                 cts?.Dispose();
             }
             Socket?.Dispose();
+            base.Dispose();
         }
     }
 }

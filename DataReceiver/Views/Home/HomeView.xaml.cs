@@ -1,11 +1,8 @@
-﻿using DataReceiver.ViewModels;
+﻿using DataReceiver.ViewModels.Home;
 using System.Windows.Controls;
 
-namespace DataReceiver.Views
+namespace DataReceiver.Views.Home
 {
-    /// <summary>
-    /// HomeView.xaml 的交互逻辑
-    /// </summary>
     public partial class HomeView : Page
     {
         public HomeView(HomeViewModel homeViewModel)

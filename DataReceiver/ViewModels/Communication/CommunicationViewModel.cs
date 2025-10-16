@@ -5,14 +5,14 @@ using HandyControl.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
-namespace DataReceiver.ViewModels.Community
+namespace DataReceiver.ViewModels.Communication
 {
-    public partial class ConnectionViewModel : ViewModelBase
+    public partial class CommunicationViewModel : ViewModelBase
     {
         /// <summary>
         /// 用于ViewModel映射View，显示在TableControl中
         /// </summary>
-        public ObservableCollection<SubViewModelBase> VMList { get; set; } = [];
+        public ObservableCollection<ConnectionViewModelBase> VMList { get; set; } = [];
 
         //当前选中的侧边栏Item Name
         public string currentItem = string.Empty;
@@ -55,7 +55,7 @@ namespace DataReceiver.ViewModels.Community
         [RelayCommand]
         public void Closing(object? value)
         {
-            var tab = (value as CancelRoutedEventArgs)?.OriginalSource as SubViewModelBase;
+            var tab = (value as CancelRoutedEventArgs)?.OriginalSource as ConnectionViewModelBase;
             VMList.Remove(tab!);
         }
 
