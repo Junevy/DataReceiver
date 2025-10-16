@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using DataReceiver.Models.CommunicationCommon;
+﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
 using System.ComponentModel;
@@ -9,35 +7,27 @@ namespace DataReceiver.ViewModels.Communication
 {
     public partial class TcpViewModel : ConnectionViewModelBase
     {
-        //[ObservableProperty]
-        //[NotifyPropertyChangedFor(nameof(CanExecute))]
-
         private readonly TcpClientModel model;
-
         public TcpConfig Config { get; }
 
-        [ObservableProperty]
-        private string socketMessage = string.Empty;
-
-
-        public TcpViewModel(TcpClientModel m)
+        public TcpViewModel(TcpClientModel m) : base(m.Runtimes)
         {
             model = m;
             Title = "TCP Client" + count;
             Config = model.Config;
-            Config.PropertyChanged += OnConfigPropertyChanged;
             base.Subscribe(model);
         }
 
-        public override void ReceivedData(DataEventArgs<byte> args)
-        {
-
-        }
-
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
             await model.ConnectAsync();
+        }
+
+        [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
+        public override async Task DisconnectAsync()
+        {
+            await model.DisconnectAsync();
         }
 
         [RelayCommand]
@@ -46,17 +36,13 @@ namespace DataReceiver.ViewModels.Communication
             throw new NotImplementedException();
         }
 
-        [RelayCommand]
-        public override void Disconnect()
+        public override void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-        }
-
-        private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //if (e.PropertyName.Equals(nameof(Config.Reconnecting)))
-            //{
-            //    ConnectCommand.NotifyCanExecuteChanged();
-            //}
+            if (e.PropertyName == nameof(Runtimes.State))
+            {
+                ConnectCommand.NotifyCanExecuteChanged();
+                DisconnectCommand.NotifyCanExecuteChanged();
+            }
         }
 
         /// <summary>
@@ -64,7 +50,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public override void Dispose()
         {
-            Config.PropertyChanged -= OnConfigPropertyChanged;
+            Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
         }
     }
 }

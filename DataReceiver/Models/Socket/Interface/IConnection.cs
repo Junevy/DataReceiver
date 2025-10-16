@@ -20,8 +20,8 @@ namespace DataReceiver.Models.Socket.Interface
         /// <returns>返回实际发送的字节数，失败抛出异常。</returns>
         Task<int> SendAsync(byte[] data, CancellationToken ct = default);
 
-        Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
+        //Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
 
-        void Disconnect();
+        Task DisconnectAsync();
     }
 }

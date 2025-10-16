@@ -12,13 +12,13 @@
       xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers"
       Title="SocketView">
 
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="120"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
         <!--sider bar-->
         <Grid Grid.Column="0" HorizontalAlignment="Left">
 
@@ -38,8 +38,8 @@
             </Grid>
 
             <!--侧边栏-->
-            <hc:TransitioningContentControl Grid.Row="0" >
-                <hc:SideMenu BorderThickness="1" Width="120" 
+            <hc:TransitioningContentControl Grid.Row="0">
+                <hc:SideMenu BorderThickness="1" Width="120"
                              ExpandMode="ShowAll" AutoSelect="True">
                     <hc:Interaction.Triggers>
                         <hc:EventTrigger EventName="SelectionChanged">
@@ -57,7 +57,7 @@
                                   Height="25"/>
                         </hc:SideMenuItem.Icon>
 
-                        <hc:SideMenuItem Header="TCP" x:Name="TCP">
+                        <hc:SideMenuItem Header="TCP" x:Name="TCP" FontFamily="Consolas">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource tcp_geom}" 
                                       Stroke="#696969" 
@@ -86,17 +86,18 @@
                                   Height="20"/>
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
-                        
+
                     </hc:SideMenuItem>
                 </hc:SideMenu>
             </hc:TransitioningContentControl>
         </Grid>
 
-        
+
         <Grid Grid.Column="1" >
             <hc:TransitioningContentControl>
                 <Border BorderThickness="1" BorderBrush="LightGray">
                     <hc:TabControl ItemsSource="{Binding VMList}" 
+                                    IsAnimationEnabled="True"
                                    ShowCloseButton="True" 
                                    IsDraggable="True" >
                         <hc:TabControl.ItemTemplate>
@@ -113,7 +114,7 @@
                                 <hc:EventToCommand Command="{Binding ClosedCommand}" PassEventArgsToCommand="True" />
                             </hc:RoutedEventTrigger>
                         </hc:Interaction.Triggers>
-                        
+
                         <!--映射页面-->
                         <hc:TabControl.Resources>
                             <DataTemplate DataType="{x:Type vm:TcpViewModel}">

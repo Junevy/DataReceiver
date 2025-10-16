@@ -23,13 +23,14 @@ namespace DataReceiver.Models.Config
         [ObservableProperty]
         private TimeSpan connectTimeout = TimeSpan.FromSeconds(5);
 
-        /// <summary>
-        /// 最后活跃时间
-        /// </summary>
+        ///// <summary>
+        ///// 最后活跃时间
+        ///// </summary>
         [ObservableProperty]
         private DateTime lastActivityTime = DateTime.MinValue;
 
-        private string Encoding { get; set; } = "UTF-8";
+        [ObservableProperty]
+        private string encoding = "UTF-8";
 
         /// <summary>
         /// 缓冲区大小

@@ -9,10 +9,7 @@ namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ReactiveBase 
     {
-        /// <summary>
-        /// 当前Socket状态
-        /// </summary>
-        public ConnectionState State { get; private set; } = ConnectionState.Disconnected;
+        public ConnectionRuntimes Runtimes { get; private set; } = new();
 
         // Reactive Extensions
         private readonly Subject<DataEventArgs<byte>> dataReceived = new();
@@ -21,14 +18,26 @@ namespace DataReceiver.Models.Socket.Base
         public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
         public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
 
+        /// <summary>
+        /// 订阅Subject的信息流，唯一控制State的方法
+        /// </summary>
+        /// <param name="state">新的Socket连接状态</param>
+        /// <param name="message">Socket连接状态发生变化时的附带消息</param>
+        /// <returns>当前Socket连接状态</returns>
         protected virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
         {
-            var oldState = State;
-            State = state;
+            var oldState = Runtimes.State;
+            Runtimes.State = state; //*********多线程环境下不安全！*************
             stateChanged.OnNext(new StateEventArgs(state, oldState, message));
             return state;
         }
 
+        /// <summary>
+        /// 订阅Socket接收到数据时的信息流
+        /// </summary>
+        /// <param name="data">接收到的数据</param>
+        /// <param name="message">接收到数据时附带的消息</param>
+        /// <returns>接收到数据的长度</returns>
         protected virtual int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
         {
             dataReceived.OnNext(new DataEventArgs<byte>(data, data.Length, DateTime.Now)

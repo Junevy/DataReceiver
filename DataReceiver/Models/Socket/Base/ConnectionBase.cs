@@ -20,23 +20,25 @@ namespace DataReceiver.Models.Socket.Base
             = config ?? throw new ArgumentNullException($"Socket配置文件为空: {nameof(Config)}");
 
         protected CancellationTokenSource cts  = new();
+        protected Task? receiveTask;
 
         public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
-        public abstract void Disconnect();
-        public abstract Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
+        public abstract Task DisconnectAsync();
+        protected abstract Task<int> ReceiveAsync(CancellationToken ct = default);
         public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
 
         /// <summary>
         /// 释放所有资源
         /// </summary>
-        public override void Dispose()
+        public virtual void Dispose()
         {
             if (cts != null && !cts.IsCancellationRequested)
             {
-                cts?.Cancel();
-                cts?.Dispose();
+                cts.Cancel();
+                cts.Dispose();
             }
             Socket?.Dispose();
+            GC.SuppressFinalize(this);
             base.Dispose();
         }
     }

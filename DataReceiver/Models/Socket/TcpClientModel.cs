@@ -18,9 +18,9 @@ namespace DataReceiver.Models.Socket
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
-            if (ConnectionState.Reconnecting == State) return State;
-            if (ConnectionState.Connecting == State) return State;
-            if (ConnectionState.Connected == State) Disconnect();
+            if (ConnectionState.Reconnecting == Runtimes.State) return Runtimes.State;
+            if (ConnectionState.Connecting == Runtimes.State) return Runtimes.State;
+            if (ConnectionState.Connected == Runtimes.State) await DisconnectAsync();
 
             //初始化
             OnStateUpdated(ConnectionState.Connecting, "Connecting...");
@@ -45,7 +45,13 @@ namespace DataReceiver.Models.Socket
                     cts = new();
 
                 //启动消息接收
-                _ = ReceiveAsync(Stream ,cts.Token);
+                receiveTask = ReceiveAsync(cts.Token).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        // Log...
+                    }
+                });
                 return OnStateUpdated(ConnectionState.Connected, "Connection Successful!");
             }
             catch (Exception ex)
@@ -54,15 +60,17 @@ namespace DataReceiver.Models.Socket
             }
         }
 
-        public override void Disconnect()
+        public override async Task DisconnectAsync()
         {
-            Dispose();
-            OnStateUpdated(ConnectionState.Disconnected, "Disconnected by handy.");
+            await CleanConectionAsync();
+            OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
+            //Dispose();
         }
 
-        public override async Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default)
+        protected override async Task<int> ReceiveAsync(CancellationToken ct = default)
         {
-            var buffer = ArrayPool<byte>.Shared.Rent(1024);
+            var stream = Stream ?? throw new Exception("Stream is null");
+            var buffer = ArrayPool<byte>.Shared.Rent(Config.BufferSize);
             int bytesRead;
             try
             {
@@ -75,7 +83,8 @@ namespace DataReceiver.Models.Socket
                     catch (OperationCanceledException) { break; }
                     catch (Exception e)
                     {
-                        OnStateUpdated(State, $"Receive data error: {e.Message} ");
+                        if (Socket is not null)
+                            OnStateUpdated(Runtimes.State, $"Receive data error: {e.Message} ");
                         break;
                     }
                     //连接已关闭（被动或主动）
@@ -89,15 +98,15 @@ namespace DataReceiver.Models.Socket
                     Array.Copy(buffer, 0, data, 0, bytesRead);
 
                     Config.LastActivityTime = DateTime.UtcNow;
-                    return OnDataReceived(data, "Data received.");
+                    OnDataReceived(data, "Data received.");
                 }
                 return -1;
             }
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer);
-                if (!Socket.Connected)
-                    Disconnect();
+                //if (Socket != null && !Socket.Connected)
+                await DisconnectAsync();
             }
         }
 
@@ -132,6 +141,31 @@ namespace DataReceiver.Models.Socket
             {
                 OnDataReceived(new byte[4], $"Config Socket Error: {e.Message}");
             }
+        }
+
+        private async Task CleanConectionAsync()
+        {
+            try
+            {
+                if (cts is not null && !cts.IsCancellationRequested)
+                {
+                    cts.Cancel();
+                }
+            }
+            catch { }
+
+            // 等待正在进行的接收任务完成
+            //if (receiveTask != null)
+            //{
+            //    try { await receiveTask.ConfigureAwait(false); } catch { } finally { receiveTask = null; }
+            //}
+
+            try { cts?.Dispose(); } catch { }
+            try { Stream?.Close(); } catch { }
+            try { Stream?.Dispose(); } catch { }
+            try { Socket?.Close(); } catch { }
+            try { Socket?.Dispose(); } catch { }
+            Socket = null;
         }
 
     }
