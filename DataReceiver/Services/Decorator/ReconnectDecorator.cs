@@ -12,6 +12,9 @@ namespace DataReceiver.Services.Decorator
         {
             Runtimes.Reconnecting = true;
 
+            //ReconnectDecorator 使用
+            //System.Threading.Timer + async void（TimerCallback 不支持 async / await），
+            //可能出现并发重入、多次并行 Connect、异常丢失。
             timer = new Timer(async (e) =>
             {
                 if (Runtimes.State != ConnectionState.Connected && Runtimes.Reconnecting)

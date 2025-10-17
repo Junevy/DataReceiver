@@ -8,6 +8,7 @@ namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ConnectionReactiveBase : IConnection
     {
+        private readonly Object stateLock = new();
         public CancellationTokenSource Cts { get; protected set; } = new();
         public ConnectionRuntimes Runtimes { get; private set; } = new();
 
@@ -26,9 +27,12 @@ namespace DataReceiver.Models.Socket.Base
         /// <returns>当前Socket连接状态</returns>
         protected virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
         {
-            var oldState = Runtimes.State;
-            Runtimes.State = state; //*********多线程环境下不安全！*************
-            stateChanged.OnNext(new StateEventArgs(state, oldState, message));
+            lock (stateLock)
+            {
+                var oldState = Runtimes.State;
+                Runtimes.State = state; //*********多线程环境下不安全！*************
+                stateChanged.OnNext(new StateEventArgs(state, oldState, message));
+            }
             return state;
         }
 

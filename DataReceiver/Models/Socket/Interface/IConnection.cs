@@ -20,7 +20,7 @@ namespace DataReceiver.Models.Socket.Interface
         /// </summary>
         /// <param name="data">数据</param>
         /// <param name="ct">控制令牌</param>
-        /// <returns>返回实际发送的字节数，失败抛出异常。</returns>
+        /// <returns> 返回实际发送的字节数，发送超时、失败、发生异常 则返回-1。</returns>
         Task<int> SendAsync(byte[] data, CancellationToken ct = default);
 
         //Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);

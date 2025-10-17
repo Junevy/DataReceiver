@@ -12,9 +12,9 @@ namespace DataReceiver.Models.CommunicationCommon
         (ConnectionState newState, ConnectionState oldState, string message) 
         : EventArgs
     {
-        public ConnectionState newState { get; } = newState;
-        public ConnectionState oldState { get; } = oldState;
-        public string message { get; } = message;
-        public DateTime TimeStamp { get; } = DateTime.Now;
+        public ConnectionState NewState { get; } = newState;
+        public ConnectionState OldState { get; } = oldState;
+        public string Message { get; } = message;
+        public DateTime TimeStamp { get; } = DateTime.MinValue;
     }
 }

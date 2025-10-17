@@ -28,11 +28,13 @@ namespace DataReceiver.Services.Decorator
 
         public virtual void Dispose()
         {
-            if (Cts != null && !Cts.IsCancellationRequested)
-            {
-                Cts.Cancel();
-                Cts.Dispose();
-            }
+            // 快照不应该管理生命周期。
+            //if (Cts != null && !Cts.IsCancellationRequested)
+            //{
+            //    Cts.Cancel();
+            //    Cts.Dispose();
+            //}
+            inner.Dispose();
         }
     }
 }

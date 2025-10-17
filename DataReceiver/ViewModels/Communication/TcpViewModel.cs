@@ -3,6 +3,7 @@ using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
 using DataReceiver.Services.Decorator;
 using System.ComponentModel;
+using System.Reactive.Concurrency;
 using System.Text;
 
 namespace DataReceiver.ViewModels.Communication
@@ -66,7 +67,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public override void Dispose()
         {
-            Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
+            //Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
             base.Dispose();
         }
     }

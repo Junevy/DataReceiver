@@ -11,7 +11,7 @@ namespace DataReceiver.Models.Common
         private bool reconnecting = false;
 
         [ObservableProperty]
-        private TimeSpan lastActivityTime = TimeSpan.MinValue;
+        private string lastActivityTime = DateTime.MinValue.ToString("yyyy-MM-ss HH:mm:ss");
 
         public string DisplayStatus => State switch
         {

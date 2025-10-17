@@ -22,7 +22,7 @@ namespace DataReceiver.Models.Socket.Base
         /// <summary>
         /// 释放所有资源
         /// </summary>
-        public new virtual void Dispose()
+        public override void Dispose()
         {
             try
             {

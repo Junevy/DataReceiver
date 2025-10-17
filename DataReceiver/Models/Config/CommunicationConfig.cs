@@ -27,8 +27,8 @@ namespace DataReceiver.Models.Config
         ///// <summary>
         ///// 最后活跃时间
         ///// </summary>
-        [ObservableProperty]
-        private DateTime lastActivityTime = DateTime.MinValue;
+        //[ObservableProperty]
+        //private DateTime lastActivityTime = DateTime.MinValue;
 
         [ObservableProperty]
         private string encoding = "utf-8";

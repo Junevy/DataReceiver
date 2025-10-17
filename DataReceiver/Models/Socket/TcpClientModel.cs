@@ -18,25 +18,30 @@ namespace DataReceiver.Models.Socket
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
-            //if (ConnectionState.Reconnecting == Runtimes.State) return Runtimes.State;
-            //if (ConnectionState.Connecting == Runtimes.State) return Runtimes.State;
-            if (ConnectionState.Connected == Runtimes.State) await DisconnectAsync();
+            if (Runtimes.State is ConnectionState.Connecting)
+                return Runtimes.State;
+            if (Runtimes.State is ConnectionState.Connected) 
+                await DisconnectAsync();
 
             //初始化
-            await CleanConectionAsync();
+            CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Connecting, "Connecting...");
-            Socket ??= new();
+            Socket = new();
             ConfigSocket();
 
             var timeoutTask = Task.Delay(Config.ConnectTimeout);
             try
             {
                 //连接
-                using var anyTask = await Task.WhenAny(timeoutTask, Socket.ConnectAsync(Config.Ip, Config.Port));
+                using var anyTask = await Task.WhenAny(timeoutTask, Socket.ConnectAsync(Config.Ip, Config.Port))
+                    .ConfigureAwait(false);
                 if (anyTask == timeoutTask || !Socket.Connected)
+                {
+                    Socket.Close();
                     return OnStateUpdated(ConnectionState.Disconnected, "Connect timeout or error.");
+                }
                 //连接成功
-                Config.LastActivityTime = DateTime.Now;
+                Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
                 Stream = Socket.GetStream();
 
                 //配置Socket
@@ -46,13 +51,16 @@ namespace DataReceiver.Models.Socket
                     Cts = new();
 
                 //启动消息接收
-                receiveTask = ReceiveAsync(Cts.Token).ContinueWith(t =>
-                {
-                    if (t.IsFaulted)
-                    {
-                        // Log...
-                    }
-                });
+
+                receiveTask = Task.Run(() => { ReceiveAsync(Cts.Token); });
+
+                //receiveTask = ReceiveAsync(Cts.Token).ContinueWith(t =>
+                //{
+                //    if (t.IsFaulted)
+                //    {
+                //        // Log...
+                //    }
+                //});
                 return OnStateUpdated(ConnectionState.Connected, "Connection Successful!");
             }
             catch (Exception ex)
@@ -63,7 +71,7 @@ namespace DataReceiver.Models.Socket
 
         public override async Task DisconnectAsync()
         {
-            await CleanConectionAsync();
+            CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
             Dispose();
         }
@@ -73,15 +81,15 @@ namespace DataReceiver.Models.Socket
             if (Runtimes.State != ConnectionState.Connected) return -1;
             if (data == null || data.Length == 0) return -1;
 
+            using var lts = CancellationTokenSource.CreateLinkedTokenSource(Cts.Token);
+            lts.CancelAfter(Config.SendTimeOut);
             await sendLock.WaitAsync(Cts.Token);
             try
             {
-                using var ctsSend = CancellationTokenSource.CreateLinkedTokenSource(Cts.Token);
-                ctsSend.CancelAfter(Config.SendTimeOut);
-                await Stream!.WriteAsync(data, 0, data.Length, ctsSend.Token);
-                await Stream.FlushAsync(Cts.Token);
-                Config.LastActivityTime = DateTime.Now;
-                return 1;
+                await Stream!.WriteAsync(data, 0, data.Length, lts.Token);
+                //await Stream.FlushAsync(Cts.Token);
+                Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
+                return data.Length;
             }
             catch (OperationCanceledException)
             {
@@ -93,7 +101,7 @@ namespace DataReceiver.Models.Socket
                 // 发送时发生异常通常意味着断开了连接。
 
                 // Log...
-                _ = DisconnectAsync();
+                DisconnectAsync().GetAwaiter().GetResult();
                 return -1;
             }
             finally
@@ -128,12 +136,12 @@ namespace DataReceiver.Models.Socket
                         OnStateUpdated(ConnectionState.Disconnected, $"Connection was disconnected: [{Config.Ip} : {Config.Port}]");
                         break;
                     }
-                    // Copy数据
-                    var data = new byte[bytesRead];
-                    Array.Copy(buffer, 0, data, 0, bytesRead);
+                    //// Copy数据
+                    //var data = new byte[bytesRead];
+                    //Array.Copy(buffer, 0, data, 0, bytesRead);
 
-                    Config.LastActivityTime = DateTime.UtcNow;
-                    OnDataReceived(data, "Data received.");
+                    Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
+                    OnDataReceived(buffer, "Data received.");
                 }
                 return -1;
             }
@@ -143,7 +151,8 @@ namespace DataReceiver.Models.Socket
 
                 // 判断是否是手动取消，避免重复操作。
                 if (Cts != null && !Cts.IsCancellationRequested)
-                    await DisconnectAsync();
+                    //同步执行，finally中使用异步操作不合理，甚至可能卡死ui。
+                    DisconnectAsync().GetAwaiter().GetResult();
             }
         }
 
@@ -165,7 +174,7 @@ namespace DataReceiver.Models.Socket
             try
             {
                 if (Config is null) throw new ArgumentNullException("Config is null!");
-                Socket.NoDelay = Config.EnableNagle;
+                Socket.NoDelay = !Config.EnableNagle;
                 Socket.ReceiveBufferSize = Config.BufferSize;
                 Socket.SendBufferSize = Config.BufferSize;
                 //Socket.SendTimeout = Config.ConnectTimeout
@@ -177,8 +186,9 @@ namespace DataReceiver.Models.Socket
             }
         }
 
-        private async Task CleanConectionAsync()
+        private void CleanConnectionAsync()
         {
+
             try
             {
                 // 自动重连中则不取消任务
@@ -190,6 +200,12 @@ namespace DataReceiver.Models.Socket
                 }
             }
             catch { }
+
+            //var t = Interlocked.Exchange(ref receiveTask, null);
+            //if (t != null)
+            //{
+            //    try { await t.ConfigureAwait(false); } catch { /* swallow cancel */ }
+            //}
 
             // 等待正在进行的接收任务完成
             //if (receiveTask != null)

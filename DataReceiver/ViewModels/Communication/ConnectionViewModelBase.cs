@@ -21,6 +21,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         /// <returns></returns>
         protected static int count = 1;
+        private const int MAXCOLLECTIONSIZE = 200;
         protected IConnection decorator;
         protected static int GetNextId() => Interlocked.Increment(ref count);
         private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
@@ -38,14 +39,14 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
-        protected bool IsCanConnect => Runtimes.State != ConnectionState.Connected;
+        protected bool IsCanConnect =>
+            Runtimes.State == ConnectionState.Disconnected;
         protected bool IsCanDisconnect => Runtimes.State == ConnectionState.Connected;
 
         protected ConnectionViewModelBase(ConnectionRuntimes runtimes)
         {
             Title = title ?? "Page" + GetNextId();
             Runtimes = runtimes;
-
             Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
@@ -56,13 +57,15 @@ namespace DataReceiver.ViewModels.Communication
             subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
+                    if (ReceivedDataCollection.Count > MAXCOLLECTIONSIZE)
+                        ReceivedDataCollection.RemoveAt(0);
                     ReceivedDataCollection.Add(data.Message ?? "Empty");
                 }).DisposeWith(disposables);
 
             subscriber.StateChanged.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(e =>
                 {
-                    Runtimes.State = e.newState;
+                    Runtimes.State = e.NewState;
                 }).DisposeWith(disposables);
         }
 
