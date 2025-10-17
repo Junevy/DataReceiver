@@ -4,7 +4,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:helper="clr-namespace:DataReceiver.Helper" >
-    <helper:BoolToColorConverter x:Key="BoolToColor"/>
+    <helper:ColorConverter x:Key="BoolToColor"/>
 
     <Style x:Key="SiderBar_Style" TargetType="ListBoxItem">
         <Setter Property="Template">

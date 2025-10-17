@@ -1,13 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
+using DataReceiver.Services.Decorator;
 using System.ComponentModel;
+using System.Text;
 
 namespace DataReceiver.ViewModels.Communication
 {
     public partial class TcpViewModel : ConnectionViewModelBase
     {
-        private readonly TcpClientModel model;
+        private TcpClientModel model { get; set; }
         public TcpConfig Config { get; }
 
         public TcpViewModel(TcpClientModel m) : base(m.Runtimes)
@@ -16,32 +18,46 @@ namespace DataReceiver.ViewModels.Communication
             Title = "TCP Client" + count;
             Config = model.Config;
             base.Subscribe(model);
+
+            decorator = new DecoratorBase(model);
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
-            await model.ConnectAsync();
+            if (Config.EnableReconnect)
+                decorator = new ReconnectDecorator(model, Config.ReconnectDelay);
+
+            //if (Config.HeartBeatConfig.Enable)
+            //decorator = new HeartBeatDecorator(modelm, Config.HeartBeatConfig.HeartbeatInterval);
+
+            await decorator.ConnectAsync();
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         public override async Task DisconnectAsync()
         {
-            await model.DisconnectAsync();
+            await decorator.DisconnectAsync();
         }
 
-        [RelayCommand]
-        public override Task SendAsync(string message)
+        [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
+        public override Task SendAsync()
         {
-            throw new NotImplementedException();
+            //Encoding test = Encoding.UTF8;
+            var data = Encoding.UTF8.GetBytes(Config.SendMessage);
+            return decorator.SendAsync(data);
         }
 
         public override void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Runtimes.State))
             {
-                ConnectCommand.NotifyCanExecuteChanged();
-                DisconnectCommand.NotifyCanExecuteChanged();
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    ConnectCommand.NotifyCanExecuteChanged();
+                    DisconnectCommand.NotifyCanExecuteChanged();
+                    SendCommand.NotifyCanExecuteChanged();
+                });
             }
         }
 
@@ -51,6 +67,7 @@ namespace DataReceiver.ViewModels.Communication
         public override void Dispose()
         {
             Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
+            base.Dispose();
         }
     }
 }

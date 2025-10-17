@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Common;
-using DataReceiver.Models.CommunicationCommon;
 using DataReceiver.Models.Socket.Base;
+using DataReceiver.Models.Socket.Interface;
 using DataReceiver.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -21,8 +21,8 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         /// <returns></returns>
         protected static int count = 1;
+        protected IConnection decorator;
         protected static int GetNextId() => Interlocked.Increment(ref count);
-
         private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
 
         [ObservableProperty]
@@ -38,7 +38,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
-        protected bool IsCanConnect => Runtimes.IsEditable;
+        protected bool IsCanConnect => Runtimes.State != ConnectionState.Connected;
         protected bool IsCanDisconnect => Runtimes.State == ConnectionState.Connected;
 
         protected ConnectionViewModelBase(ConnectionRuntimes runtimes)
@@ -50,19 +50,14 @@ namespace DataReceiver.ViewModels.Communication
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
 
-        public virtual void Subscribe(ReactiveBase subscriber)
+        public virtual void Subscribe(ConnectionReactiveBase subscriber)
         {
-            // 无法执行回调方法，线程问题？
+            // 无法执行回调方法，线程问题？并不是线程问题
             subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
                     ReceivedDataCollection.Add(data.Message ?? "Empty");
                 }).DisposeWith(disposables);
-
-            //subscriber.DataReceived.Subscribe(data =>
-            //{
-            //    ReceivedDataCollection.Add(data.Data.ToString() ?? "Empty");
-            //}).DisposeWith(disposables);
 
             subscriber.StateChanged.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(e =>
@@ -80,9 +75,7 @@ namespace DataReceiver.ViewModels.Communication
 
         public abstract Task ConnectAsync();
 
-        public abstract Task SendAsync(string message);
-
-        //public abstract void ReceivedData(DataEventArgs<byte> args);
+        public abstract Task SendAsync();
 
         public abstract Task DisconnectAsync();
 
@@ -90,6 +83,7 @@ namespace DataReceiver.ViewModels.Communication
         {
             disposables.Dispose();
             Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
+            GC.SuppressFinalize(this);
         }
     }
 }

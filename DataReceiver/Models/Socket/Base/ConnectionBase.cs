@@ -1,13 +1,13 @@
-﻿using DataReceiver.Models.Common;
-using DataReceiver.Models.Config;
-using DataReceiver.Models.Socket.Interface;
-using System.IO;
+﻿using DataReceiver.Models.Config;
 
 namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ConnectionBase<TSocket, KConfig>(KConfig config)
-        : ReactiveBase, IConnection where TSocket : IDisposable where KConfig : CommunicationConfig
+        : ConnectionReactiveBase where TSocket : IDisposable where KConfig : CommunicationConfig
     {
+        protected Task? receiveTask;
+        protected readonly SemaphoreSlim sendLock = new(1, 1);
+
         /// <summary>
         /// Socket对象
         /// </summary>
@@ -19,82 +19,26 @@ namespace DataReceiver.Models.Socket.Base
         public KConfig Config { get; }
             = config ?? throw new ArgumentNullException($"Socket配置文件为空: {nameof(Config)}");
 
-        protected CancellationTokenSource cts  = new();
-        protected Task? receiveTask;
-
-        public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
-        public abstract Task DisconnectAsync();
-        protected abstract Task<int> ReceiveAsync(CancellationToken ct = default);
-        public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
-
         /// <summary>
         /// 释放所有资源
         /// </summary>
-        public virtual void Dispose()
+        public new virtual void Dispose()
         {
-            if (cts != null && !cts.IsCancellationRequested)
+            try
             {
-                cts.Cancel();
-                cts.Dispose();
+                if (Cts != null && !Cts.IsCancellationRequested)
+                {
+                    Cts.Cancel();
+                    Cts.Dispose();
+                }
             }
-            Socket?.Dispose();
-            GC.SuppressFinalize(this);
+            catch { }
+
+            try { Socket?.Dispose(); } catch { }
+
+            try { GC.SuppressFinalize(this); } catch { }
+
             base.Dispose();
         }
     }
 }
-
-#region old code
-//protected virtual void Dispose(bool disposing)
-//{
-//    if (disposing)
-//    {
-//        cts?.Cancel();
-//        cts?.Dispose();
-//        dataReceived?.OnCompleted();
-//        dataReceived?.Dispose();
-//        stateChanged?.OnCompleted();
-//        stateChanged?.Dispose();
-//        Socket?.Dispose();
-//    }
-//}
-
-/// <summary>
-/// 取消令牌源
-/// </summary>
-//public CancellationTokenSource cts = new();
-
-///// <summary>
-///// 当前Socket状态
-///// </summary>
-//public ConnectionState State { get; private set; } = ConnectionState.Disconnected;
-
-//// Reactive Extensions
-//private readonly Subject<DataEventArgs<byte>> dataReceived = new();
-//private readonly BehaviorSubject<StateEventArgs> stateChanged
-//    = new(new StateEventArgs(ConnectionState.Disconnected, ConnectionState.Disconnected, "未连接"));
-//public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
-//public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
-
-//public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct);
-//public abstract void Disconnect();
-//public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
-//public abstract Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
-
-//protected virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
-//{
-//    var oldState = State;
-//    State = state;
-//    stateChanged.OnNext(new StateEventArgs(state, oldState, message));
-//    return state;
-//}
-
-//protected virtual int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
-//{
-//    dataReceived.OnNext(new DataEventArgs<byte>(data, data.Length, DateTime.Now)
-//    {
-//        Message = message
-//    });
-//    return data.Length;
-//}
-#endregion

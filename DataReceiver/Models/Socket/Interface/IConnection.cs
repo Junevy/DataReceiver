@@ -5,6 +5,9 @@ namespace DataReceiver.Models.Socket.Interface
 {
     public interface IConnection : IDisposable
     {
+        CancellationTokenSource Cts { get; }
+        ConnectionRuntimes Runtimes { get; }
+
         /// <summary>
         /// 连接Socket
         /// </summary>

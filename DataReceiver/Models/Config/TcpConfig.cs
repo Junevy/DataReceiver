@@ -25,7 +25,7 @@ namespace DataReceiver.Models.Config
         private bool enableNagle = true;
 
         [ObservableProperty]
-        private HeartBeatConfig heartBeatConfig = new();
+        public HeartBeatConfig heartBeatConfig = new();
 
         /// <summary>
         /// KeepAlive时间（毫秒）

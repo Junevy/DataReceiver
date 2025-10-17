@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Security.Permissions;
+using System.Text;
 
 namespace DataReceiver.Models.Config
 {
@@ -12,16 +13,16 @@ namespace DataReceiver.Models.Config
         private bool enableReconnect = true;
 
         /// <summary>
-        /// 重连间隔时间
+        /// 重连间隔时间，Unit：ms
         /// </summary>
         [ObservableProperty]
-        private TimeSpan reconnectDelay = TimeSpan.FromSeconds(10);
+        private int reconnectDelay = 10000;
 
         /// <summary>
-        /// 连接超时时间
+        /// 连接超时时间，Unit：ms
         /// </summary>
         [ObservableProperty]
-        private TimeSpan connectTimeout = TimeSpan.FromSeconds(5);
+        private int connectTimeout = 5000;
 
         ///// <summary>
         ///// 最后活跃时间
@@ -30,13 +31,18 @@ namespace DataReceiver.Models.Config
         private DateTime lastActivityTime = DateTime.MinValue;
 
         [ObservableProperty]
-        private string encoding = "UTF-8";
+        private string encoding = "utf-8";
 
         /// <summary>
-        /// 缓冲区大小
+        /// 缓冲区大小，Unit：byte
         /// </summary>
         public int BufferSize { get; set; } = 1024;
 
+        [ObservableProperty]
+        private string sendMessage = string.Empty;
+
+        [ObservableProperty]
+        private int sendTimeOut = 2000;
 
         //protected CommunicationConfig()
         //{

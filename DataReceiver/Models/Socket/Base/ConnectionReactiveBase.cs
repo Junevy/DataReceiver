@@ -1,14 +1,14 @@
 ﻿using DataReceiver.Models.Common;
 using DataReceiver.Models.CommunicationCommon;
 using DataReceiver.Models.Socket.Interface;
-using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace DataReceiver.Models.Socket.Base
 {
-    public abstract class ReactiveBase 
+    public abstract class ConnectionReactiveBase : IConnection
     {
+        public CancellationTokenSource Cts { get; protected set; } = new();
         public ConnectionRuntimes Runtimes { get; private set; } = new();
 
         // Reactive Extensions
@@ -49,10 +49,15 @@ namespace DataReceiver.Models.Socket.Base
 
         public virtual void Dispose()
         {
-            dataReceived?.OnCompleted();
-            dataReceived?.Dispose();
-            stateChanged?.OnCompleted();
-            stateChanged?.Dispose();
+            try { dataReceived?.OnCompleted(); dataReceived?.Dispose(); } catch { }
+            try { stateChanged?.OnCompleted(); stateChanged?.Dispose(); } catch { }
+            GC.SuppressFinalize(this);
         }
+
+        public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
+
+        public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
+
+        public abstract Task DisconnectAsync();
     }
 }

@@ -9,7 +9,7 @@ namespace DataReceiver.Models.Socket
 {
     public class TcpClientModel : ConnectionBase<TcpClient, TcpConfig>
     {
-        private Stream Stream { get; set; }
+        private Stream? Stream { get; set; }
 
         public TcpClientModel(TcpConfig config) : base(config)
         {
@@ -18,11 +18,12 @@ namespace DataReceiver.Models.Socket
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
-            if (ConnectionState.Reconnecting == Runtimes.State) return Runtimes.State;
-            if (ConnectionState.Connecting == Runtimes.State) return Runtimes.State;
+            //if (ConnectionState.Reconnecting == Runtimes.State) return Runtimes.State;
+            //if (ConnectionState.Connecting == Runtimes.State) return Runtimes.State;
             if (ConnectionState.Connected == Runtimes.State) await DisconnectAsync();
 
             //初始化
+            await CleanConectionAsync();
             OnStateUpdated(ConnectionState.Connecting, "Connecting...");
             Socket ??= new();
             ConfigSocket();
@@ -41,11 +42,11 @@ namespace DataReceiver.Models.Socket
                 //配置Socket
                 if (Config.EnableKeepAlive)
                     KeepSocketAlive();
-                if (cts.IsCancellationRequested)
-                    cts = new();
+                if (Cts == null || Cts.IsCancellationRequested)
+                    Cts = new();
 
                 //启动消息接收
-                receiveTask = ReceiveAsync(cts.Token).ContinueWith(t =>
+                receiveTask = ReceiveAsync(Cts.Token).ContinueWith(t =>
                 {
                     if (t.IsFaulted)
                     {
@@ -64,10 +65,44 @@ namespace DataReceiver.Models.Socket
         {
             await CleanConectionAsync();
             OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
-            //Dispose();
+            Dispose();
         }
 
-        protected override async Task<int> ReceiveAsync(CancellationToken ct = default)
+        public override async Task<int> SendAsync(byte[] data, CancellationToken ct = default)
+        {
+            if (Runtimes.State != ConnectionState.Connected) return -1;
+            if (data == null || data.Length == 0) return -1;
+
+            await sendLock.WaitAsync(Cts.Token);
+            try
+            {
+                using var ctsSend = CancellationTokenSource.CreateLinkedTokenSource(Cts.Token);
+                ctsSend.CancelAfter(Config.SendTimeOut);
+                await Stream!.WriteAsync(data, 0, data.Length, ctsSend.Token);
+                await Stream.FlushAsync(Cts.Token);
+                Config.LastActivityTime = DateTime.Now;
+                return 1;
+            }
+            catch (OperationCanceledException)
+            {
+                // 发送超时 Log
+                return -1;
+            }
+            catch (Exception e)
+            {
+                // 发送时发生异常通常意味着断开了连接。
+
+                // Log...
+                _ = DisconnectAsync();
+                return -1;
+            }
+            finally
+            {
+                sendLock.Release();
+            }
+        }
+
+        protected async Task<int> ReceiveAsync(CancellationToken ct = default)
         {
             var stream = Stream ?? throw new Exception("Stream is null");
             var buffer = ArrayPool<byte>.Shared.Rent(Config.BufferSize);
@@ -105,14 +140,11 @@ namespace DataReceiver.Models.Socket
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer);
-                //if (Socket != null && !Socket.Connected)
-                await DisconnectAsync();
-            }
-        }
 
-        public override Task<int> SendAsync(byte[] data, CancellationToken ct = default)
-        {
-            throw new Exception();
+                // 判断是否是手动取消，避免重复操作。
+                if (Cts != null && !Cts.IsCancellationRequested)
+                    await DisconnectAsync();
+            }
         }
 
         private void KeepSocketAlive()
@@ -128,9 +160,11 @@ namespace DataReceiver.Models.Socket
 
         private void ConfigSocket()
         {
-            if (Config is null) throw new ArgumentNullException("Config is null!");
+
+            try {  } catch { return; }
             try
             {
+                if (Config is null) throw new ArgumentNullException("Config is null!");
                 Socket.NoDelay = Config.EnableNagle;
                 Socket.ReceiveBufferSize = Config.BufferSize;
                 Socket.SendBufferSize = Config.BufferSize;
@@ -147,9 +181,12 @@ namespace DataReceiver.Models.Socket
         {
             try
             {
-                if (cts is not null && !cts.IsCancellationRequested)
+                // 自动重连中则不取消任务
+                if (Cts is not null && !Cts.IsCancellationRequested)
                 {
-                    cts.Cancel();
+                    Cts.Cancel();
+                    Cts.Dispose();
+                    Cts = null;
                 }
             }
             catch { }
@@ -160,7 +197,6 @@ namespace DataReceiver.Models.Socket
             //    try { await receiveTask.ConfigureAwait(false); } catch { } finally { receiveTask = null; }
             //}
 
-            try { cts?.Dispose(); } catch { }
             try { Stream?.Close(); } catch { }
             try { Stream?.Dispose(); } catch { }
             try { Socket?.Close(); } catch { }
@@ -168,204 +204,10 @@ namespace DataReceiver.Models.Socket
             Socket = null;
         }
 
+        public override void Dispose()
+        {
+            //GC.Collect();
+            base.Dispose();
+        }
     }
 }
-
-#region old code2
-
-//public override async Task<Result> ConnectAsync(CancellationToken ct)
-//{
-//    stateChanged.OnNext(ConnectionState.Connecting);
-//    try
-//    {
-//        client = new();
-//        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-//        cts.CancelAfter(config.ConnectTimeout);
-//        await client.ConnectAsync(config.Ip, config.Port);
-
-//        if (config.EnableKeepAlive)
-//            KeepSocketAlive();
-//        stateChanged.OnNext(ConnectionState.Open);
-
-//        _ = ReceiveLoopAsync();
-//        return Result.Success;
-//    }
-//    catch (Exception ex)
-//    {
-//        stateChanged.OnNext(ConnectionState.Closed);
-//        return Result.Failure;
-//    }
-//}
-
-
-//public async Task ReceiveLoopAsync()
-//{
-//    var buffer = new byte[1024];
-//    try
-//    {
-//        MessageReceived.Invoke(this, "Start Receiving");
-//        while (!cts.IsCancellationRequested)
-//        {
-//            var bytes = await stream.ReadAsync(buffer, 0, buffer.Length, cts.Token);
-//            var message = Encoding.UTF8.GetString(buffer, 0, bytes);
-
-//            if (bytes == 0) { ReStart(); return; }
-//            if (message.Equals(HeartBeat)) _ = SendAsync(HeartBeat);
-//            else OnReceivedMessage?.Invoke(message);
-//            LastActivedTime = DateTime.Now;
-//        }
-//    }
-//    catch (TaskCanceledException)
-//    {
-//    }
-//    catch (ObjectDisposedException)
-//    {
-//        Stop();
-//    }
-//}
-#endregion
-
-
-#region old code
-//public string Ip { get; set; } = "192.168.31.163";
-//public int Port { get; set; } = 9007;
-//public string HeartBeat { get; set; } = "PING";
-//public bool IsHeartBeat { get; set; } = false;
-//public TcpClient? Client { get; set; }
-
-
-//private CancellationTokenSource cts;
-
-//public bool IsConnected => Client != null
-//                   && !(Client.Client.Poll(10000, SelectMode.SelectRead)
-//                        && Client.Client.Available == 0) && Client.Connected;
-
-//public override async Task StartAsync()
-//{
-
-
-//    Stop();
-//    cts = new();
-//    Client ??= new();
-
-//    var timeoutTask = Task.Delay(Timeout, cts.Token);
-//    var anyTask = await Task.WhenAny(timeoutTask, Client?.ConnectAsync(Ip, Port));
-
-//    //连接超时或失败
-//    if (anyTask == timeoutTask || !IsConnected)
-//    {
-//        OnReceivedMessage?.Invoke($"Connect error : [{Ip}:{Port}]. Start auto connect after 10 seconds.");
-//        _ = StartAutoConnectAsync();
-//        return;
-//    }
-
-//    KeepSocketAlive();
-//    OnStateChanged?.Invoke(IsConnected);
-
-//    if (IsHeartBeat) _ = StartHeartBeatAsync();
-//    if (IsAutoConnect) _ = StartAutoConnectAsync();
-
-//    LastActivedTime = DateTime.Now;
-//    _ = ReceiveAsync(Client!.GetStream());
-//}
-
-//public override void Stop()
-//{
-//    if (cts != null && !cts.IsCancellationRequested)
-//    {
-//        cts?.Cancel();
-//        cts?.Dispose();
-//    }
-//    Client?.Close();
-//    Client?.Dispose();
-//    Client = null;
-//    OnStateChanged?.Invoke(IsConnected);
-//}
-
-//public override async Task ReceiveAsync(Stream stream)
-//{
-//    var buffer = new byte[1024];
-//    try
-//    {
-//        MessageReceived.Invoke(this, "Start Receiving");
-//        while (!cts.IsCancellationRequested)
-//        {
-//            var bytes = await stream.ReadAsync(buffer, 0, buffer.Length, cts.Token);
-//            var message = Encoding.UTF8.GetString(buffer, 0, bytes);
-
-//            if (bytes == 0) { ReStart(); return; }
-//            if (message.Equals(HeartBeat)) _ = SendAsync(HeartBeat);
-//            else OnReceivedMessage?.Invoke(message);
-//            LastActivedTime = DateTime.Now;
-//        }
-//    }
-//    catch (TaskCanceledException)
-//    {
-//    }
-//    catch (ObjectDisposedException)
-//    {
-//        Stop();
-//    }
-//}
-
-//public override async Task SendAsync(string message)
-//{
-//    try
-//    {
-//        var msg = Encoding.UTF8.GetBytes(message);
-//        using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
-//        timeoutCts.CancelAfter(Timeout);
-//        await Client!.GetStream().WriteAsync(msg, 0, msg.Length, timeoutCts.Token);
-//    }
-//    catch (TaskCanceledException)
-//    {
-//        if (IsConnected) Stop();
-//    }
-//}
-
-//public override void ReStart()
-//{
-//    Stop();
-//    _ = StartAsync();
-//}
-
-//public async Task StartHeartBeatAsync()
-//{
-//    while (cts != null && !cts.IsCancellationRequested)
-//    {
-//        await Task.Delay(Interval);
-//        if (!IsHeartBeat) return;
-//        //if (!IsConnected) continue;1` 
-//        _ = SendAsync(HeartBeat);
-//    }
-//}
-
-//public async Task StartAutoConnectAsync()
-//{
-//    if (isReconnect) return;
-
-//    isReconnect = true;
-//    while (IsAutoConnect && !cts.IsCancellationRequested)
-//    {
-//        await Task.Delay(Interval);
-//        if (!IsConnected && !cts.IsCancellationRequested)
-//            ReStart();
-//    }
-//    isReconnect = false;
-//}
-
-///// <summary>
-///// 能否使用装饰器模式或抽象成接口？
-///// </summary>
-//private void KeepSocketAlive()
-//{
-//    //开启自动探测
-//    Client?.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-//    var keepAlive = new byte[12];
-//    BitConverter.GetBytes((uint)1).CopyTo(keepAlive, 0); //开启keep alive
-//    BitConverter.GetBytes((uint)60000).CopyTo(keepAlive, 4); //空闲多久开始探测
-//    BitConverter.GetBytes((uint)60000).CopyTo(keepAlive, 8);
-//    Client?.Client.IOControl(IOControlCode.KeepAliveValues, keepAlive, null);
-//}
-
-#endregion

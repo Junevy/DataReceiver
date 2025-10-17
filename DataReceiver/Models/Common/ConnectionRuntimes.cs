@@ -11,9 +11,6 @@ namespace DataReceiver.Models.Common
         private bool reconnecting = false;
 
         [ObservableProperty]
-        private bool isEditable = true;
-
-        [ObservableProperty]
         private TimeSpan lastActivityTime = TimeSpan.MinValue;
 
         public string DisplayStatus => State switch
@@ -23,25 +20,5 @@ namespace DataReceiver.Models.Common
             ConnectionState.Reconnecting => "重连中",
             _ => "未连接"
         };
-
-        partial void OnStateChanged(ConnectionState oldValue, ConnectionState newValue)
-        {
-            State = newValue;
-            switch (State)
-            {
-                case ConnectionState.Disconnected:
-                case ConnectionState.Disconnecting:
-                case ConnectionState.Error:
-                    IsEditable = true; break;
-
-                case ConnectionState.Connected:
-                case ConnectionState.Connecting:
-                case ConnectionState.Reconnected:
-                    IsEditable = false; break;
-
-                case ConnectionState.Reconnecting:
-                    Reconnecting = true; IsEditable = false; break;
-            }
-        }
     }
 }

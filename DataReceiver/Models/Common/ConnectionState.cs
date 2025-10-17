@@ -3,14 +3,15 @@
     public enum ConnectionState
     {
         // true
-        Connected = 0,
+        Connected = 1,
 
         // false
-        Connecting = 1,
-        Reconnecting = 2,
-        Reconnected = 3,
-        Disconnecting = 4,
-        Error = 5,
-        Disconnected = -1
+        Connecting = 2,
+        Reconnecting = 3,
+        Reconnected = 4,
+        Disconnecting = 5,
+        Error = -1,
+        Disconnected = 0
+
     }
 }
