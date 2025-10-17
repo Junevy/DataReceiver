@@ -24,7 +24,6 @@ namespace DataReceiver.Services.Decorator
         public override async Task DisconnectAsync()
         {
             Runtimes.Reconnecting = false;
-            //timer
             timer?.Dispose();
             await base.DisconnectAsync();
         }

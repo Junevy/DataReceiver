@@ -206,7 +206,6 @@ namespace DataReceiver.Models.Socket
 
         public override void Dispose()
         {
-            //GC.Collect();
             base.Dispose();
         }
     }
