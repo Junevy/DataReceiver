@@ -1,50 +1,66 @@
-﻿using DataReceiver.Models.CommunicationModel;
+﻿using DataReceiver.Models.Common;
+using DataReceiver.Models.Config;
+using DataReceiver.Models.Socket.Interface;
 using System.Text;
 
 namespace DataReceiver.Services.Decorator
 {
-    class HeartBeatDecorator
+    class HeartBeatDecorator : DecoratorBase
     {
-        //    private readonly ISocket inner = socket;
-        //    private readonly HeartBeatConfig config = config;
-        //    private Timer? heartBeatTimer;
+        protected Timer? timer;
+        protected HeartBeatConfig? config;
 
-        //    public async Task<Result> ConnectAsync(CancellationToken ct)
-        //    {
-        //        var result = await inner.ConnectAsync(ct);
-        //        if (config.Enable && result == Result.Success)
-        //        {
-        //            heartBeatTimer = new Timer(
-        //                async _ => await SendHeartBeat(),
-        //                null,
-        //                config.Interval,
-        //                config.Interval);
-        //        }
-        //        return result;
-        //    }
+        public HeartBeatDecorator(IConnection inner) : base(inner)
+        {
+            if (inner is IHeartBeat isHb && isHb.HeartBeatConfig is HeartBeatConfig isHbc)
+                config = isHbc;
+            else
+                config = null;
+        }
 
-        //    public async Task SendHeartBeat()
-        //    {
-        //        var data = Encoding.UTF8.GetBytes(config.HeartBeat);
-        //        await inner.SendAsync(data);
-        //    }
+        public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
+        {
+            var result = await inner.ConnectAsync();
 
-        //    public async Task<Result> SendAsync(ReadOnlyMemory<byte> data, CancellationToken ct = default)
-        //    {
-        //        var result = await inner.SendAsync(data, ct);
-        //        return result;
-        //    }
+            if (config?.Enable == true)
+            {
+                timer = new(StartHeartBeat, Cts.Token, 0, config.Interval);
+                Runtimes.LastHeartBeatTime = DateTime.Now;
+            }
 
-        //    public void DisconnectAsync()
-        //    {
-        //        inner.DisconnectAsync();
-        //    }
+            return result;
+        }
 
-        //    public ValueTask DisposeAsync()
-        //    {
-        //        var result = inner.DisposeAsync();
-        //        return result;
-        //    }
-        //}
+        private void StartHeartBeat(object? state)
+        {
+            if (config is null) timer?.Dispose();
+            if (state is null) return; // Log
+
+            var ct = (CancellationToken)state;
+
+            // 连接手动或异常断开连接后，刷新最后心跳时间，
+            // 防止重连成功后 DateTime.Now 与 LastHeartBeatTime 的差大于 心跳的Timeout，导致心跳功能自动关闭。
+            if (inner.Runtimes.State is not ConnectionState.Connected ||
+                (ct == null && ct.IsCancellationRequested))
+            {
+                //whenConnectInterrupt = DateTime.Now;
+                Runtimes.LastHeartBeatTime = DateTime.Now;
+                return;
+            }
+
+            //Runtimes.LastHeartBeatTime = whenConnectInterrupt = DateTime.Now;
+
+            if (DateTime.Now - Runtimes.LastHeartBeatTime > config?.Timeout)
+                if (config?.EnableTimeout == true)
+                    timer?.Dispose();
+
+            inner.SendAsync(Encoding.UTF8.GetBytes(config?.Response));
+        }
+
+        public override async Task DisconnectAsync()
+        {
+            timer?.Dispose();
+            inner?.Dispose();
+        }
     }
 }

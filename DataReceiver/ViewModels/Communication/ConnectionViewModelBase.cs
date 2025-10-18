@@ -16,14 +16,14 @@ namespace DataReceiver.ViewModels.Communication
     /// </summary>
     public abstract partial class ConnectionViewModelBase : ViewModelBase
     {
+        protected static int count = 1;
         /// <summary>
         /// Tab item 的 title自增序号
         /// </summary>
-        /// <returns></returns>
-        protected static int count = 1;
-        private const int MAXCOLLECTIONSIZE = 200;
-        protected IConnection decorator;
+        /// <returns> 自增的序号 </returns>
         protected static int GetNextId() => Interlocked.Increment(ref count);
+
+        private const int MAXCOLLECTIONSIZE = 200;
         private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
 
         /// <summary>
@@ -32,6 +32,7 @@ namespace DataReceiver.ViewModels.Communication
         [ObservableProperty]
         public string title = string.Empty;
 
+        protected IConnection Decorator { get; set; }
         /// <summary>
         /// Socket的运行状态
         /// </summary>
@@ -41,8 +42,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
-        protected bool IsCanConnect =>
-            Runtimes.State == ConnectionState.Disconnected;
+        protected bool IsCanConnect => Runtimes.State == ConnectionState.Disconnected;
         protected bool IsCanDisconnect => Runtimes.State == ConnectionState.Connected;
 
         protected ConnectionViewModelBase(ConnectionRuntimes runtimes)

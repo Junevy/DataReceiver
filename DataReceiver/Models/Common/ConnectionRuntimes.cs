@@ -8,10 +8,24 @@ namespace DataReceiver.Models.Common
         private ConnectionState state = ConnectionState.Disconnected;
 
         [ObservableProperty]
+        private string lastActivityTime = DateTime.MinValue.ToString("yyyy-MM-ss HH:mm:ss");
+
+        [ObservableProperty]
         private bool reconnecting = false;
 
         [ObservableProperty]
-        private string lastActivityTime = DateTime.MinValue.ToString("yyyy-MM-ss HH:mm:ss");
+        private int currentReconnectAttempts = 0;
+
+        [ObservableProperty]
+        private DateTime lastHeartBeatTime = DateTime.Now;
+
+
+        //[ObservableProperty]
+        //private DateTime lastReconnectTime = DateTime.MinValue;
+
+        //[ObservableProperty]
+        //private int currentHeartBeatFail = 0;
+
 
         public string DisplayStatus => State switch
         {

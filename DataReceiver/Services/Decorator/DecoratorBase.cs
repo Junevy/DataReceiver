@@ -9,7 +9,7 @@ namespace DataReceiver.Services.Decorator
     {
         protected readonly IConnection inner = _inner;
         public CancellationTokenSource Cts  => inner.Cts;
-        public ConnectionRuntimes Runtimes { get; private set; } = _inner.Runtimes;
+        public ConnectionRuntimes Runtimes => inner.Runtimes;
 
         public virtual async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {

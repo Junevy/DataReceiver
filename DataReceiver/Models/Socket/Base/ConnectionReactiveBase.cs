@@ -1,6 +1,5 @@
 ﻿using DataReceiver.Models.Common;
 using DataReceiver.Models.CommunicationCommon;
-using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Interface;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -20,7 +19,7 @@ namespace DataReceiver.Models.Socket.Base
         public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
         public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
 
-        
+
 
         /// <summary>
         /// 订阅Subject的信息流，唯一控制State的方法

@@ -1,10 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DataReceiver.Models.Socket.Config;
+using DataReceiver.Models.Socket.Interface;
 using System.ComponentModel.DataAnnotations;
 
 namespace DataReceiver.Models.Config
 {
-    public partial class TcpConfig : CommunicationConfig
+    public partial class TcpConfig : CommunicationConfig, IHeartBeat, IReconnect
     {
+        public HeartBeatConfig HeartBeatConfig { get; private set; } = new();
+
+        public ReconnectConfig ReconnectConfig { get; private set; } = new();
+
         [ObservableProperty]
         [Required(ErrorMessage = "IP地址不能为空")]
         [RegularExpression(@"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
@@ -23,9 +29,6 @@ namespace DataReceiver.Models.Config
 
         [ObservableProperty]
         private bool enableNagle = true;
-
-        [ObservableProperty]
-        public HeartBeatConfig heartBeatConfig = new();
 
         /// <summary>
         /// KeepAlive时间（毫秒）

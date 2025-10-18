@@ -11,35 +11,33 @@ namespace DataReceiver.ViewModels.Communication
     {
         private TcpClientModel Model { get; set; }
 
-        public TcpConfig Config { get; }
+        public TcpConfig Config => Model.Config;
 
-        public TcpViewModel(TcpClientModel m) : base(m.Runtimes)
+        public TcpViewModel(TcpClientModel model) : base(model.Runtimes)
         {
-            Model = m;
+            Model = model;
             Title = "TCP Client" + count;
-            Config = Model.Config;
+            //Config = Model.Config;
             
             base.Subscribe(Model);
-
-            decorator = new DecoratorBase(Model);
+            Decorator = new DecoratorBase(Model);
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
-            if (Config.EnableReconnect)
-                decorator = new ReconnectDecorator(Model, Config.ReconnectDelay);
+            Decorator = DecoratorFactory.CreateDecorator(
+                Model,
+                Config.ReconnectConfig.Enable, 
+                Config.HeartBeatConfig.Enable);
 
-            //if (Config.HeartBeatConfig.Enable)
-            //decorator = new HeartBeatDecorator(modelm, Config.HeartBeatConfig.HeartbeatInterval);
-
-            await decorator.ConnectAsync();
+            await Decorator.ConnectAsync();
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         public override async Task DisconnectAsync()
         {
-            await decorator.DisconnectAsync();
+            await Decorator.DisconnectAsync();
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
@@ -47,7 +45,7 @@ namespace DataReceiver.ViewModels.Communication
         {
             //Encoding test = Encoding.UTF8;
             var data = Encoding.UTF8.GetBytes(Config.SendMessage);
-            return decorator.SendAsync(data);
+            return Decorator.SendAsync(data);
         }
 
         public override void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -38,23 +38,36 @@
 
         <!--bottom bar-->
         <Grid Grid.Row="1">
-            <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Width="auto">
-                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                    <Path Data="{StaticResource home_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
-                </hc:Badge>
 
-                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                    <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
-                </hc:Badge>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                    <Path Data="{StaticResource socket_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
-                </hc:Badge>
+            <Grid Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="Connected!" Margin="10,0,0,0" />
+            </Grid>
 
-                <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                    <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
-                </hc:Badge>
-            </StackPanel>
+            <Grid Grid.Column="1">
+                <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Width="auto">
+                    <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                        <Path Data="{StaticResource home_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                    </hc:Badge>
+
+                    <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                        <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                    </hc:Badge>
+
+                    <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                        <Path Data="{StaticResource socket_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                    </hc:Badge>
+
+                    <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
+                        <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                    </hc:Badge>
+                </StackPanel>
+            </Grid>
+
         </Grid>
     </Grid>
 </Window>

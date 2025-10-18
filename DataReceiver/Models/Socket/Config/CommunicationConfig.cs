@@ -1,23 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Security.Permissions;
-using System.Text;
 
 namespace DataReceiver.Models.Config
 {
-    public  abstract partial class CommunicationConfig : ObservableValidator
+    public abstract partial class CommunicationConfig : ObservableValidator
     {
-        /// <summary>
-        /// 是否开启断线重连
-        /// </summary>
-        [ObservableProperty]
-        private bool enableReconnect = true;
-
-        /// <summary>
-        /// 重连间隔时间，Unit：ms
-        /// </summary>
-        [ObservableProperty]
-        private int reconnectDelay = 10000;
-
         /// <summary>
         /// 连接超时时间，Unit：ms
         /// </summary>
@@ -27,8 +13,8 @@ namespace DataReceiver.Models.Config
         ///// <summary>
         ///// 最后活跃时间
         ///// </summary>
-        //[ObservableProperty]
-        //private DateTime lastActivityTime = DateTime.MinValue;
+        [ObservableProperty]
+        private DateTime lastActivityTime = DateTime.MinValue;
 
         [ObservableProperty]
         private string encoding = "utf-8";

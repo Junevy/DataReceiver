@@ -4,17 +4,15 @@ using DataReceiver.Models.Socket.Base;
 using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
+using System.Text;
 
 namespace DataReceiver.Models.Socket
 {
-    public class TcpClientModel : ConnectionBase<TcpClient, TcpConfig>
+    public class TcpClientModel (TcpConfig config) : ConnectionBase<TcpClient, TcpConfig>(config)
     {
         private Stream? Stream { get; set; }
-
-        public TcpClientModel(TcpConfig config) : base(config)
-        {
-            Socket = new TcpClient();
-        }
+        private byte[] HeartBeatRequest => Encoding.UTF8.GetBytes(Config.HeartBeatConfig.Request);
+        
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
@@ -51,8 +49,7 @@ namespace DataReceiver.Models.Socket
                     Cts = new();
 
                 //启动消息接收
-
-                receiveTask = Task.Run(() => { ReceiveAsync(Cts.Token); });
+                receiveTask = Task.Run(() => { _ = ReceiveAsync(Cts.Token); });
 
                 //receiveTask = ReceiveAsync(Cts.Token).ContinueWith(t =>
                 //{
@@ -141,6 +138,12 @@ namespace DataReceiver.Models.Socket
                     //Array.Copy(buffer, 0, data, 0, bytesRead);
 
                     Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
+                    if (HeartBeatRequest.Equals(buffer))
+                    {
+                        Runtimes.LastHeartBeatTime = DateTime.Now;
+                        continue;
+                    }
+
                     OnDataReceived(buffer, "Data received.");
                 }
                 return -1;
