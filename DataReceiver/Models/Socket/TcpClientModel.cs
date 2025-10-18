@@ -20,7 +20,7 @@ namespace DataReceiver.Models.Socket
         {
             if (Runtimes.State is ConnectionState.Connecting)
                 return Runtimes.State;
-            if (Runtimes.State is ConnectionState.Connected) 
+            if (Runtimes.State is ConnectionState.Connected)
                 await DisconnectAsync();
 
             //初始化
@@ -73,7 +73,7 @@ namespace DataReceiver.Models.Socket
         {
             CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
-            Dispose();
+            //Dispose();
         }
 
         public override async Task<int> SendAsync(byte[] data, CancellationToken ct = default)
@@ -170,7 +170,7 @@ namespace DataReceiver.Models.Socket
         private void ConfigSocket()
         {
 
-            try {  } catch { return; }
+            try { } catch { return; }
             try
             {
                 if (Config is null) throw new ArgumentNullException("Config is null!");
@@ -222,7 +222,7 @@ namespace DataReceiver.Models.Socket
 
         public override void Dispose()
         {
-            //GC.Collect();
+            DisconnectAsync().GetAwaiter().GetResult();
             base.Dispose();
         }
     }

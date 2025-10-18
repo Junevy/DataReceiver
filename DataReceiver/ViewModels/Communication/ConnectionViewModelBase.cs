@@ -26,6 +26,9 @@ namespace DataReceiver.ViewModels.Communication
         protected static int GetNextId() => Interlocked.Increment(ref count);
         private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
 
+        /// <summary>
+        /// Tabcontrol item的Header
+        /// </summary>
         [ObservableProperty]
         public string title = string.Empty;
 
@@ -33,7 +36,6 @@ namespace DataReceiver.ViewModels.Communication
         /// Socket的运行状态
         /// </summary>
         public ConnectionRuntimes Runtimes { get; }
-
         /// <summary>
         /// 接收Socket数据的列表，用于Binding到UI
         /// </summary>

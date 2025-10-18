@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Models.Socket;
 using DataReceiver.ViewModels.Base;
 using HandyControl.Controls;
 using HandyControl.Data;
@@ -56,6 +57,8 @@ namespace DataReceiver.ViewModels.Communication
         public void Closing(object? value)
         {
             var tab = (value as CancelRoutedEventArgs)?.OriginalSource as ConnectionViewModelBase;
+            //if (tab is TcpViewModel tempModel || tab is FtpViewModel tempModel) tempModel.Dispose();
+            tab?.Dispose();
             VMList.Remove(tab!);
         }
 

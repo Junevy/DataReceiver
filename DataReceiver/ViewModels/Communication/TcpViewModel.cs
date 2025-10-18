@@ -3,31 +3,32 @@ using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
 using DataReceiver.Services.Decorator;
 using System.ComponentModel;
-using System.Reactive.Concurrency;
 using System.Text;
 
 namespace DataReceiver.ViewModels.Communication
 {
     public partial class TcpViewModel : ConnectionViewModelBase
     {
-        private TcpClientModel model { get; set; }
+        private TcpClientModel Model { get; set; }
+
         public TcpConfig Config { get; }
 
         public TcpViewModel(TcpClientModel m) : base(m.Runtimes)
         {
-            model = m;
+            Model = m;
             Title = "TCP Client" + count;
-            Config = model.Config;
-            base.Subscribe(model);
+            Config = Model.Config;
+            
+            base.Subscribe(Model);
 
-            decorator = new DecoratorBase(model);
+            decorator = new DecoratorBase(Model);
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
             if (Config.EnableReconnect)
-                decorator = new ReconnectDecorator(model, Config.ReconnectDelay);
+                decorator = new ReconnectDecorator(Model, Config.ReconnectDelay);
 
             //if (Config.HeartBeatConfig.Enable)
             //decorator = new HeartBeatDecorator(modelm, Config.HeartBeatConfig.HeartbeatInterval);
@@ -68,6 +69,7 @@ namespace DataReceiver.ViewModels.Communication
         public override void Dispose()
         {
             //Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
+            Model.Dispose();
             base.Dispose();
         }
     }
