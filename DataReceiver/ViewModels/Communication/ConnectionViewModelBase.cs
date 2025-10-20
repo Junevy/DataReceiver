@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Common;
 using DataReceiver.Models.Socket.Base;
+using DataReceiver.Models.Socket.Common;
 using DataReceiver.Models.Socket.Interface;
 using DataReceiver.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -33,10 +34,12 @@ namespace DataReceiver.ViewModels.Communication
         public string title = string.Empty;
 
         protected IConnection Decorator { get; set; }
+
         /// <summary>
         /// Socket的运行状态
         /// </summary>
         public ConnectionRuntimes Runtimes { get; }
+
         /// <summary>
         /// 接收Socket数据的列表，用于Binding到UI
         /// </summary>

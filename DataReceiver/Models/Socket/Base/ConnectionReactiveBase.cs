@@ -1,5 +1,5 @@
 ﻿using DataReceiver.Models.Common;
-using DataReceiver.Models.CommunicationCommon;
+using DataReceiver.Models.Socket.Common;
 using DataReceiver.Models.Socket.Interface;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -18,8 +18,6 @@ namespace DataReceiver.Models.Socket.Base
             = new(new StateEventArgs(ConnectionState.Disconnected, ConnectionState.Disconnected, "未连接"));
         public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
         public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
-
-
 
         /// <summary>
         /// 订阅Subject的信息流，唯一控制State的方法

@@ -1,7 +1,11 @@
 ﻿using DataReceiver.Models.Common;
+using DataReceiver.Models.Socket.Common;
 
 namespace DataReceiver.Models.Socket.Interface
 {
+    /// <summary>
+    /// 所有Socket的基类
+    /// </summary>
     public interface IConnection : IDisposable
     {
         CancellationTokenSource Cts { get; }
@@ -21,8 +25,6 @@ namespace DataReceiver.Models.Socket.Interface
         /// <param name="ct">控制令牌</param>
         /// <returns> 返回实际发送的字节数，发送超时、失败、发生异常 则返回-1。</returns>
         Task<int> SendAsync(byte[] data, CancellationToken ct = default);
-
-        //Task<int> ReceiveAsync(Stream stream, CancellationToken ct = default);
 
         Task DisconnectAsync();
     }

@@ -1,18 +1,15 @@
-﻿using DataReceiver.Models.Common;
-using DataReceiver.Models.Config;
+﻿using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Base;
+using DataReceiver.Models.Socket.Common;
 using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 
 namespace DataReceiver.Models.Socket
 {
-    public class TcpClientModel (TcpConfig config) : ConnectionBase<TcpClient, TcpConfig>(config)
+    public class TcpClientModel(TcpConfig config) : ConnectionBase<TcpClient, TcpConfig>(config)
     {
         private Stream? Stream { get; set; }
-        private byte[] HeartBeatRequest => Encoding.UTF8.GetBytes(Config.HeartBeatConfig.Request);
-        
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
@@ -50,14 +47,6 @@ namespace DataReceiver.Models.Socket
 
                 //启动消息接收
                 receiveTask = Task.Run(() => { _ = ReceiveAsync(Cts.Token); });
-
-                //receiveTask = ReceiveAsync(Cts.Token).ContinueWith(t =>
-                //{
-                //    if (t.IsFaulted)
-                //    {
-                //        // Log...
-                //    }
-                //});
                 return OnStateUpdated(ConnectionState.Connected, "Connection Successful!");
             }
             catch (Exception ex)
@@ -70,7 +59,6 @@ namespace DataReceiver.Models.Socket
         {
             CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
-            //Dispose();
         }
 
         public override async Task<int> SendAsync(byte[] data, CancellationToken ct = default)
@@ -84,7 +72,6 @@ namespace DataReceiver.Models.Socket
             try
             {
                 await Stream!.WriteAsync(data, 0, data.Length, lts.Token);
-                //await Stream.FlushAsync(Cts.Token);
                 Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
                 return data.Length;
             }
@@ -96,7 +83,6 @@ namespace DataReceiver.Models.Socket
             catch (Exception e)
             {
                 // 发送时发生异常通常意味着断开了连接。
-
                 // Log...
                 DisconnectAsync().GetAwaiter().GetResult();
                 return -1;
@@ -133,17 +119,15 @@ namespace DataReceiver.Models.Socket
                         OnStateUpdated(ConnectionState.Disconnected, $"Connection was disconnected: [{Config.Ip} : {Config.Port}]");
                         break;
                     }
-                    //// Copy数据
-                    //var data = new byte[bytesRead];
-                    //Array.Copy(buffer, 0, data, 0, bytesRead);
 
                     Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
-                    if (HeartBeatRequest.Equals(buffer))
-                    {
-                        Runtimes.LastHeartBeatTime = DateTime.Now;
-                        continue;
-                    }
 
+                    // 心跳功能
+                    //if (HeartBeatRequest.Equals(buffer))
+                    //{
+                    //    Runtimes.LastHeartBeatTime = DateTime.Now;
+                    //    continue;
+                    //}
                     OnDataReceived(buffer, "Data received.");
                 }
                 return -1;
@@ -228,5 +212,6 @@ namespace DataReceiver.Models.Socket
             DisconnectAsync().GetAwaiter().GetResult();
             base.Dispose();
         }
+
     }
 }

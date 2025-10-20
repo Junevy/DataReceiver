@@ -9,7 +9,6 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              d:DataContext="{d:DesignInstance Type=vm:TcpViewModel}"
              d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:vl="clr-namespace:DataReceiver.Services.Validation"
              xmlns:cvt="clr-namespace:DataReceiver.Helper"
              FontFamily="Arial">
 
@@ -99,7 +98,7 @@
                                 FontSize="15"
                                 FontFamily="Calibri"
                                 IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                IsChecked="{Binding Config.EnableReconnect}"/>
+                                IsChecked="{Binding ReconnectConfig.IsEnable}"/>
 
                             <ToggleButton  x:Name="EnableHeartBeat"
                                 Style="{StaticResource ToggleButtonSwitch.Small}" 
@@ -108,7 +107,7 @@
                                 FontSize="15"
                                 FontFamily="Calibri"
                                 IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                IsChecked="{Binding Config.HeartBeatConfig.Enable}"/>
+                                IsChecked="{Binding HeartBeatConfig.IsEnable}"/>
                         </StackPanel>
 
                         <!--心跳-->
@@ -118,7 +117,7 @@
                                 hc:TitleElement.Title="Response HeartBeat"
                                 hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsEnabled}"
                                 FontSize="14"
-                                Text="{Binding Config.HeartBeatConfig.Response}"
+                                Text="{Binding HeartBeatConfig.Response}"
                                 IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
                                 hc:Margin="10"
                                 hc:InfoElement.ContentHeight="40"

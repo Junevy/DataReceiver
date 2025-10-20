@@ -1,4 +1,4 @@
-﻿namespace DataReceiver.Models.Common
+﻿namespace DataReceiver.Models.Socket.Common
 {
     public enum ConnectionState
     {

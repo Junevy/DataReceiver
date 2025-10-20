@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket;
-using DataReceiver.Services.Decorator;
+using DataReceiver.Models.Socket.Config;
+using DataReceiver.Models.Socket.Interface;
+using DataReceiver.Services.Extentions;
+using DataReceiver.Services.Factory;
 using System.ComponentModel;
 using System.Text;
 
@@ -10,28 +13,34 @@ namespace DataReceiver.ViewModels.Communication
     public partial class TcpViewModel : ConnectionViewModelBase
     {
         private TcpClientModel Model { get; set; }
-
         public TcpConfig Config => Model.Config;
+        public ReconnectConfig ReconnectConfig { get; }
+        public HeartBeatConfig HeartBeatConfig { get; }
 
-        public TcpViewModel(TcpClientModel model) : base(model.Runtimes)
+        public TcpViewModel(TcpClientModel model,
+                            ReconnectConfig reconnectConfig,
+                            HeartBeatConfig heartBeatConfig)
+                            : base(model.Runtimes)
         {
             Model = model;
-            Title = "TCP Client" + count;
-            //Config = Model.Config;
-            
+            ReconnectConfig = reconnectConfig;
+            HeartBeatConfig = heartBeatConfig;
+            Title = "TCP Client" + GetNextId();
             base.Subscribe(Model);
-            Decorator = new DecoratorBase(Model);
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
-            Decorator = DecoratorFactory.CreateDecorator(
-                Model,
-                Config.ReconnectConfig.Enable, 
-                Config.HeartBeatConfig.Enable);
 
-            await Decorator.ConnectAsync();
+            IConnection decorator = DecoratorFactory.CreateReconncetDecorator(Model, ReconnectConfig);
+            decorator = DecoratorFactory.CreateHeartBeatDecorator(decorator, HeartBeatConfig);
+
+            var test = decorator.Describe();
+            Console.WriteLine(test);
+
+            //await decorator.ConnectAsync();
+            //await decorator.TryStartHeartBeat();
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
@@ -66,9 +75,28 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public override void Dispose()
         {
-            //Runtimes.PropertyChanged -= OnRuntimesPropertyChanged;
             Model.Dispose();
             base.Dispose();
+        }
+
+        public Task StartReconnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopReconnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task StartHeartBeatAsync(byte[] response)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopHeartBeat()
+        {
+            throw new NotImplementedException();
         }
     }
 }

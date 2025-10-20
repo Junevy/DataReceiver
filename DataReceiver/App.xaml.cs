@@ -1,4 +1,6 @@
-﻿using DataReceiver.Models.Socket;
+﻿using DataReceiver.Models.Config;
+using DataReceiver.Models.Socket;
+using DataReceiver.Models.Socket.Config;
 using DataReceiver.ViewModels;
 using DataReceiver.ViewModels.Communication;
 using DataReceiver.ViewModels.Data;
@@ -43,6 +45,8 @@ namespace DataReceiver
 
             container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
 
+            container.AddTransient<ReconnectConfig>();
+            container.AddTransient<HeartBeatConfig>();
 
 
             Services = container.BuildServiceProvider()!;

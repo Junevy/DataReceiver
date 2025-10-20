@@ -8,7 +8,7 @@ namespace DataReceiver.Models.Socket.Config
         /// 是否开启断线重连
         /// </summary>
         [ObservableProperty]
-        private bool enable = true;
+        private bool isEnable = true;
 
         /// <summary>
         /// 重连间隔时间，Unit：ms

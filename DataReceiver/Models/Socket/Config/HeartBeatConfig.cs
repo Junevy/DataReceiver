@@ -6,7 +6,7 @@ namespace DataReceiver.Models.Config
     public partial class HeartBeatConfig : ObservableValidator
     {
         [ObservableProperty]
-        public bool enable = true;
+        public bool isEnable = true;
 
         /// <summary>
         /// 响应的心跳内容

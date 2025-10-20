@@ -2,11 +2,13 @@
 
 namespace DataReceiver.Models.Socket.Base
 {
-    public abstract class ConnectionBase<TSocket, KConfig>(KConfig config)
-        : ConnectionReactiveBase where TSocket : IDisposable where KConfig : CommunicationConfig
+    public abstract class ConnectionBase<TSocket, KConfig>(KConfig config) :
+        ConnectionReactiveBase
+        where TSocket : IDisposable where KConfig : CommunicationConfig
     {
         protected Task? receiveTask;
         protected readonly SemaphoreSlim sendLock = new(1, 1);
+        //public CancellationTokenSource Cts { get; protected set; } = new();
 
         /// <summary>
         /// Socket对象
@@ -35,9 +37,7 @@ namespace DataReceiver.Models.Socket.Base
             catch { }
 
             try { Socket?.Dispose(); } catch { }
-
             try { GC.SuppressFinalize(this); } catch { }
-
             base.Dispose();
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace DataReceiver.Models.CommunicationCommon
+﻿namespace DataReceiver.Models.Socket.Common
 {
     /// <summary>
     /// 新数据事件参数
