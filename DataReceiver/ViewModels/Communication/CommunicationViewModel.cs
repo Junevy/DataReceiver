@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DataReceiver.Models.Socket;
 using DataReceiver.ViewModels.Base;
 using HandyControl.Controls;
 using HandyControl.Data;
@@ -8,6 +7,9 @@ using System.Collections.ObjectModel;
 
 namespace DataReceiver.ViewModels.Communication
 {
+    /// <summary>
+    /// Communication 页面的 viewModel
+    /// </summary>
     public partial class CommunicationViewModel : ViewModelBase
     {
         /// <summary>
@@ -19,7 +21,6 @@ namespace DataReceiver.ViewModels.Communication
         public string currentItem = string.Empty;
         // 限制最大的Tab数量为2
         private bool CanAdd => VMList.Count < 2;
-        //private bool CanExecute => !Config.Reconnecting;
 
         [RelayCommand]
         public void GetCurrentItem(object? value)
@@ -53,13 +54,18 @@ namespace DataReceiver.ViewModels.Communication
             AddSubPageCommand.NotifyCanExecuteChanged();
         }
 
+        /// <summary>
+        /// 释放对应 ViewModel的资源
+        /// </summary>
+        /// <param name="value"> 对应的viewModel </param>
         [RelayCommand]
         public void Closing(object? value)
         {
-            var tab = (value as CancelRoutedEventArgs)?.OriginalSource as ConnectionViewModelBase;
-            //if (tab is TcpViewModel tempModel || tab is FtpViewModel tempModel) tempModel.Dispose();
-            tab?.Dispose();
-            VMList.Remove(tab!);
+            if (value is CancelRoutedEventArgs re && re.OriginalSource is ConnectionViewModelBase vm)
+            {
+                VMList.Remove(vm);
+                vm.Dispose();
+            }
         }
 
         public override void Dispose()

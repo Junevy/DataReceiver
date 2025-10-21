@@ -3,13 +3,12 @@
 namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ConnectionBase<TSocket, KConfig>(KConfig config) :
-        ConnectionReactiveBase
+        ReactiveConnectionBase
         where TSocket : IDisposable where KConfig : CommunicationConfig
     {
         protected Task? receiveTask;
         protected readonly SemaphoreSlim sendLock = new(1, 1);
-        //public CancellationTokenSource Cts { get; protected set; } = new();
-
+        public CancellationTokenSource Cts { get; protected set; } = new();
         /// <summary>
         /// Socket对象
         /// </summary>

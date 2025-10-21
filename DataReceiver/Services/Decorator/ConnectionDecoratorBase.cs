@@ -4,11 +4,11 @@ using DataReceiver.Models.Socket.Interface;
 
 namespace DataReceiver.Services.Decorator
 {
-    public class DecoratorBase(IConnection _inner) : IConnection
+    public class ConnectionDecoratorBase(IReactiveConnection _inner) : IReactiveConnection
     {
-        protected readonly IConnection inner = _inner;
-        public IConnection Inner => inner;
-        public CancellationTokenSource Cts => inner.Cts;
+        protected readonly IReactiveConnection inner = _inner;
+        public IReactiveConnection Inner => inner;
+        //public CancellationTokenSource Cts => inner.Cts;
         public ConnectionRuntimes Runtimes => inner.Runtimes;
 
         public virtual async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
@@ -20,5 +20,11 @@ namespace DataReceiver.Services.Decorator
             => await inner.SendAsync(data);
 
         public virtual void Dispose() => inner.Dispose();
+
+        public ConnectionState OnStateUpdated(ConnectionState state, string message = "")
+            => inner.OnStateUpdated(state, message);
+
+        public int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
+            => inner.OnDataReceived(data, message);
     }
 }

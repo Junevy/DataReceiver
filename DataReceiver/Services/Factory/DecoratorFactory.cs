@@ -7,17 +7,17 @@ namespace DataReceiver.Services.Factory
 {
     public static class DecoratorFactory
     {
-        public static IConnection CreateReconncetDecorator(IConnection conn, ReconnectConfig config)
+        public static IReactiveConnection CreateReconncetDecorator(IReactiveConnection conn, ReconnectConfig config)
         {
-            IConnection connection = conn;
+            IReactiveConnection connection = conn;
             if (config.IsEnable)
                 connection = new ReconnectDecorator(connection, config);
             return connection;
         }
 
-        public static IConnection CreateHeartBeatDecorator(IConnection conn, HeartBeatConfig config)
+        public static IReactiveConnection CreateHeartBeatDecorator(IReactiveConnection conn, HeartBeatConfig config)
         {
-            IConnection connection = conn;
+            IReactiveConnection connection = conn;
             if (config.IsEnable)
                 connection = new HeartBeatDecorator(connection, config);
             return connection;

@@ -24,16 +24,12 @@ namespace DataReceiver.Models.Config
         /// </summary>
         public int BufferSize { get; set; } = 1024;
 
-        [ObservableProperty]
-        private string sendMessage = string.Empty;
+        //[ObservableProperty]
+        //private string sendMessage = string.Empty;
 
         [ObservableProperty]
         private int sendTimeOut = 2000;
 
-        //protected CommunicationConfig()
-        //{
-        //    //OnPropertyChanged();
-        //}
 
         ///// <summary>
         ///// 重连策略配置

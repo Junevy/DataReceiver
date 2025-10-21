@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Common;
+using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
-using DataReceiver.Models.Socket.Interface;
 using DataReceiver.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,27 +13,28 @@ using System.Reactive.Linq;
 namespace DataReceiver.ViewModels.Communication
 {
     /// <summary>
-    /// 所有Socket的基类，用于TabControl的Item绑定
+    /// 所有Socket的基类，自动 Binding 至 tabitem 的 DataContext
     /// </summary>
     public abstract partial class ConnectionViewModelBase : ViewModelBase
     {
-        protected static int count = 1;
+        private readonly Object stateLock = new();
+        private static int count = 1;
         /// <summary>
         /// Tab item 的 title自增序号
         /// </summary>
         /// <returns> 自增的序号 </returns>
         protected static int GetNextId() => Interlocked.Increment(ref count);
 
-        private const int MAXCOLLECTIONSIZE = 200;
         private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
 
         /// <summary>
         /// Tabcontrol item的Header
         /// </summary>
         [ObservableProperty]
-        public string title = string.Empty;
+        private string title = string.Empty;
 
-        protected IConnection Decorator { get; set; }
+        [ObservableProperty]
+        private string sendMessage = string.Empty;
 
         /// <summary>
         /// Socket的运行状态
@@ -41,14 +42,20 @@ namespace DataReceiver.ViewModels.Communication
         public ConnectionRuntimes Runtimes { get; }
 
         /// <summary>
+        /// 最大消息的条数
+        /// </summary>
+        private const int MAXCOLLECTIONSIZE = 200;
+
+        /// <summary>
         /// 接收Socket数据的列表，用于Binding到UI
         /// </summary>
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
         protected bool IsCanConnect => Runtimes.State == ConnectionState.Disconnected;
-        protected bool IsCanDisconnect => Runtimes.State == ConnectionState.Connected;
+        protected bool IsCanDisconnect => Runtimes.State == ConnectionState.Connected
+                                       || Runtimes.State == ConnectionState.Connecting;
 
-        protected ConnectionViewModelBase(ConnectionRuntimes runtimes)
+        public ConnectionViewModelBase(ConnectionRuntimes runtimes)
         {
             Title = title ?? "Page" + GetNextId();
             Runtimes = runtimes;
@@ -56,12 +63,14 @@ namespace DataReceiver.ViewModels.Communication
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
 
-        public virtual void Subscribe(ConnectionReactiveBase subscriber)
+        public virtual void Subscribe(ReactiveConnectionBase subscriber)
         {
-            // 无法执行回调方法，线程问题？并不是线程问题
             subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
+                    //if (data.Equals("Ping"))
+
+
                     if (ReceivedDataCollection.Count > MAXCOLLECTIONSIZE)
                         ReceivedDataCollection.RemoveAt(0);
                     ReceivedDataCollection.Add(data.Message ?? "Empty");
@@ -71,6 +80,7 @@ namespace DataReceiver.ViewModels.Communication
                 .Subscribe(e =>
                 {
                     Runtimes.State = e.NewState;
+
                 }).DisposeWith(disposables);
         }
 
@@ -80,13 +90,9 @@ namespace DataReceiver.ViewModels.Communication
         /// <param name="sender">发送者</param>
         /// <param name="e" ref="ConnectionRuntimes"> ConnectionRuntimes </param>
         public abstract void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e);
-
         public abstract Task ConnectAsync();
-
         public abstract Task SendAsync();
-
         public abstract Task DisconnectAsync();
-
         public override void Dispose()
         {
             disposables.Dispose();

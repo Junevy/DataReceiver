@@ -8,7 +8,7 @@ namespace DataReceiver.Models.Socket.Interface
     /// </summary>
     public interface IConnection : IDisposable
     {
-        CancellationTokenSource Cts { get; }
+        //CancellationTokenSource Cts { get; }
         ConnectionRuntimes Runtimes { get; }
 
         /// <summary>

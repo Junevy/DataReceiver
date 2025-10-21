@@ -12,6 +12,7 @@ namespace DataReceiver.ViewModels.Communication
 {
     public partial class TcpViewModel : ConnectionViewModelBase
     {
+        private IReactiveConnection Decorator { get; set; }
         private TcpClientModel Model { get; set; }
         public TcpConfig Config => Model.Config;
         public ReconnectConfig ReconnectConfig { get; }
@@ -23,6 +24,7 @@ namespace DataReceiver.ViewModels.Communication
                             : base(model.Runtimes)
         {
             Model = model;
+            Decorator = model;
             ReconnectConfig = reconnectConfig;
             HeartBeatConfig = heartBeatConfig;
             Title = "TCP Client" + GetNextId();
@@ -32,15 +34,15 @@ namespace DataReceiver.ViewModels.Communication
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
         {
+            Decorator = DecoratorFactory.CreateReconncetDecorator(Model, ReconnectConfig);
+            Decorator = DecoratorFactory.CreateHeartBeatDecorator(Decorator, HeartBeatConfig);
 
-            IConnection decorator = DecoratorFactory.CreateReconncetDecorator(Model, ReconnectConfig);
-            decorator = DecoratorFactory.CreateHeartBeatDecorator(decorator, HeartBeatConfig);
+            await Decorator.ConnectAsync();
+            var response = Encoding.UTF8.GetBytes(HeartBeatConfig.Response);
+            _ = Decorator.TryReconnect();
+            _ = Decorator.TryStartHeartBeat(response);
 
-            var test = decorator.Describe();
-            Console.WriteLine(test);
-
-            //await decorator.ConnectAsync();
-            //await decorator.TryStartHeartBeat();
+            Title = $"[{Config.Ip} : {Config.Port}]";
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
@@ -50,13 +52,17 @@ namespace DataReceiver.ViewModels.Communication
         }
 
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
-        public override Task SendAsync()
+        public override async Task SendAsync()
         {
-            //Encoding test = Encoding.UTF8;
-            var data = Encoding.UTF8.GetBytes(Config.SendMessage);
-            return Decorator.SendAsync(data);
+            var data = Encoding.UTF8.GetBytes(SendMessage);
+            await Decorator.SendAsync(data);
         }
 
+        /// <summary>
+        /// 当Runtimes 参数发生变化时，通知命令更新其状态
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public override void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Runtimes.State))
@@ -75,28 +81,8 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         public override void Dispose()
         {
-            Model.Dispose();
+            Decorator.Dispose();
             base.Dispose();
-        }
-
-        public Task StartReconnectAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StopReconnect()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task StartHeartBeatAsync(byte[] response)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StopHeartBeat()
-        {
-            throw new NotImplementedException();
         }
     }
 }

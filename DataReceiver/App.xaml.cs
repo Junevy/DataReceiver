@@ -22,10 +22,14 @@ namespace DataReceiver
         public static new App Current => (App)Application.Current;
         public IServiceProvider Services;
 
+        /// <summary>
+        /// 注册容器
+        /// </summary>
         private void BuildServices()
         {
             var container = new ServiceCollection();
 
+            // View
             container.AddSingleton<Frame>(_
                 => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
             container.AddSingleton<MainView>();
@@ -35,6 +39,7 @@ namespace DataReceiver
             container.AddTransient<TcpView>();
             container.AddTransient<FtpView>();
 
+            // ViewModel
             container.AddTransient<MainViewModel>();
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
@@ -43,11 +48,12 @@ namespace DataReceiver
             container.AddTransient<FtpViewModel>();
             container.AddTransient<NavigationService>();
 
+            // Model
             container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
 
+            // Config
             container.AddTransient<ReconnectConfig>();
             container.AddTransient<HeartBeatConfig>();
-
 
             Services = container.BuildServiceProvider()!;
         }

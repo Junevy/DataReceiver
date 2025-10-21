@@ -4,59 +4,56 @@ using DataReceiver.Models.Socket.Interface;
 
 namespace DataReceiver.Services.Decorator
 {
-    public class ReconnectDecorator(IConnection inner, ReconnectConfig config) 
-        : DecoratorBase(inner), IReconnectCapable
+    public class ReconnectDecorator(IReactiveConnection inner, ReconnectConfig config) 
+        : ConnectionDecoratorBase(inner), IReconnectCapable
     {
-        protected Timer? timer;
         public ReconnectConfig ReconnectConfig { get; } = config;
-        public CancellationTokenSource ReconncetToken
-            => CancellationTokenSource.CreateLinkedTokenSource(Cts.Token);
-
-        public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
-        {
-            //if (interval == -1) return;
-
-            var result = await inner.ConnectAsync();
-
-            //if (reconnectConfig?.IsEnable == true && reconnectConfig?.Delay > 0)
-            //{
-            //    Runtimes.Reconnecting = true;
-            //    timer = new Timer(StartReconnect, Cts.Token, 6000, reconnectConfig.Delay);
-            //}
-            //ReconnectDecorator 使用
-            //System.Threading.Timer + async void（TimerCallback 不支持 async / await），
-            //可能出现并发重入、多次并行 Connect、异常丢失。
-            //timer = new Timer((e) =>
-            //{
-            //    if (result != ConnectionState.Connected && Runtimes.Reconnecting)
-            //        inner.ConnectAsync();
-            //}, Cts.Token, 6000, interval); 
-            return result;
-        }
-
-        public void StartReconnect(object? state)
-        {
-
-            if (Runtimes.State != ConnectionState.Connected && !Runtimes.Reconnecting)
-                inner.ConnectAsync();
-        }
+        public CancellationTokenSource ReconnectTokenSource { get; private set; } = new();
 
         public override async Task DisconnectAsync()
         {
-            Runtimes.Reconnecting = false;
-            timer?.Dispose();
+            StopReconnect();
             _ = base.DisconnectAsync();
         }
 
-        public Task StartReconnectAsync()
+        public async Task StartReconnectAsync()
         {
-            //inner
-            throw new NotImplementedException();
+            if (ReconnectConfig.Delay <= 0 || Runtimes.Reconnecting) return;
+            if (ReconnectTokenSource == null || ReconnectTokenSource.IsCancellationRequested) 
+                ReconnectTokenSource = new();
+            Runtimes.Reconnecting = true;
+
+            while (!ReconnectTokenSource.IsCancellationRequested)
+            {
+                try
+                {
+                    await Task.Delay(ReconnectConfig.Delay, ReconnectTokenSource.Token);
+                    if (Runtimes.State != ConnectionState.Connected)
+                        await Inner.ConnectAsync();
+                }
+                catch (OperationCanceledException)
+                {
+                    // Log...
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
-        public void StopReconnect()
+        public void StopReconnect() 
+        { 
+            Runtimes.Reconnecting = false; 
+            ReconnectTokenSource?.Cancel(); 
+        }
+
+        public override void Dispose()
         {
-            throw new NotImplementedException();
+            ReconnectTokenSource?.Cancel();
+            ReconnectTokenSource?.Dispose();
+            base.Dispose();
         }
     }
 }

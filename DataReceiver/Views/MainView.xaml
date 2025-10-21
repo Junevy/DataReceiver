@@ -11,6 +11,10 @@
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         Title="MainView" Height="650" Width="1200">
 
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}"/>
@@ -19,11 +23,65 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition MaxHeight="30"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Background="Transparent">
+            <Border Background="#F5F5F5" BorderThickness="1,1,1,0" BorderBrush="#DCDCDC" CornerRadius="5,5,0,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--function button-->
+                    <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <Ellipse Width="18" Height="18" Fill="Orange" Margin="0,0,15,0">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Ellipse>
+                        </Grid>
+
+                        <Grid Grid.Column="1">
+                            <Ellipse Width="18" Height="18" Fill="Green" Margin="0,0,15,0"/>
+                        </Grid>
+
+                        <Grid Grid.Column="2">
+                            <Ellipse Width="18" Height="18" Fill="PaleVioletRed" Margin="0,0,15,0"/>
+                        </Grid>
+
+                    </Grid>
+
+                    <!--icon-->
+                    <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="17,0,10,0" VerticalAlignment="Center" >
+                            <Path Data="{StaticResource appIcon_geom}" 
+                                  Stroke="#696969" 
+                                  Stretch="Uniform" Fill="#696969" 
+                                  Width="17" 
+                                  Height="17"/>
+                            <TextBlock Text="This is a title" Margin="10,0,10,0" FontSize="14" FontWeight="Medium" FontFamily="Calibri"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -37,7 +95,7 @@
         </Grid>
 
         <!--bottom bar-->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>

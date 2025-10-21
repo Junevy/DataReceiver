@@ -39,7 +39,7 @@
 
             <!--侧边栏-->
             <hc:TransitioningContentControl Grid.Row="0">
-                <hc:SideMenu BorderThickness="1" Width="120"
+                <hc:SideMenu Width="120"
                              ExpandMode="ShowAll" AutoSelect="True">
                     <hc:Interaction.Triggers>
                         <hc:EventTrigger EventName="SelectionChanged">
@@ -96,9 +96,10 @@
         <Grid Grid.Column="1" >
             <hc:TransitioningContentControl>
                 <Border BorderThickness="1" BorderBrush="LightGray">
-                    <hc:TabControl ItemsSource="{Binding VMList}" 
+                    <hc:TabControl ItemsSource="{Binding VMList}"  TabItemWidth="180"
                                     IsAnimationEnabled="True"
                                    ShowCloseButton="True" 
+                                   
                                    IsDraggable="True" >
                         <hc:TabControl.ItemTemplate>
                             <DataTemplate>

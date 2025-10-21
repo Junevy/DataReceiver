@@ -22,9 +22,11 @@ namespace DataReceiver.Models.Socket
             CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Connecting, "Connecting...");
             Socket = new();
+            if (Cts == null || Cts.IsCancellationRequested)
+                Cts = new();
             ConfigSocket();
 
-            var timeoutTask = Task.Delay(Config.ConnectTimeout);
+            var timeoutTask = Task.Delay(Config.ConnectTimeout, Cts.Token);
             try
             {
                 //连接
@@ -42,12 +44,15 @@ namespace DataReceiver.Models.Socket
                 //配置Socket
                 if (Config.EnableKeepAlive)
                     KeepSocketAlive();
-                if (Cts == null || Cts.IsCancellationRequested)
-                    Cts = new();
 
                 //启动消息接收
                 receiveTask = Task.Run(() => { _ = ReceiveAsync(Cts.Token); });
                 return OnStateUpdated(ConnectionState.Connected, "Connection Successful!");
+            }
+            catch (OperationCanceledException)
+            {
+                // Log..
+                return OnStateUpdated(ConnectionState.Disconnected, "ConnectTask Cancelled");
             }
             catch (Exception ex)
             {
@@ -121,13 +126,6 @@ namespace DataReceiver.Models.Socket
                     }
 
                     Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
-
-                    // 心跳功能
-                    //if (HeartBeatRequest.Equals(buffer))
-                    //{
-                    //    Runtimes.LastHeartBeatTime = DateTime.Now;
-                    //    continue;
-                    //}
                     OnDataReceived(buffer, "Data received.");
                 }
                 return -1;
@@ -135,11 +133,10 @@ namespace DataReceiver.Models.Socket
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer);
-
                 // 判断是否是手动取消，避免重复操作。
-                if (Cts != null && !Cts.IsCancellationRequested)
-                    //同步执行，finally中使用异步操作不合理，甚至可能卡死ui。
-                    DisconnectAsync().GetAwaiter().GetResult();
+                //if (Cts != null || !Cts.IsCancellationRequested)
+                //同步执行，finally中使用异步操作不合理，甚至可能卡死ui。
+                DisconnectAsync().GetAwaiter().GetResult();
             }
         }
 
@@ -175,15 +172,12 @@ namespace DataReceiver.Models.Socket
 
         private void CleanConnectionAsync()
         {
-
             try
             {
-                // 自动重连中则不取消任务
                 if (Cts is not null && !Cts.IsCancellationRequested)
                 {
                     Cts.Cancel();
                     Cts.Dispose();
-                    Cts = null;
                 }
             }
             catch { }
@@ -204,7 +198,6 @@ namespace DataReceiver.Models.Socket
             try { Stream?.Dispose(); } catch { }
             try { Socket?.Close(); } catch { }
             try { Socket?.Dispose(); } catch { }
-            Socket = null;
         }
 
         public override void Dispose()
@@ -212,6 +205,5 @@ namespace DataReceiver.Models.Socket
             DisconnectAsync().GetAwaiter().GetResult();
             base.Dispose();
         }
-
     }
 }

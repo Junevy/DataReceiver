@@ -7,7 +7,7 @@
 
         // false
         Connecting = 2,
-        Reconnecting = 3,
+        //Reconnecting = 3,
         Reconnected = 4,
         Disconnecting = 5,
         Error = -1,

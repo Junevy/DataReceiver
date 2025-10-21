@@ -12,8 +12,6 @@
              xmlns:cvt="clr-namespace:DataReceiver.Helper"
              FontFamily="Arial">
 
-    <!--<cvt:BoolToColorConverter x:Name="BoolToColor"/>-->
-
     <UserControl.Resources>
         <cvt:ColorConverter x:Key="NumConverter"/>
     </UserControl.Resources>
@@ -115,7 +113,7 @@
                             <hc:TextBox hc:InfoElement.ShowClearButton="True"
                                 hc:TitleElement.TitlePlacement="Top"
                                 hc:TitleElement.Title="Response HeartBeat"
-                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsEnabled}"
+                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
                                 FontSize="14"
                                 Text="{Binding HeartBeatConfig.Response}"
                                 IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
@@ -128,7 +126,7 @@
                         <!--发送-->
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <hc:TextBox Margin="10,20,20,10" Width="220"
-                                        Text="{Binding Config.SendMessage}"
+                                        Text="{Binding SendMessage}"
                                         hc:InfoElement.ShowClearButton="True"
                                         hc:InfoElement.Placeholder="Input message for send" FontSize="17"
                                         IsEnabled="{Binding ElementName=Disconnect, Path=IsEnabled}"/>
@@ -150,13 +148,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Separator Margin="0,15,0,0"/>
-
-                <ContentControl Content="Message" FontSize="27" FontWeight="Thin" FontFamily="Bell MT" Grid.Row="1" Margin="0,20,0,10"></ContentControl>
-                <!--<hc:ScrollViewer Style="{StaticResource ScrollViewerUpDown}" Grid.Row="2">-->
-                    <ListBox Grid.Row="2" MinHeight="200" HorizontalAlignment="Stretch" MinWidth="900"
-                             ItemsSource="{Binding ReceivedDataCollection}" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
-                <!--</hc:ScrollViewer>-->
+                <ListBox Grid.Row="2" MinHeight="200" HorizontalAlignment="Stretch" MinWidth="900"
+                             ItemsSource="{Binding ReceivedDataCollection}" ScrollViewer.VerticalScrollBarVisibility="Visible" />
             </Grid>
         </Grid>
     </hc:SimplePanel>

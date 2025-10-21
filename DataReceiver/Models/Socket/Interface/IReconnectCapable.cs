@@ -5,10 +5,10 @@ namespace DataReceiver.Models.Socket.Interface
     /// <summary>
     /// 重连功能接口
     /// </summary>
-    public interface IReconnectCapable : IConnection
+    public interface IReconnectCapable : IReactiveConnection
     {
-        public ReconnectConfig ReconnectConfig { get; }
-        public CancellationTokenSource ReconncetToken { get; }
+        ReconnectConfig ReconnectConfig { get; }
+        CancellationTokenSource ReconnectTokenSource { get; }
 
         Task StartReconnectAsync();
         void StopReconnect();
