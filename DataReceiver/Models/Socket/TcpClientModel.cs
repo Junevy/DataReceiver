@@ -1,6 +1,7 @@
 ﻿using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
+using log4net;
 using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
@@ -9,14 +10,22 @@ namespace DataReceiver.Models.Socket
 {
     public class TcpClientModel(TcpConfig config) : ConnectionBase<TcpClient, TcpConfig>(config)
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(TcpClientModel));
         private Stream? Stream { get; set; }
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
+            Log.Info($"[{Config.Ip}:{Config.Port}]: Starting connection task.");
             if (Runtimes.State is ConnectionState.Connecting)
+            {
+                Log.Info("Socket state is connecting. The reqeust was returned.");
                 return Runtimes.State;
+            }
             if (Runtimes.State is ConnectionState.Connected)
+            {
+                Log.Info("Socket state is connected. Waiting for close the connection.");
                 await DisconnectAsync();
+            }
 
             //初始化
             CleanConnectionAsync();
@@ -35,9 +44,11 @@ namespace DataReceiver.Models.Socket
                 if (anyTask == timeoutTask || !Socket.Connected)
                 {
                     Socket.Close();
+                    Log.Warn($" [{Config.Ip}:{Config.Port}]: Connect failed!");
                     return OnStateUpdated(ConnectionState.Disconnected, "Connect timeout or error.");
                 }
                 //连接成功
+                Log.Info($" [{Config.Ip} : {Config.Port}] Connect successful");
                 Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
                 Stream = Socket.GetStream();
 
@@ -51,25 +62,35 @@ namespace DataReceiver.Models.Socket
             }
             catch (OperationCanceledException)
             {
-                // Log..
+                Log.Error($"[{Config.Ip}:{Config.Port}]: Connection Task canceled.");
                 return OnStateUpdated(ConnectionState.Disconnected, "ConnectTask Cancelled");
             }
             catch (Exception ex)
             {
+                Log.Error($"[{Config.Ip}:{Config.Port}]: Connection task was occured an error : {ex.Message}");
                 return OnStateUpdated(ConnectionState.Disconnected, $"Connect error: {ex.Message}");
             }
         }
 
         public override async Task DisconnectAsync()
         {
+            Log.Info($"[{Config.Ip}:{Config.Port}]: Waiting for disconnect.");
             CleanConnectionAsync();
             OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
         }
 
         public override async Task<int> SendAsync(byte[] data, CancellationToken ct = default)
         {
-            if (Runtimes.State != ConnectionState.Connected) return -1;
-            if (data == null || data.Length == 0) return -1;
+            if (Runtimes.State != ConnectionState.Connected) 
+            {
+                Log.Warn($"[{Config.Ip}:{Config.Port}]: The socket was disconnected. Unable to send any data!");
+                return -1;
+            };
+            if (data == null || data.Length == 0)
+            {
+                Log.Warn($"[{Config.Ip}:{Config.Port}]: The data is null. Unable to send any data.");
+                return -1;
+            }
 
             using var lts = CancellationTokenSource.CreateLinkedTokenSource(Cts.Token);
             lts.CancelAfter(Config.SendTimeOut);
@@ -78,17 +99,18 @@ namespace DataReceiver.Models.Socket
             {
                 await Stream!.WriteAsync(data, 0, data.Length, lts.Token);
                 Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
+                Log.Info($"[{Config.Ip}:{Config.Port}]: Send successful : {data.ToArray().ToString()}");
                 return data.Length;
             }
             catch (OperationCanceledException)
             {
-                // 发送超时 Log
+                Log.Warn($"[{Config.Ip}:{Config.Port}]: Send timeout!");
                 return -1;
             }
             catch (Exception e)
             {
                 // 发送时发生异常通常意味着断开了连接。
-                // Log...
+                Log.Warn($"[{Config.Ip}:{Config.Port}]: Connection was an error: {e.Message}. Now will be disconnect.");
                 DisconnectAsync().GetAwaiter().GetResult();
                 return -1;
             }
@@ -100,6 +122,7 @@ namespace DataReceiver.Models.Socket
 
         protected async Task<int> ReceiveAsync(CancellationToken ct = default)
         {
+            Log.Info($"[{Config.Ip}:{Config.Port}]: Starting receive task.");
             var stream = Stream ?? throw new Exception("Stream is null");
             var buffer = ArrayPool<byte>.Shared.Rent(Config.BufferSize);
             int bytesRead;
@@ -114,6 +137,7 @@ namespace DataReceiver.Models.Socket
                     catch (OperationCanceledException) { break; }
                     catch (Exception e)
                     {
+                        Log.Error($"[{Config.Ip}:{Config.Port}]: Socket occured an error : {e.Message}");
                         if (Socket is not null)
                             OnStateUpdated(Runtimes.State, $"Receive data error: {e.Message} ");
                         break;
@@ -121,6 +145,7 @@ namespace DataReceiver.Models.Socket
                     //连接已关闭（被动或主动）
                     if (bytesRead == 0)
                     {
+                        Log.Warn($"[{Config.Ip}:{Config.Port}]: Socket was disconnected.");
                         OnStateUpdated(ConnectionState.Disconnected, $"Connection was disconnected: [{Config.Ip} : {Config.Port}]");
                         break;
                     }
@@ -132,6 +157,7 @@ namespace DataReceiver.Models.Socket
             }
             finally
             {
+                Log.Warn($"[{Config.Ip}:{Config.Port}]: Connection close. Now will be disconnect.");
                 ArrayPool<byte>.Shared.Return(buffer);
                 // 判断是否是手动取消，避免重复操作。
                 //if (Cts != null || !Cts.IsCancellationRequested)
@@ -142,6 +168,7 @@ namespace DataReceiver.Models.Socket
 
         private void KeepSocketAlive()
         {
+            Log.Info($"[{Config.Ip}:{Config.Port}]: Open KeepAlive.");
             //开启自动探测
             Socket?.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
             var keepAlive = new byte[12];
@@ -154,7 +181,7 @@ namespace DataReceiver.Models.Socket
         private void ConfigSocket()
         {
 
-            try { } catch { return; }
+            Log.Info("Waiting for configure the socket.");
             try
             {
                 if (Config is null) throw new ArgumentNullException("Config is null!");
@@ -166,12 +193,14 @@ namespace DataReceiver.Models.Socket
             }
             catch (Exception e)
             {
+                Log.Error($"Configure error : {e.Message}");
                 OnDataReceived(new byte[4], $"Config Socket Error: {e.Message}");
             }
         }
 
         private void CleanConnectionAsync()
         {
+            Log.Info("Waiting for clean the connection.");
             try
             {
                 if (Cts is not null && !Cts.IsCancellationRequested)
@@ -180,7 +209,7 @@ namespace DataReceiver.Models.Socket
                     Cts.Dispose();
                 }
             }
-            catch { }
+            catch (Exception e) { Log.Warn($"Clean the connection error :{e.Message} "); }
 
             //var t = Interlocked.Exchange(ref receiveTask, null);
             //if (t != null)
@@ -194,14 +223,15 @@ namespace DataReceiver.Models.Socket
             //    try { await receiveTask.ConfigureAwait(false); } catch { } finally { receiveTask = null; }
             //}
 
-            try { Stream?.Close(); } catch { }
-            try { Stream?.Dispose(); } catch { }
-            try { Socket?.Close(); } catch { }
-            try { Socket?.Dispose(); } catch { }
+            try { Stream?.Close(); } catch (Exception e) { Log.Warn($"Clean the Stream error :{e.Message} "); }
+            try { Stream?.Dispose(); } catch (Exception e) { Log.Warn($"Clean the Stream error :{e.Message} "); }
+            try { Socket?.Close(); } catch (Exception e) { Log.Warn($"Clean the Socket error :{e.Message} "); }
+            try { Socket?.Dispose(); } catch (Exception e) { Log.Warn($"Clean the Socket error :{e.Message} "); }
         }
 
         public override void Dispose()
         {
+            Log.Warn("Disposing the object.");
             DisconnectAsync().GetAwaiter().GetResult();
             base.Dispose();
         }

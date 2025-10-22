@@ -31,7 +31,7 @@ namespace DataReceiver.Models.Config
         /// </summary>
         [ObservableProperty]
         [Required(ErrorMessage = "心跳超时不能为空")]
-        public TimeSpan timeout = TimeSpan.FromSeconds(60);
+        public TimeSpan timeout = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// 失败次数达到最大时，是否禁用心跳功能

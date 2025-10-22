@@ -1,6 +1,7 @@
 ﻿using DataReceiver.Models.Common;
 using DataReceiver.Models.Socket.Common;
 using DataReceiver.Models.Socket.Interface;
+using log4net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -8,6 +9,8 @@ namespace DataReceiver.Models.Socket.Base
 {
     public abstract class ReactiveConnectionBase : IReactiveConnection
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ReactiveConnectionBase));
+
         public ConnectionRuntimes Runtimes { get; private set; } = new();
 
         // Reactive Extensions
@@ -20,12 +23,14 @@ namespace DataReceiver.Models.Socket.Base
 
         public virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
         {
+            Log.Info($"On State Changed : {state}");
             stateChanged.OnNext(new StateEventArgs(state, Runtimes.State, message));
             return state;
         }
 
         public virtual int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
         {
+            Log.Info($"On Date Received : {data}");
             dataReceived.OnNext(new DataEventArgs<byte>(data, data.Length, DateTime.Now)
             {
                 Message = message

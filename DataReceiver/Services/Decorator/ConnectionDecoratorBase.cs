@@ -1,6 +1,7 @@
 ﻿using DataReceiver.Models.Common;
 using DataReceiver.Models.Socket.Common;
 using DataReceiver.Models.Socket.Interface;
+using log4net;
 
 namespace DataReceiver.Services.Decorator
 {
@@ -8,8 +9,8 @@ namespace DataReceiver.Services.Decorator
     {
         protected readonly IReactiveConnection inner = _inner;
         public IReactiveConnection Inner => inner;
-        //public CancellationTokenSource Cts => inner.Cts;
         public ConnectionRuntimes Runtimes => inner.Runtimes;
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionDecoratorBase));
 
         public virtual async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
             => await inner.ConnectAsync();

@@ -1,14 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Common;
-using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
 using DataReceiver.ViewModels.Base;
+using log4net;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+using System.Text;
+using System.Windows.Markup;
 
 namespace DataReceiver.ViewModels.Communication
 {
@@ -17,6 +19,7 @@ namespace DataReceiver.ViewModels.Communication
     /// </summary>
     public abstract partial class ConnectionViewModelBase : ViewModelBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionViewModelBase));
         private readonly Object stateLock = new();
         private static int count = 1;
         /// <summary>
@@ -25,7 +28,7 @@ namespace DataReceiver.ViewModels.Communication
         /// <returns> 自增的序号 </returns>
         protected static int GetNextId() => Interlocked.Increment(ref count);
 
-        private readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
+        protected readonly CompositeDisposable disposables = [];  // 统一管理 Observer 订阅生命周期
 
         /// <summary>
         /// Tabcontrol item的Header
@@ -42,12 +45,12 @@ namespace DataReceiver.ViewModels.Communication
         public ConnectionRuntimes Runtimes { get; }
 
         /// <summary>
-        /// 最大消息的条数
+        /// 最多显示消息的条数
         /// </summary>
-        private const int MAXCOLLECTIONSIZE = 200;
+        protected const int MAXCOLLECTIONSIZE = 200;
 
         /// <summary>
-        /// 接收Socket数据的列表，用于Binding到UI
+        /// 存储Socket消息的列表，可Binding到UI，最多消息数量 MAXCOLLECTIONSIZE
         /// </summary>
         public ObservableCollection<string> ReceivedDataCollection { get; set; } = [];
 
@@ -63,22 +66,27 @@ namespace DataReceiver.ViewModels.Communication
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
 
-        public virtual void Subscribe(ReactiveConnectionBase subscriber)
+        public virtual void SubscribeState(ReactiveConnectionBase subscriber)
         {
             subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
-                    //if (data.Equals("Ping"))
+                    var msg = Encoding.UTF8.GetString(data.Data.Span.ToArray());
 
-
+                    Log.Info($"Date received : {msg}");
                     if (ReceivedDataCollection.Count > MAXCOLLECTIONSIZE)
                         ReceivedDataCollection.RemoveAt(0);
-                    ReceivedDataCollection.Add(data.Message ?? "Empty");
+                    ReceivedDataCollection.Add(msg ?? "Empty");
                 }).DisposeWith(disposables);
+        }
 
+        public virtual void SubscribeData(ReactiveConnectionBase subscriber)
+        {
             subscriber.StateChanged.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(e =>
                 {
+                    Log.Info($"State changed {Runtimes.State} to : {e.NewState}");
+
                     Runtimes.State = e.NewState;
 
                 }).DisposeWith(disposables);

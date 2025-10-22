@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Services.Factory;
 using DataReceiver.ViewModels.Base;
 using HandyControl.Controls;
 using HandyControl.Data;
+using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
@@ -12,6 +14,8 @@ namespace DataReceiver.ViewModels.Communication
     /// </summary>
     public partial class CommunicationViewModel : ViewModelBase
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CommunicationViewModel));
+
         /// <summary>
         /// 用于ViewModel映射View，显示在TableControl中
         /// </summary>
@@ -25,8 +29,10 @@ namespace DataReceiver.ViewModels.Communication
         [RelayCommand]
         public void GetCurrentItem(object? value)
         {
+            
             if ((value as FunctionEventArgs<object>)?.Info is not SideMenuItem item) return;
             currentItem = item.Name.ToString() ?? string.Empty;
+            Log.Info($"Current tab item is: {(currentItem)}");
         }
 
         [RelayCommand(CanExecute = nameof(CanAdd))]
@@ -49,6 +55,7 @@ namespace DataReceiver.ViewModels.Communication
                     currentItem = string.Empty;
                     return;
             }
+            Log.Info($"Current navigate to page: {(currentItem)}");
             Growl.Info($"{currentItem} added!");
             currentItem = string.Empty;
             AddSubPageCommand.NotifyCanExecuteChanged();
@@ -63,6 +70,7 @@ namespace DataReceiver.ViewModels.Communication
         {
             if (value is CancelRoutedEventArgs re && re.OriginalSource is ConnectionViewModelBase vm)
             {
+                Log.Info($"Disposing tab item: {(nameof(vm))}");
                 VMList.Remove(vm);
                 vm.Dispose();
             }

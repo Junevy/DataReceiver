@@ -1,5 +1,6 @@
 ﻿using DataReceiver.Models.Socket.Interface;
 using DataReceiver.Services.Decorator;
+using log4net;
 using System.Text;
 namespace DataReceiver.Services.Extentions
 {
@@ -8,16 +9,28 @@ namespace DataReceiver.Services.Extentions
     /// </summary>
     public static class ConnectionFeatureExtensions
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionFeatureExtensions));
+
         public static async Task TryReconnect(this IReactiveConnection connection)
         {
             var reconnectFeature = connection.As<IReconnectCapable>();
-            if (reconnectFeature != null) { await reconnectFeature.StartReconnectAsync(); }
+            if (reconnectFeature != null) 
+            {
+                Log.Info($"The IConnect is IReconnectCapable");
+                await reconnectFeature.StartReconnectAsync(); 
+            }
+            else Log.Info($"The IConnect is not IReconnectCapable");
         }
 
         public static async Task TryStartHeartBeat(this IReactiveConnection connection, byte[] response)
         {
             var heartBeatFeature = connection.As<IHeartBeatCapable>();
-            if (heartBeatFeature != null) { await heartBeatFeature.StartHeartBeatAsync(response); }
+            if (heartBeatFeature != null) 
+            {
+                Log.Info($"The IConnect is IHeartBeatCapable");
+                await heartBeatFeature.StartHeartBeatAsync(response); 
+            }
+            else Log.Info($"The IConnect is not IHeartBeatCapable");
         }
 
         /// <summary>
