@@ -11,5 +11,7 @@
 
     <Grid>
         <TextBlock Text="{Binding Message}" FontSize="40"/>
+        <Button Style="{StaticResource InputElementBaseStyle}"/>
+        <!--<Button Style="{StaticResource test}"/>-->
     </Grid>
 </Page>

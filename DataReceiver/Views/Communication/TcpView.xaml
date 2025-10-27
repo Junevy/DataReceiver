@@ -16,7 +16,7 @@
         <cvt:ColorConverter x:Key="NumConverter"/>
     </UserControl.Resources>
 
-    <hc:SimplePanel Background="White">
+    <!--<hc:SimplePanel Background="White">
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition MaxHeight="160"/>
@@ -29,10 +29,14 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <!--输入区-->
+                -->
+    <!--输入区-->
+    <!--
                 <Grid Grid.Row="0">
                     <WrapPanel Orientation="Horizontal">
-                        <!--ip-->
+                        -->
+    <!--ip-->
+    <!--
                         <hc:ComboBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.TitlePlacement="Left"
                             hc:TitleElement.Title="IP"
@@ -46,7 +50,9 @@
                             hc:Margin="5">
                         </hc:ComboBox>
 
-                        <!--端口-->
+                        -->
+    <!--端口-->
+    <!--
                         <hc:ComboBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.TitlePlacement="Left"
                             hc:TitleElement.Title="Port"
@@ -60,21 +66,27 @@
                             hc:Margin="5">
                         </hc:ComboBox>
 
-                        <!--开始按钮-->
+                        -->
+    <!--开始按钮-->
+    <!--
                         <Button Width="80" Height="30" x:Name="Connect"
                                 Style="{StaticResource ButtonSuccess}" 
                                 Command="{Binding ConnectCommand}" 
                                 Content="Start"
                                 Margin="30,10,10,10"/>
 
-                        <!--停止按钮-->
+                        -->
+    <!--停止按钮-->
+    <!--
                         <Button Width="80" Height="30" x:Name="Disconnect"
                                 Style="{StaticResource ButtonDanger}" 
                                 Command="{Binding DisconnectCommand}" 
                                 Content="Stop"
                                 Margin="10,10,30,10"/>
 
-                        <!--状态图标-->
+                        -->
+    <!--状态图标-->
+    <!--
                         <Path x:Name="state_icon"
                                 Stroke="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
                                 Fill="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
@@ -88,7 +100,9 @@
                 <Grid Grid.Row="1" Margin="0,10,0,0">
                     <StackPanel Orientation="Horizontal">
 
-                        <!--选择功能区-->
+                        -->
+    <!--选择功能区-->
+    <!--
                         <StackPanel Orientation="Vertical">
                             <ToggleButton Style="{StaticResource ToggleButtonSwitch.Small}" 
                                 Width="auto" Margin="20,10,10,10"
@@ -108,7 +122,9 @@
                                 IsChecked="{Binding HeartBeatConfig.IsEnable}"/>
                         </StackPanel>
 
-                        <!--心跳-->
+                        -->
+    <!--心跳-->
+    <!--
                         <StackPanel Margin="20,0,0,0">
                             <hc:TextBox hc:InfoElement.ShowClearButton="True"
                                 hc:TitleElement.TitlePlacement="Top"
@@ -123,7 +139,9 @@
                             </hc:TextBox>
                         </StackPanel>
 
-                        <!--发送-->
+                        -->
+    <!--发送-->
+    <!--
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <hc:TextBox Margin="10,20,20,10" Width="220"
                                         Text="{Binding SendMessage}"
@@ -139,7 +157,9 @@
                 </Grid>
             </Grid>
 
-            <!--Message-->
+            -->
+    <!--Message-->
+    <!--
             <Grid Grid.Row="1">
                 
                 <Grid.RowDefinitions>
@@ -152,6 +172,309 @@
                              ItemsSource="{Binding ReceivedDataCollection}" ScrollViewer.VerticalScrollBarVisibility="Visible" />
             </Grid>
         </Grid>
-    </hc:SimplePanel>
+    </hc:SimplePanel>-->
+
+
+    <hc:DrawerContainer >
+        <Grid Background="{DynamicResource default_background}">
+            <!--设置页面-->
+            <hc:Drawer Name="DrawerRightInContainer" MaskCanClose="True">
+                <Border Background="{DynamicResource RegionBrush}" Width="300" BorderBrush="{DynamicResource BorderBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="50"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <!--title-->
+                        <Border Grid.Row="0" BorderBrush="{DynamicResource border_brush}" BorderThickness="0,0,0,1" Background="{DynamicResource border_background}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Margin="10,0,0,0" Text="Performence" 
+                                  Style="{StaticResource TextBlockTitleBold}" 
+                                  HorizontalAlignment="Left"/>
+                                <Button Command="hc:ControlCommands.Close" 
+                                   Grid.Column="1" 
+                                   HorizontalAlignment="Right" 
+                                   Foreground="{DynamicResource PrimaryTextBrush}" 
+                                   Style="{StaticResource ButtonIcon}" 
+                                   hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}" 
+                                   Width="45" Height="45" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!--content-->
+                        <Grid Grid.Row="1">
+                            <hc:ScrollViewer IsInertiaEnabled="True">
+                                <Grid Margin="10,10,10,10" HorizontalAlignment="Left" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,25">
+                                        <TextBlock Text="General" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left"/>
+                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                            Content=" Auto Connect"
+                                            FontSize="15"
+                                            FontFamily="Calibri"
+                                            Margin="0,10,0,0"
+                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,25">
+                                        <TextBlock Margin="0,0,0,10" Text="HeartBeat" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left"/>
+                                        <!--heartbeat enable-->
+                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,5"
+                                            Content=" Enable HeartBeat"
+                                            FontSize="15"
+                                            FontFamily="Calibri"
+                                            HorizontalAlignment="Left"
+                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+
+                                        <!--heartbeat request-->
+                                        <TextBlock Text="Request" Margin="0,0,0,5"/>
+                                        <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                FontSize="14"
+                                                Text="{Binding HeartBeatConfig.Response}"
+                                                IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                hc:Margin="0,0,0,10"
+                                                ToolTip="The content that you want to request from Host."
+                                                hc:InfoElement.ContentHeight="40" />
+
+                                        <!--heartbeat response-->
+                                        <TextBlock Text="Response" Margin="0,0,0,5"/>
+                                        <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                Margin="0,0,0,15"
+                                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                FontSize="14"
+                                                Text="{Binding HeartBeatConfig.Response}"
+                                                IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                ToolTip="The content that you want to response to Host."
+                                                hc:InfoElement.ContentHeight="40" />
+
+                                        <!--timeout enable-->
+                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,5"
+                                            Content=" Close Connection When Timeout"
+                                            FontSize="15"
+                                            FontFamily="Calibri"
+                                            HorizontalAlignment="Left"
+                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+
+                                        <!--max filed -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                                <TextBlock Text="Maximum Filed Count" Margin="0,0,0,5"/>
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    FontSize="14"
+                                                    Text="{Binding HeartBeatConfig.Response}"
+                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    ToolTip="The max count that heartbeat filed."
+                                                    hc:InfoElement.ContentHeight="40" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                                <TextBlock Text="Maximum timeout time" Margin="0,0,0,5"/>
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    FontSize="14"
+                                                    Text="{Binding HeartBeatConfig.Response}"
+                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    ToolTip="The maximum timeout time that heartbeat filed."
+                                                    hc:InfoElement.ContentHeight="40"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!--others-->
+                                    <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,20">
+                                        <TextBlock Text="Others" FontSize="20" 
+                                            Margin="0,0,0,10"
+                                            Style="{StaticResource TextBlockSubTitle}" 
+                                            HorizontalAlignment="Left"/>
+
+                                        <!--keepAlive-->
+                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,10"
+                                            HorizontalAlignment="Left"
+                                            Content=" Enable Tcp KeepAlive"
+                                            FontSize="15"
+                                            FontFamily="Calibri"
+                                            IsEnabled="True"
+                                            IsChecked="True"/>
+                                        <!--max filed -->
+                                        <Grid Margin="0,0,0,15">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                                <TextBlock Text="When Any Time" Margin="0,0,0,5"/>
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True" MinWidth="120"
+                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    FontSize="14"
+                                                    Text="{Binding HeartBeatConfig.Response}"
+                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    ToolTip="How long should the socket be idle to start probing."
+                                                    hc:InfoElement.ContentHeight="40" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                                <TextBlock Text="Detect Interval" Margin="0,0,0,5"/>
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True" MinWidth="120"
+                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    FontSize="14"
+                                                    Text="{Binding HeartBeatConfig.Response}"
+                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    ToolTip="Detect Interval"
+                                                    hc:InfoElement.ContentHeight="40"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!--Nagle-->
+                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,10"
+                                            Content=" Enable Nagle (Reduce Latency)"
+                                            FontSize="15"
+                                            FontFamily="Calibri"
+                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </hc:ScrollViewer>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </hc:Drawer>
+
+            <!--主页面-->
+            <hc:SimplePanel>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition MaxHeight="120"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <!--输入区-->
+                    <Grid Grid.Row="0">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Height="50" VerticalAlignment="Top">
+                            <!--ip-->
+                            <hc:ComboBox hc:InfoElement.ShowClearButton="True"
+                                  hc:TitleElement.TitlePlacement="Left"
+                                  hc:TitleElement.Title="IP"
+                                  hc:TitleElement.MarginOnTheLeft="10"
+                                  hc:InfoElement.Necessary="True"
+                                  FontSize="14"
+                                  MinWidth="260"
+                                  IsEditable="True"
+                                  IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                  Text="{Binding Config.Ip}"  
+                                  hc:Margin="5"/>
+
+                            <!--端口-->
+                            <hc:ComboBox hc:InfoElement.ShowClearButton="True"
+                                  hc:TitleElement.TitlePlacement="Left"
+                                  hc:TitleElement.Title="Port"
+                                  hc:TitleElement.MarginOnTheLeft="10"
+                                  hc:InfoElement.Necessary="True"
+                                  FontSize="14"
+                                  MinWidth="200"
+                                  Text="{Binding Config.Port}"
+                                  IsEditable="True"
+                                  IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                  hc:Margin="5"/>
+
+                            <!--开始按钮-->
+                            <Button MinWidth="95" Height="36" x:Name="Connect"
+                                  Style="{StaticResource ButtonSuccess}" 
+                                  Command="{Binding ConnectCommand}" 
+                                  Content="Start"
+                                  FontSize="16"
+                                  FontWeight="Medium"
+                                  hc:IconElement.Geometry="{StaticResource connect_geom}"
+                                  hc:IconElement.Width="15"
+                                  Margin="30,0,10,0"/>
+
+                            <!--停止按钮-->
+                            <Button MinWidth="95" Height="36" x:Name="Disconnect"
+                                  Style="{StaticResource ButtonDanger}" 
+                                  Command="{Binding DisconnectCommand}" 
+                                  Content="Stop"
+                                  FontSize="16"
+                                  FontWeight="Medium"
+                                  hc:IconElement.Geometry="{StaticResource disconnect_geom}"
+                                  hc:IconElement.Width="15"
+                                  Margin="10,0,10,0"/>
+
+                            <ToggleButton Content="Performence" FontSize="16" FontFamily="Calibri"
+                                  MinWidth="140" Height="36"
+                                  IsChecked="{Binding IsOpen,ElementName=DrawerRightInContainer}" 
+                                  Style="{StaticResource ToggleButtonPrimary}"  FontWeight="Medium" Margin="10,0,30,0"
+                                  hc:IconElement.Geometry="{StaticResource performence_geom}" hc:IconElement.Width="15"/>
+
+                            <!--状态图标-->
+                            <Path x:Name="state_icon"
+                                  Stroke="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
+                                  Fill="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
+                                  Data="{StaticResource state_geom}"   
+                                  Stretch="Uniform"
+                                  Height="30"
+                                  Width="30" Margin="10,0,0,0" HorizontalAlignment="Right"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="1" Margin="10,10,10,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0" FontSize="14" 
+                                Style="{StaticResource TextBoxExtend}" 
+                                IsEnabled="{Binding ElementName=Disconnect, Path=IsEnabled}"
+                                hc:InfoElement.Placeholder="Input message that you want to send."/>
+
+                            <Button Grid.Column="1" 
+                                Content="Send" 
+                                MinHeight="40" MinWidth="100" 
+                                FontSize="14" FontWeight="Thin"
+                                hc:IconElement.Geometry="{StaticResource send_geom}"
+                                hc:IconElement.Width="15" hc:IconElement.Height="15"
+                                Command="{Binding SendCommand}"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <ListBox HorizontalAlignment="Stretch" Margin="10,20,10,0"
+                                  ItemsSource="{Binding ReceivedDataCollection}" 
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible" />
+                    </Grid>
+                </Grid>
+            </hc:SimplePanel>
+        </Grid>
+    </hc:DrawerContainer>
 
 </UserControl>

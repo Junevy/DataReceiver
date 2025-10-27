@@ -68,7 +68,7 @@ namespace DataReceiver.ViewModels
             {
                 Name = viewName,
                 Width = width + 10,
-                Height = height + 5,
+                Height = height + 10,
                 Content = geometry,
                 Style = App.Current.LoadResource<Style>("SiderBar_Style"),
             });

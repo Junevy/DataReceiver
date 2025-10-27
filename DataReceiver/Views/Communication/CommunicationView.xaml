@@ -60,8 +60,8 @@
                         <hc:SideMenuItem Header="TCP" x:Name="TCP" FontFamily="Consolas">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource tcp_geom}" 
-                                      Stroke="#696969" 
-                                      Stretch="Uniform" Fill="#696969" 
+                                      Stroke="{DynamicResource icon_foreground}" 
+                                      Stretch="Uniform" Fill="{DynamicResource icon_foreground}" 
                                       Width="20" 
                                       Height="20"/>
                             </hc:SideMenuItem.Icon>
@@ -70,8 +70,8 @@
                         <hc:SideMenuItem Header="FTP" x:Name="FTP">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource ftp_geom}" 
-                                  Stroke="#696969" 
-                                  Stretch="Uniform" Fill="#696969" 
+                                  Stroke="{DynamicResource icon_foreground}" 
+                                  Stretch="Uniform" Fill="{DynamicResource icon_foreground}" 
                                   Width="20" 
                                   Height="20"/>
                             </hc:SideMenuItem.Icon>
@@ -80,8 +80,8 @@
                         <hc:SideMenuItem Header="UDP" x:Name="UDP">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource udp_geom}" 
-                                  Stroke="#696969" 
-                                  Stretch="Uniform" Fill="#696969" 
+                                  Stroke="{DynamicResource icon_foreground}" 
+                                  Stretch="Uniform" Fill="{DynamicResource icon_foreground}" 
                                   Width="20" 
                                   Height="20"/>
                             </hc:SideMenuItem.Icon>
@@ -95,7 +95,7 @@
 
         <Grid Grid.Column="1" >
             <hc:TransitioningContentControl>
-                <Border BorderThickness="1" BorderBrush="LightGray">
+                <Border BorderThickness="1" BorderBrush="{DynamicResource border_brush}">
                     <hc:TabControl ItemsSource="{Binding VMList}"  TabItemWidth="180"
                                     IsAnimationEnabled="True"
                                    ShowCloseButton="True" 
@@ -111,9 +111,9 @@
                             <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closing">
                                 <hc:EventToCommand Command="{Binding ClosingCommand}" PassEventArgsToCommand="True" />
                             </hc:RoutedEventTrigger>
-                            <hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closed">
+                            <!--<hc:RoutedEventTrigger RoutedEvent="hc:TabItem.Closed">
                                 <hc:EventToCommand Command="{Binding ClosedCommand}" PassEventArgsToCommand="True" />
-                            </hc:RoutedEventTrigger>
+                            </hc:RoutedEventTrigger>-->
                         </hc:Interaction.Triggers>
 
                         <!--映射页面-->

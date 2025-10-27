@@ -29,7 +29,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="Transparent">
-            <Border Background="#F5F5F5" BorderThickness="1,1,1,0" BorderBrush="#DCDCDC" CornerRadius="5,5,0,0">
+            <Border Background="{DynamicResource border_background}" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource border_brush}" CornerRadius="5,5,0,0">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -46,14 +46,11 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <Ellipse Width="18" Height="18" Fill="Orange" Margin="0,0,15,0">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                            <Ellipse Style="{StaticResource ellipse_style}" Fill="DarkOrange" >
                             </Ellipse>
                         </Grid>
+
+                        <!--<Button Style="{StaticResource style}"-->
 
                         <Grid Grid.Column="1">
                             <Ellipse Width="18" Height="18" Fill="Green" Margin="0,0,15,0"/>
@@ -69,8 +66,8 @@
                     <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Margin="17,0,10,0" VerticalAlignment="Center" >
                             <Path Data="{StaticResource appIcon_geom}" 
-                                  Stroke="#696969" 
-                                  Stretch="Uniform" Fill="#696969" 
+                                  Stroke="{DynamicResource icon_foreground}" 
+                                  Stretch="Uniform" Fill="{DynamicResource icon_foreground}" 
                                   Width="17" 
                                   Height="17"/>
                             <TextBlock Text="This is a title" Margin="10,0,10,0" FontSize="14" FontWeight="Medium" FontFamily="Calibri"/>
@@ -109,19 +106,19 @@
             <Grid Grid.Column="1">
                 <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Width="auto">
                     <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                        <Path Data="{StaticResource home_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                        <Path Data="{StaticResource home_geom}" Stroke="{DynamicResource badge_forground}" Stretch="Uniform" Fill="{DynamicResource badge_forground}" Width="15" Height="15" Margin="10,2,15,2"/>
                     </hc:Badge>
 
                     <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                        <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                        <Path Data="{StaticResource data_geom}" Stroke="{DynamicResource badge_forground}" Stretch="Uniform" Fill="{DynamicResource badge_forground}" Width="15" Height="15" Margin="10,2,15,2"/>
                     </hc:Badge>
 
                     <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                        <Path Data="{StaticResource socket_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                        <Path Data="{StaticResource socket_geom}" Stroke="{DynamicResource badge_forground}" Stretch="Uniform" Fill="{DynamicResource badge_forground}" Width="15" Height="15" Margin="10,2,15,2"/>
                     </hc:Badge>
 
                     <hc:Badge Text="1" BadgeMargin="0,5,0,-10" Height="20" FontSize="11" Foreground="Black" Background="PaleVioletRed">
-                        <Path Data="{StaticResource data_geom}" Stroke="DarkGray" Stretch="Uniform" Fill="DarkGray" Width="15" Height="15" Margin="10,2,15,2"/>
+                        <Path Data="{StaticResource data_geom}" Stroke="{DynamicResource badge_forground}" Stretch="Uniform" Fill="{DynamicResource badge_forground}" Width="15" Height="15" Margin="10,2,15,2"/>
                     </hc:Badge>
                 </StackPanel>
             </Grid>

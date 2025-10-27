@@ -38,7 +38,7 @@
                                     Width="5" 
                                     Height="20"
                                     CornerRadius="2" 
-                                    Background="MediumPurple" 
+                                    Background="{DynamicResource main}" 
                                     Margin="0,0,5,0" 
                                     Visibility="Hidden"
                                     VerticalAlignment="Stretch"/>
@@ -67,12 +67,12 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="El_bg" Property="Background" Value="#D3D3d3"/>
+                            <Setter TargetName="El_bg" Property="Background" Value="{DynamicResource selected}"/>
                             <Setter TargetName="Indicator" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="El_bg" Property="Background" Value="#DCDCDC"/>
-                            <Setter TargetName="Indicator" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="El_bg" Property="Background" Value="{DynamicResource mouse_over}"/>
+                            <!--<Setter TargetName="Indicator" Property="Visibility" Value="Hidden"/>-->
                         </Trigger>
                         <!--<Trigger Property=""-->
                     </ControlTemplate.Triggers>

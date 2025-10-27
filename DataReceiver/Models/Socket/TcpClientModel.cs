@@ -5,6 +5,7 @@ using log4net;
 using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
+using System.Text;
 
 namespace DataReceiver.Models.Socket
 {
@@ -99,7 +100,7 @@ namespace DataReceiver.Models.Socket
             {
                 await Stream!.WriteAsync(data, 0, data.Length, lts.Token);
                 Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
-                Log.Info($"[{Config.Ip}:{Config.Port}]: Send successful : {data.ToArray().ToString()}");
+                Log.Info($"[{Config.Ip}:{Config.Port}]: Send successful : {Encoding.UTF8.GetString(data)}");
                 return data.Length;
             }
             catch (OperationCanceledException)
