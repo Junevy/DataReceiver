@@ -13,14 +13,14 @@ namespace DataReceiver.Models.Config
         /// </summary>
         [ObservableProperty]
         [Required(ErrorMessage = "心跳内容不能为空")]
-        public string response = "PING";
+        public string response = "Pong";
 
         /// <summary>
         /// 接收的心跳内容
         /// </summary>
         [ObservableProperty]
         [Required(ErrorMessage = "心跳内容不能为空")]
-        public string request = "PONG";
+        public string request = "Ping";
 
         [ObservableProperty]
         [Required(ErrorMessage = "心跳间隔不能为空")]

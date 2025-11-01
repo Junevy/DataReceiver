@@ -5,20 +5,19 @@ using log4net;
 
 namespace DataReceiver.Services.Decorator
 {
-    class HeartBeatDecorator(IReactiveConnection inner, HeartBeatConfig config)
+    class HeartBeatDecorator(IConnection inner, HeartBeatConfig config)
         : ConnectionDecoratorBase(inner), IHeartBeatCapable
     {
-        //private DateTime flagTime = DateTime.MinValue;
         private int flag = 0;
-        private static readonly ILog Log = LogManager.GetLogger(typeof(HeartBeatDecorator));
-        public HeartBeatConfig HeartBeatConfig { get; } = config;
-        public CancellationTokenSource HeartBeatTokenSource { get; private set; } = new();
+        private static readonly new ILog Log = LogManager.GetLogger(typeof(HeartBeatDecorator));
+        public HeartBeatConfig Config { get; } = config;
+        public CancellationTokenSource TokenSource { get; private set; } = new();
 
         public override async Task DisconnectAsync()
         {
             Log.Info("Waiting for disconnect.");
             StopHeartBeat();
-            _ = base.DisconnectAsync();
+            _ = inner.DisconnectAsync();
         }
 
         public async Task StartHeartBeatAsync(byte[] response)
@@ -27,31 +26,31 @@ namespace DataReceiver.Services.Decorator
             Runtimes.LastHeartBeatTime = DateTime.Now;
             flag = 0;
 
-            if (HeartBeatTokenSource == null || HeartBeatTokenSource.IsCancellationRequested)
-                HeartBeatTokenSource = new();
+            if (TokenSource == null || TokenSource.IsCancellationRequested)
+                TokenSource = new();
             response ??= [0x50, 0x6f, 0x6e, 0x67];  // Pong
 
-            while (!HeartBeatTokenSource.IsCancellationRequested)
+            while (!TokenSource.IsCancellationRequested)
             {
                 try
                 {
-                    if (DateTime.Now - Runtimes.LastHeartBeatTime > HeartBeatConfig.Timeout)
+                    if (DateTime.Now - Runtimes.LastHeartBeatTime > Config.Timeout)
                     {
                         flag++;
-                        if (flag >= HeartBeatConfig.MaxFailedCount)
+                        Log.Info($"Filed Count : {flag}");
+
+                        if (flag >= Config.MaxFailedCount && Config.EnableTimeout)
                         {
-                            if (HeartBeatConfig.EnableTimeout)
-                            {
-                                _ = DisconnectAsync();
-                                break;
-                            }
-                            continue;
+                            Log.Warn($"Filed count achived: {flag}, waiting for disconnect the socket.");
+                            _ = DisconnectAsync();
+                            break;
                         }
                     }
 
-                    await Task.Delay(HeartBeatConfig.Interval, HeartBeatTokenSource.Token);
+                    await Task.Delay(Config.Interval, TokenSource.Token);
                     if (Runtimes.State != ConnectionState.Connected) continue;
-                    await inner.SendAsync(response, HeartBeatTokenSource.Token);
+
+                    await inner.SendAsync(response, TokenSource.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -69,15 +68,15 @@ namespace DataReceiver.Services.Decorator
         public void StopHeartBeat()
         {
             Log.Info("Waiting for stop heartbeat task.");
-            HeartBeatTokenSource?.Cancel();
+            TokenSource?.Cancel();
         }
 
         public override void Dispose()
         {
             Log.Info("Disposing the decorator.");
-            HeartBeatTokenSource?.Cancel();
-            HeartBeatTokenSource?.Dispose();
-            base.Dispose();
+            TokenSource?.Cancel();
+            TokenSource?.Dispose();
+            inner.Dispose();
         }
     }
 }

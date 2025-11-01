@@ -39,7 +39,7 @@ namespace DataReceiver.Services.Navigation
             catch (Exception e)
             {
                 //Log...}return null
-                Log.Error($"FindView error: {typeof(T)}");
+                Log.Error($"FindView error: {typeof(T)}, {e.Message}");
 
                 return null;
             }

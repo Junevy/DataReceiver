@@ -1,9 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataReceiver.Models.Config
 {
     public abstract partial class CommunicationConfig : ObservableValidator
     {
+        [ObservableProperty]
+        [Required(ErrorMessage = "IP地址不能为空")]
+        [RegularExpression(@"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+    ErrorMessage = "请输入有效的IP地址")]
+        [NotifyDataErrorInfo] // 自动触发验证
+        private string ip = "192.168.31.163";
+
+        [ObservableProperty]
+        [Required(ErrorMessage = "端口号不能为空")]
+        [Range(1025, 65535, ErrorMessage = "端口号必须在1025到65535之间")]
+        [NotifyDataErrorInfo]
+        private int port = 9008;
+
         /// <summary>
         /// 连接超时时间，Unit：ms
         /// </summary>
@@ -22,7 +36,8 @@ namespace DataReceiver.Models.Config
         /// <summary>
         /// 缓冲区大小，Unit：byte
         /// </summary>
-        public int BufferSize { get; set; } = 1024;
+        [ObservableProperty]
+        private int bufferSize = 1024;
 
         //[ObservableProperty]
         //private string sendMessage = string.Empty;

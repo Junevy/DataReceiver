@@ -11,20 +11,25 @@ namespace DataReceiver.Models.Common
         [ObservableProperty]
         private ConnectionState state = ConnectionState.Disconnected;
 
+        [ObservableProperty]
+        private string connectTime = DateTime.MinValue.ToString("yyyy-MM-ss HH:mm:ss");
+
         /// <summary>
         /// Socket 的最后活跃时间，接收到消息或心跳都会重置此时间
         /// </summary>
         [ObservableProperty]
         private string lastActivityTime = DateTime.MinValue.ToString("yyyy-MM-ss HH:mm:ss");
 
-        ///// <summary>
-        ///// 当前是否正在重新连接
-        ///// </summary>
+        /// <summary>
+        /// 当前是否正在重新连接
+        /// </summary>
         [ObservableProperty]
         private bool reconnecting = false;
 
         [ObservableProperty]
         private int currentReconnectAttempts = 0;
+
+
 
         /// <summary>
         /// 最后心跳时间

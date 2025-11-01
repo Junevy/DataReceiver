@@ -118,10 +118,10 @@
 
                         <!--映射页面-->
                         <hc:TabControl.Resources>
-                            <DataTemplate DataType="{x:Type vm:TcpViewModel}">
+                            <DataTemplate DataType="{x:Type vm:TcpClientViewModel}">
                                 <local:TcpView/>
                             </DataTemplate>
-                            <DataTemplate DataType="{x:Type vm:FtpViewModel}">
+                            <DataTemplate DataType="{x:Type vm:FtpServerViewModel}">
                                 <local:FtpView/>
                             </DataTemplate>
                         </hc:TabControl.Resources>

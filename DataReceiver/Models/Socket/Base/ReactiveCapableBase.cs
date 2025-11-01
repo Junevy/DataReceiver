@@ -7,25 +7,23 @@ using System.Reactive.Subjects;
 
 namespace DataReceiver.Models.Socket.Base
 {
-    public abstract class ReactiveConnectionBase : IReactiveConnection
+    public abstract class ReactiveCapableBase : IReactiveCapable
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(ReactiveConnectionBase));
-
-        public ConnectionRuntimes Runtimes { get; private set; } = new();
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ReactiveCapableBase));
 
         // Reactive Extensions
         private readonly Subject<DataEventArgs<byte>> dataReceived = new();
         private readonly BehaviorSubject<StateEventArgs> stateChanged
             = new(new StateEventArgs(ConnectionState.Disconnected, ConnectionState.Disconnected, "未连接"));
 
-        public IObservable<DataEventArgs<byte>> DataReceived => dataReceived.AsObservable();
-        public IObservable<StateEventArgs> StateChanged => stateChanged.AsObservable();
+        public IObservable<DataEventArgs<byte>> DataObservable => dataReceived.AsObservable();
+        public IObservable<StateEventArgs> StateObservable => stateChanged.AsObservable();
 
-        public virtual ConnectionState OnStateUpdated(ConnectionState state, string message = "")
+        public virtual ConnectionState OnStateUpdated(ConnectionState newState, ConnectionState oldState, string message = "")
         {
-            Log.Info($"On State Changed : {state}");
-            stateChanged.OnNext(new StateEventArgs(state, Runtimes.State, message));
-            return state;
+            Log.Info($"On State Changed : {newState}");
+            stateChanged.OnNext(new StateEventArgs(newState, oldState, message));
+            return newState;
         }
 
         public virtual int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
@@ -44,9 +42,5 @@ namespace DataReceiver.Models.Socket.Base
             try { stateChanged?.OnCompleted(); stateChanged?.Dispose(); } catch { }
             GC.SuppressFinalize(this);
         }
-
-        public abstract Task<ConnectionState> ConnectAsync(CancellationToken ct = default);
-        public abstract Task<int> SendAsync(byte[] data, CancellationToken ct = default);
-        public abstract Task DisconnectAsync();
     }
 }

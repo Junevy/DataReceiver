@@ -10,32 +10,30 @@ namespace DataReceiver.Services.Factory
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(DecoratorFactory));
 
-        public static IReactiveConnection CreateReconncetDecorator(IReactiveConnection conn, ReconnectConfig config)
+        public static IConnection CreateReconncetDecorator(IConnection conn, ReconnectConfig config)
         {
-            IReactiveConnection connection = conn;
+            IConnection connection = conn;
             if (config.IsEnable)
             {
                 Log.Info("The Reconncet task is enable.");
                 connection = new ReconnectDecorator(connection, config);
+                return connection;
             }
             Log.Info("The Reconncet task is unenable.");
             return connection;
         }
 
-        public static IReactiveConnection CreateHeartBeatDecorator(IReactiveConnection conn, HeartBeatConfig config)
+        public static IConnection CreateHeartBeatDecorator(IConnection conn, HeartBeatConfig config)
         {
-            IReactiveConnection connection = conn;
+            IConnection connection = conn;
             if (config.IsEnable)
             {
-                Log.Info("The Reconncet task is enable.");
+                Log.Info("The HeartBeat task is enable.");
                 connection = new HeartBeatDecorator(connection, config);
+                return connection;
             }
             Log.Info("The HeartBeat task is unenable.");
-
             return connection;
         }
-
-
-
     }
 }

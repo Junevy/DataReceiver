@@ -7,178 +7,20 @@
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:DataReceiver.ViewModels.Communication"
              xmlns:hc="https://handyorg.github.io/handycontrol"
-             d:DataContext="{d:DesignInstance Type=vm:TcpViewModel}"
+             d:DataContext="{d:DesignInstance Type=vm:TcpClientViewModel}"
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:cvt="clr-namespace:DataReceiver.Helper"
              FontFamily="Arial">
 
     <UserControl.Resources>
         <cvt:ColorConverter x:Key="NumConverter"/>
+        <cvt:AndBooleanConverter x:Key="AndBooleanConverter" />
     </UserControl.Resources>
-
-    <!--<hc:SimplePanel Background="White">
-        <Grid Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="160"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                -->
-    <!--输入区-->
-    <!--
-                <Grid Grid.Row="0">
-                    <WrapPanel Orientation="Horizontal">
-                        -->
-    <!--ip-->
-    <!--
-                        <hc:ComboBox hc:InfoElement.ShowClearButton="True"
-                            hc:TitleElement.TitlePlacement="Left"
-                            hc:TitleElement.Title="IP"
-                            hc:TitleElement.MarginOnTheLeft="10"
-                            hc:InfoElement.Necessary="True"
-                            FontSize="14"
-                            Width="260"
-                            IsEditable="True"
-                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                            Text="{Binding Config.Ip}"  
-                            hc:Margin="5">
-                        </hc:ComboBox>
-
-                        -->
-    <!--端口-->
-    <!--
-                        <hc:ComboBox hc:InfoElement.ShowClearButton="True"
-                            hc:TitleElement.TitlePlacement="Left"
-                            hc:TitleElement.Title="Port"
-                            hc:TitleElement.MarginOnTheLeft="10"
-                            hc:InfoElement.Necessary="True"
-                            FontSize="14"
-                            Width="200"
-                            Text="{Binding Config.Port}"
-                            IsEditable="True"
-                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                            hc:Margin="5">
-                        </hc:ComboBox>
-
-                        -->
-    <!--开始按钮-->
-    <!--
-                        <Button Width="80" Height="30" x:Name="Connect"
-                                Style="{StaticResource ButtonSuccess}" 
-                                Command="{Binding ConnectCommand}" 
-                                Content="Start"
-                                Margin="30,10,10,10"/>
-
-                        -->
-    <!--停止按钮-->
-    <!--
-                        <Button Width="80" Height="30" x:Name="Disconnect"
-                                Style="{StaticResource ButtonDanger}" 
-                                Command="{Binding DisconnectCommand}" 
-                                Content="Stop"
-                                Margin="10,10,30,10"/>
-
-                        -->
-    <!--状态图标-->
-    <!--
-                        <Path x:Name="state_icon"
-                                Stroke="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
-                                Fill="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
-                                Data="{StaticResource connect_geom}"   
-                                Stretch="Uniform"
-                                Height="30"
-                                Width="30" Margin="60,10,10,10" HorizontalAlignment="Right"/>
-                    </WrapPanel>
-                </Grid>
-
-                <Grid Grid.Row="1" Margin="0,10,0,0">
-                    <StackPanel Orientation="Horizontal">
-
-                        -->
-    <!--选择功能区-->
-    <!--
-                        <StackPanel Orientation="Vertical">
-                            <ToggleButton Style="{StaticResource ToggleButtonSwitch.Small}" 
-                                Width="auto" Margin="20,10,10,10"
-                                Content="Auto Connect"
-                                FontSize="15"
-                                FontFamily="Calibri"
-                                IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                IsChecked="{Binding ReconnectConfig.IsEnable}"/>
-
-                            <ToggleButton  x:Name="EnableHeartBeat"
-                                Style="{StaticResource ToggleButtonSwitch.Small}" 
-                                Width="auto" Margin="20,10,10,10"
-                                Content="Start HeartBeat"
-                                FontSize="15"
-                                FontFamily="Calibri"
-                                IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                IsChecked="{Binding HeartBeatConfig.IsEnable}"/>
-                        </StackPanel>
-
-                        -->
-    <!--心跳-->
-    <!--
-                        <StackPanel Margin="20,0,0,0">
-                            <hc:TextBox hc:InfoElement.ShowClearButton="True"
-                                hc:TitleElement.TitlePlacement="Top"
-                                hc:TitleElement.Title="Response HeartBeat"
-                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
-                                FontSize="14"
-                                Text="{Binding HeartBeatConfig.Response}"
-                                IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
-                                hc:Margin="10"
-                                hc:InfoElement.ContentHeight="40"
-                                hc:Width="220" hc:Height="65">
-                            </hc:TextBox>
-                        </StackPanel>
-
-                        -->
-    <!--发送-->
-    <!--
-                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                            <hc:TextBox Margin="10,20,20,10" Width="220"
-                                        Text="{Binding SendMessage}"
-                                        hc:InfoElement.ShowClearButton="True"
-                                        hc:InfoElement.Placeholder="Input message for send" FontSize="17"
-                                        IsEnabled="{Binding ElementName=Disconnect, Path=IsEnabled}"/>
-                            
-                            <Button Style="{StaticResource ButtonPrimary}" 
-                                    Content="Send" Width="120" Height="30"
-                                    Command="{Binding SendCommand}" />
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-
-            -->
-    <!--Message-->
-    <!--
-            <Grid Grid.Row="1">
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <ListBox Grid.Row="2" MinHeight="200" HorizontalAlignment="Stretch" MinWidth="900"
-                             ItemsSource="{Binding ReceivedDataCollection}" ScrollViewer.VerticalScrollBarVisibility="Visible" />
-            </Grid>
-        </Grid>
-    </hc:SimplePanel>-->
-
 
     <hc:DrawerContainer >
         <Grid Background="{DynamicResource default_background}">
             <!--设置页面-->
-            <hc:Drawer Name="DrawerRightInContainer" MaskCanClose="True">
+            <hc:Drawer Name="DrawerRightInContainer" MaskCanClose="True" >
                 <Border Background="{DynamicResource RegionBrush}" Width="300" BorderBrush="{DynamicResource BorderBrush}">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -190,87 +32,141 @@
                         <Border Grid.Row="0" BorderBrush="{DynamicResource border_brush}" BorderThickness="0,0,0,1" Background="{DynamicResource border_background}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" Margin="10,0,0,0" Text="Performence" 
-                                  Style="{StaticResource TextBlockTitleBold}" 
-                                  HorizontalAlignment="Left"/>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <Path Data="{StaticResource performence_geom}" 
+                                          Stroke="{DynamicResource main}" 
+                                          Stretch="Uniform" Fill="{DynamicResource main}" 
+                                          Width="25" Height="25"
+                                          Margin="10,5,0,5"/>
+                                    <TextBlock  Margin="10,0,0,0" Text="Performence" 
+                                          Style="{StaticResource TextBlockTitleBold}" 
+                                          HorizontalAlignment="Left"/>
+                                </StackPanel>
+
                                 <Button Command="hc:ControlCommands.Close" 
-                                   Grid.Column="1" 
-                                   HorizontalAlignment="Right" 
-                                   Foreground="{DynamicResource PrimaryTextBrush}" 
-                                   Style="{StaticResource ButtonIcon}" 
-                                   hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}" 
-                                   Width="45" Height="45" VerticalAlignment="Center"/>
+                                       Grid.Column="1" 
+                                       HorizontalAlignment="Right" 
+                                       Foreground="{DynamicResource PrimaryTextBrush}" 
+                                       Style="{StaticResource ButtonIcon}" 
+                                       hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}" 
+                                       Width="45" Height="45" VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
 
                         <!--content-->
                         <Grid Grid.Row="1">
                             <hc:ScrollViewer IsInertiaEnabled="True">
-                                <Grid Margin="10,10,10,10" HorizontalAlignment="Left" >
+                                <Grid Margin="10,10,10,10" >
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
                                         <RowDefinition/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,25">
-                                        <TextBlock Text="General" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left"/>
-                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                    <!--普通设置-->
+                                    <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" Margin="0,0,5,30">
+                                        <TextBlock Text="General" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                        <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Title"
+                                            hc:TitleElement.TitlePlacement="Top"
+                                            FontSize="14"
+                                            Text="{Binding Title,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The title of socket page."
+                                            hc:InfoElement.ContentHeight="40" />
+
+                                        <ToggleButton x:Name="EnableReconnect"
+                                            Style="{StaticResource ToggleButtonSwitch}" 
                                             Content=" Auto Connect"
                                             FontSize="15"
-                                            FontFamily="Calibri"
-                                            Margin="0,10,0,0"
-                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                                            Margin="0,0,0,10"
+                                            HorizontalAlignment="Left"
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
                                             IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+
+                                        <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Reconnect Delay"
+                                            hc:TitleElement.TitlePlacement="Top"
+                                            hc:InfoElement.Necessary="{Binding Source={x:Reference EnableReconnect}, Path=IsChecked}"
+                                            FontSize="14"
+                                            Text="{Binding ReconnectConfig.Delay}"
+                                            IsEnabled="{Binding Source={x:Reference EnableReconnect}, Path=IsChecked}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The max count of retry to reconnect."
+                                            hc:InfoElement.ContentHeight="40" >
+                                        </hc:TextBox>
+
+                                        <ToggleButton x:Name="EnableMaxRetryLimit"
+                                            Style="{StaticResource ToggleButtonSwitch}" 
+                                            Content=" Enable Max Retry Limit"
+                                            FontSize="15"
+                                            Margin="0,0,0,10"
+                                            HorizontalAlignment="Left"
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
+                                            IsChecked="{Binding ReconnectConfig.EnableMaxLimit}"/>
+
+                                        <!--Max retry count-->
+                                        <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Max Retry Count"
+                                            hc:TitleElement.TitlePlacement="Top"
+                                            hc:InfoElement.Necessary="{Binding Source={x:Reference EnableMaxRetryLimit}, Path=IsChecked}"
+                                            FontSize="14"
+                                            Text="{Binding ReconnectConfig.MaxRetryCount}"
+                                            IsEnabled="{Binding Source={x:Reference EnableMaxRetryLimit}, Path=IsChecked}"
+                                            ToolTip="The max count of retry to reconnect."
+                                            hc:InfoElement.ContentHeight="40" />
                                     </StackPanel>
 
-                                    <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,25">
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,0,5,30">
                                         <TextBlock Margin="0,0,0,10" Text="HeartBeat" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left"/>
                                         <!--heartbeat enable-->
-                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
-                                            Margin="0,0,0,5"
+                                        <ToggleButton x:Name="EnableHeartBeat"
+                                            Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,10"
                                             Content=" Enable HeartBeat"
                                             FontSize="15"
-                                            FontFamily="Calibri"
                                             HorizontalAlignment="Left"
-                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
+                                            IsChecked="{Binding HeartBeatConfig.IsEnable}"/>
 
                                         <!--heartbeat request-->
-                                        <TextBlock Text="Request" Margin="0,0,0,5"/>
                                         <hc:TextBox hc:InfoElement.ShowClearButton="True"
-                                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                hc:TitleElement.Title="Request"
+                                                hc:TitleElement.TitlePlacement="Top"
+                                                hc:InfoElement.Necessary="{Binding Source={x:Reference EnableHeartBeat}, Path=IsChecked}"
                                                 FontSize="14"
-                                                Text="{Binding HeartBeatConfig.Response}"
-                                                IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                Text="{Binding HeartBeatConfig.Request}"
+                                                IsEnabled="{Binding Source={x:Reference EnableHeartBeat}, Path=IsChecked}"
                                                 hc:Margin="0,0,0,10"
                                                 ToolTip="The content that you want to request from Host."
                                                 hc:InfoElement.ContentHeight="40" />
 
                                         <!--heartbeat response-->
-                                        <TextBlock Text="Response" Margin="0,0,0,5"/>
                                         <hc:TextBox hc:InfoElement.ShowClearButton="True"
-                                                Margin="0,0,0,15"
-                                                hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                hc:TitleElement.Title="Response"
+                                                hc:TitleElement.TitlePlacement="Top"
+                                                Margin="0,0,0,20"
+                                                hc:InfoElement.Necessary="{Binding Source={x:Reference EnableHeartBeat}, Path=IsChecked}"
                                                 FontSize="14"
-                                                Text="{Binding HeartBeatConfig.Response}"
-                                                IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                Text="{Binding HeartBeatConfig.Response, Mode=TwoWay}"
+                                                
+                                                IsEnabled="{Binding Source={x:Reference EnableHeartBeat}, Path=IsChecked}"
                                                 ToolTip="The content that you want to response to Host."
                                                 hc:InfoElement.ContentHeight="40" />
 
                                         <!--timeout enable-->
-                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
-                                            Margin="0,0,0,5"
+                                        <ToggleButton x:Name="HeartBeatTimeoutEnable"
+                                            Style="{StaticResource ToggleButtonSwitch}" 
+                                            Margin="0,0,0,10"
                                             Content=" Close Connection When Timeout"
                                             FontSize="15"
-                                            FontFamily="Calibri"
                                             HorizontalAlignment="Left"
-                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
+                                            IsChecked="{Binding HeartBeatConfig.EnableTimeout}"/>
 
                                         <!--max filed -->
                                         <Grid>
@@ -279,24 +175,26 @@
                                                 <ColumnDefinition/>
                                             </Grid.ColumnDefinitions>
 
-                                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                                <TextBlock Text="Maximum Filed Count" Margin="0,0,0,5"/>
+                                            <StackPanel Grid.Column="0" Margin="0,0,15,0" HorizontalAlignment="Stretch">
                                                 <hc:TextBox hc:InfoElement.ShowClearButton="True"
-                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    hc:TitleElement.Title="Max Filed Count"
+                                                    hc:TitleElement.TitlePlacement="Top"
+                                                    hc:InfoElement.Necessary="{Binding Source={x:Reference HeartBeatTimeoutEnable}, Path=IsChecked}"
                                                     FontSize="14"
-                                                    Text="{Binding HeartBeatConfig.Response}"
-                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    IsEnabled="{Binding Source={x:Reference HeartBeatTimeoutEnable}, Path=IsChecked}"
+                                                    Text="{Binding HeartBeatConfig.MaxFailedCount}"
                                                     ToolTip="The max count that heartbeat filed."
                                                     hc:InfoElement.ContentHeight="40" />
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                                <TextBlock Text="Maximum timeout time" Margin="0,0,0,5"/>
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
                                                 <hc:TextBox hc:InfoElement.ShowClearButton="True"
-                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    hc:TitleElement.Title="Timeout"
+                                                    hc:TitleElement.TitlePlacement="Top"
+                                                    hc:InfoElement.Necessary="{Binding Source={x:Reference HeartBeatTimeoutEnable}, Path=IsChecked}"
                                                     FontSize="14"
-                                                    Text="{Binding HeartBeatConfig.Response}"
-                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    Text="{Binding HeartBeatConfig.Timeout}"
+                                                    IsEnabled="{Binding Source={x:Reference HeartBeatTimeoutEnable}, Path=IsChecked}"
                                                     ToolTip="The maximum timeout time that heartbeat filed."
                                                     hc:InfoElement.ContentHeight="40"/>
                                             </StackPanel>
@@ -304,46 +202,48 @@
                                     </StackPanel>
 
                                     <!--others-->
-                                    <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,20">
+                                    <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" Margin="0,0,5,30">
                                         <TextBlock Text="Others" FontSize="20" 
                                             Margin="0,0,0,10"
                                             Style="{StaticResource TextBlockSubTitle}" 
                                             HorizontalAlignment="Left"/>
 
                                         <!--keepAlive-->
-                                        <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
+                                        <ToggleButton x:Name="EnableKeepAlive"
+                                            Style="{StaticResource ToggleButtonSwitch}" 
                                             Margin="0,0,0,10"
                                             HorizontalAlignment="Left"
                                             Content=" Enable Tcp KeepAlive"
                                             FontSize="15"
-                                            FontFamily="Calibri"
-                                            IsEnabled="True"
-                                            IsChecked="True"/>
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
+                                            IsChecked="{Binding Config.EnableKeepAlive}"/>
                                         <!--max filed -->
-                                        <Grid Margin="0,0,0,15">
+                                        <Grid Margin="0,0,0,20">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition/>
                                             </Grid.ColumnDefinitions>
 
-                                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                                <TextBlock Text="When Any Time" Margin="0,0,0,5"/>
-                                                <hc:TextBox hc:InfoElement.ShowClearButton="True" MinWidth="120"
-                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                            <StackPanel Grid.Column="0" Margin="0,0,15,0" HorizontalAlignment="Stretch">
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                    hc:TitleElement.Title="When Any Time"
+                                                    hc:TitleElement.TitlePlacement="Top"
+                                                    hc:InfoElement.Necessary="{Binding Source={x:Reference EnableKeepAlive}, Path=IsChecked}"
                                                     FontSize="14"
-                                                    Text="{Binding HeartBeatConfig.Response}"
-                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    Text="{Binding Config.KeepAliveTime}"
+                                                    IsEnabled="{Binding Source={x:Reference EnableKeepAlive}, Path=IsChecked}"
                                                     ToolTip="How long should the socket be idle to start probing."
                                                     hc:InfoElement.ContentHeight="40" />
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                                <TextBlock Text="Detect Interval" Margin="0,0,0,5"/>
-                                                <hc:TextBox hc:InfoElement.ShowClearButton="True" MinWidth="120"
-                                                    hc:InfoElement.Necessary="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                                                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                                    hc:TitleElement.Title="Detect Interval"
+                                                    hc:TitleElement.TitlePlacement="Top"
+                                                    hc:InfoElement.Necessary="{Binding Source={x:Reference EnableKeepAlive}, Path=IsChecked}"
                                                     FontSize="14"
-                                                    Text="{Binding HeartBeatConfig.Response}"
-                                                    IsEnabled="{Binding ElementName=EnableHeartBeat, Path=IsChecked}"
+                                                    Text="{Binding Config.KeepAliveInterval}"
+                                                    IsEnabled="{Binding Source={x:Reference EnableKeepAlive}, Path=IsChecked}"
                                                     ToolTip="Detect Interval"
                                                     hc:InfoElement.ContentHeight="40"/>
                                             </StackPanel>
@@ -351,12 +251,11 @@
 
                                         <!--Nagle-->
                                         <ToggleButton Style="{StaticResource ToggleButtonSwitch}" 
-                                            Margin="0,0,0,10"
-                                            Content=" Enable Nagle (Reduce Latency)"
+                                            Margin="0,0,0,20"
+                                            Content=" Enable Nagle(Reduce Latency)"
                                             FontSize="15"
-                                            FontFamily="Calibri"
-                                            IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                                            IsChecked="{Binding ReconnectConfig.IsEnable}"/>
+                                            IsEnabled="{Binding Source={x:Reference Connect}, Path=IsEnabled}"
+                                            IsChecked="{Binding Config.EnableNagle}"/>
                                     </StackPanel>
                                 </Grid>
                             </hc:ScrollViewer>
@@ -385,7 +284,7 @@
                             <!--ip-->
                             <hc:ComboBox hc:InfoElement.ShowClearButton="True"
                                   hc:TitleElement.TitlePlacement="Left"
-                                  hc:TitleElement.Title="IP"
+                                  hc:TitleElement.Title="Host"
                                   hc:TitleElement.MarginOnTheLeft="10"
                                   hc:InfoElement.Necessary="True"
                                   FontSize="14"
@@ -409,7 +308,8 @@
                                   hc:Margin="5"/>
 
                             <!--开始按钮-->
-                            <Button MinWidth="95" Height="36" x:Name="Connect"
+                            <Button x:Name="Connect" 
+                                  MinWidth="95" Height="36"
                                   Style="{StaticResource ButtonSuccess}" 
                                   Command="{Binding ConnectCommand}" 
                                   Content="Start"
@@ -452,7 +352,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0" FontSize="14" 
+                            <TextBox Grid.Column="0" FontSize="14" Text="{Binding SendMessage,Mode=TwoWay}"
                                 Style="{StaticResource TextBoxExtend}" 
                                 IsEnabled="{Binding ElementName=Disconnect, Path=IsEnabled}"
                                 hc:InfoElement.Placeholder="Input message that you want to send."/>
@@ -469,12 +369,17 @@
 
                     <Grid Grid.Row="1">
                         <ListBox HorizontalAlignment="Stretch" Margin="10,20,10,0"
-                                  ItemsSource="{Binding ReceivedDataCollection}" 
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible" />
+                                  ItemsSource="{Binding ReceivedDataCollection}"   
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="15"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </Grid>
                 </Grid>
             </hc:SimplePanel>
         </Grid>
     </hc:DrawerContainer>
-
 </UserControl>

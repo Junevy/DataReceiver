@@ -47,6 +47,11 @@
 
                         <Grid Grid.Column="0">
                             <Ellipse Style="{StaticResource ellipse_style}" Fill="DarkOrange" >
+                                <!--<Ellipse.Triggers>
+                                    <Trigger RoutedEvent="Click">
+                                        
+                                    </Trigger>
+                                </Ellipse.Triggers>-->
                             </Ellipse>
                         </Grid>
 

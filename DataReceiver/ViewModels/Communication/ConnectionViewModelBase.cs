@@ -2,6 +2,7 @@
 using DataReceiver.Models.Common;
 using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
+using DataReceiver.Models.Socket.Interface;
 using DataReceiver.ViewModels.Base;
 using log4net;
 using System.Collections.ObjectModel;
@@ -10,7 +11,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Text;
-using System.Windows.Markup;
 
 namespace DataReceiver.ViewModels.Communication
 {
@@ -20,7 +20,7 @@ namespace DataReceiver.ViewModels.Communication
     public abstract partial class ConnectionViewModelBase : ViewModelBase
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionViewModelBase));
-        private readonly Object stateLock = new();
+
         private static int count = 1;
         /// <summary>
         /// Tab item 的 title自增序号
@@ -66,9 +66,9 @@ namespace DataReceiver.ViewModels.Communication
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
 
-        public virtual void SubscribeState(ReactiveConnectionBase subscriber)
+        public virtual void SubscribeData(IReactiveCapable observabler)
         {
-            subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
+            observabler.DataObservable.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
                     var msg = Encoding.UTF8.GetString(data.Data.Span.ToArray());
@@ -80,9 +80,9 @@ namespace DataReceiver.ViewModels.Communication
                 }).DisposeWith(disposables);
         }
 
-        public virtual void SubscribeData(ReactiveConnectionBase subscriber)
+        public virtual void SubscribeState(IReactiveCapable observabler)
         {
-            subscriber.StateChanged.ObserveOn(SynchronizationContext.Current)
+            observabler.StateObservable.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(e =>
                 {
                     Log.Info($"State changed {Runtimes.State} to : {e.NewState}");
@@ -98,6 +98,7 @@ namespace DataReceiver.ViewModels.Communication
         /// <param name="sender">发送者</param>
         /// <param name="e" ref="ConnectionRuntimes"> ConnectionRuntimes </param>
         public abstract void OnRuntimesPropertyChanged(object sender, PropertyChangedEventArgs e);
+
         public abstract Task ConnectAsync();
         public abstract Task SendAsync();
         public abstract Task DisconnectAsync();

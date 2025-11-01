@@ -11,11 +11,18 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="FubarDev.FtpServer" Version="3.1.2" />
+    <PackageReference Include="FubarDev.FtpServer.FileSystem.DotNet" Version="3.1.2" />
     <PackageReference Include="HandyControl" Version="3.6.0-rc2" />
     <PackageReference Include="log4net" Version="3.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\RegularCleanupTask\RegularCleanupTask.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,9 +3,9 @@
     /// <summary>
     /// 连接状态变更事件参数
     /// </summary>
-    /// <param name="newState">新的状态</param>
-    /// <param name="oldState">旧的状态</param>
-    /// <param name="message">变化时所传递的信息</param>
+    /// <param name="newState">当前状态</param>
+    /// <param name="oldState">此前状态</param>
+    /// <param name="message">信息</param>
     public class StateEventArgs
         (ConnectionState newState, ConnectionState oldState, string message) : EventArgs
     {

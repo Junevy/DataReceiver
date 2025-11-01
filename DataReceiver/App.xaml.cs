@@ -1,6 +1,7 @@
 ﻿using DataReceiver.Models.Config;
-using DataReceiver.Models.Socket;
 using DataReceiver.Models.Socket.Config;
+using DataReceiver.Models.Socket.FTP;
+using DataReceiver.Models.Socket.TCP;
 using DataReceiver.ViewModels;
 using DataReceiver.ViewModels.Communication;
 using DataReceiver.ViewModels.Data;
@@ -9,6 +10,7 @@ using DataReceiver.Views;
 using DataReceiver.Views.Communication;
 using DataReceiver.Views.Data;
 using DataReceiver.Views.Home;
+using FubarDev.FtpServer;
 using log4net;
 using log4net.Config;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,18 +65,24 @@ namespace DataReceiver
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
             container.AddTransient<CommunicationViewModel>();
-            container.AddTransient<TcpViewModel>();
-            container.AddTransient<FtpViewModel>();
+            container.AddTransient<TcpClientViewModel>();
+            container.AddTransient<FtpServerViewModel>();
             container.AddTransient<NavigationService>();
 
             // Model
-            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new Models.Config.TcpConfig()));
+            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(new TcpClientConfig()));
+            container.AddTransient<FtpServerModel>(_ => new FtpServerModel(new FtpServerConfig()));
 
             // Config
             container.AddTransient<ReconnectConfig>();
             container.AddTransient<HeartBeatConfig>();
 
+
+            
+
+
             Services = container.BuildServiceProvider()!;
+            
             Log.Info("Service container initialized.");
         }
 

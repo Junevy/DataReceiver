@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Config;
-using DataReceiver.Models.Socket;
-using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.Interface;
+using DataReceiver.Models.Socket.TCP;
 using DataReceiver.Services.Extentions;
 using DataReceiver.Services.Factory;
 using log4net;
@@ -14,16 +13,17 @@ using System.Text;
 
 namespace DataReceiver.ViewModels.Communication
 {
-    public partial class TcpViewModel : ConnectionViewModelBase
+    public partial class TcpClientViewModel : ConnectionViewModelBase
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(TcpViewModel));
-        private IReactiveConnection Decorator { get; set; }
+        private static readonly ILog Log = LogManager.GetLogger(typeof(TcpClientViewModel));
+        private IConnection Decorator { get; set; }
         private TcpClientModel Model { get; set; }
-        public TcpConfig Config => Model.Config;
+        public TcpClientConfig Config => Model.Config;
         public ReconnectConfig ReconnectConfig { get; }
+
         public HeartBeatConfig HeartBeatConfig { get; }
 
-        public TcpViewModel(TcpClientModel model,
+        public TcpClientViewModel(TcpClientModel model,
                             ReconnectConfig reconnectConfig,
                             HeartBeatConfig heartBeatConfig)
                             : base(model.Runtimes)
@@ -45,8 +45,9 @@ namespace DataReceiver.ViewModels.Communication
             Decorator = DecoratorFactory.CreateHeartBeatDecorator(Decorator, HeartBeatConfig);
 
             await Decorator.ConnectAsync();
+            _ =  Decorator.TryReconnect();
+
             var response = Encoding.UTF8.GetBytes(HeartBeatConfig.Response);
-            _ = Decorator.TryReconnect();
             _ = Decorator.TryStartHeartBeat(response);
 
             Title = $"[{Config.Ip} : {Config.Port}]";
@@ -85,12 +86,15 @@ namespace DataReceiver.ViewModels.Communication
             }
         }
 
-        public override void SubscribeState(ReactiveConnectionBase subscriber)
+        public override void SubscribeData(IReactiveCapable subscriber)
         {
-            subscriber.DataReceived.ObserveOn(SynchronizationContext.Current)
+            subscriber.DataObservable.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(data =>
                 {
                     var msg = Encoding.UTF8.GetString(data.Data.Span.ToArray());
+                    var info = DateTime.Now.ToString("yyyy-MM-dd  HH:mm:ss:fff")
+                              + $"  [{Config.Ip}:{Config.Port}] :  "
+                              + msg;
                     Log.Info($"Date received : {msg}");
 
                     // 处理心跳逻辑
@@ -102,7 +106,7 @@ namespace DataReceiver.ViewModels.Communication
 
                     if (ReceivedDataCollection.Count > MAXCOLLECTIONSIZE)
                         ReceivedDataCollection.RemoveAt(0);
-                    ReceivedDataCollection.Add(msg ?? "Empty");
+                    ReceivedDataCollection.Add(info ?? "Empty");
                 }).DisposeWith(disposables);
         }
 

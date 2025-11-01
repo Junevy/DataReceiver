@@ -7,9 +7,9 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
-namespace DataReceiver.Models.Socket
+namespace DataReceiver.Models.Socket.TCP
 {
-    public class TcpClientModel(TcpConfig config) : ConnectionBase<TcpClient, TcpConfig>(config)
+    public class TcpClientModel(TcpClientConfig config) : ConnectionBase<TcpClient, TcpClientConfig>(config)
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(TcpClientModel));
         private Stream? Stream { get; set; }
@@ -30,7 +30,7 @@ namespace DataReceiver.Models.Socket
 
             //初始化
             CleanConnectionAsync();
-            OnStateUpdated(ConnectionState.Connecting, "Connecting...");
+            OnStateUpdated(ConnectionState.Connecting, Runtimes.State, "Connecting...");
             Socket = new();
             if (Cts == null || Cts.IsCancellationRequested)
                 Cts = new();
@@ -46,7 +46,7 @@ namespace DataReceiver.Models.Socket
                 {
                     Socket.Close();
                     Log.Warn($" [{Config.Ip}:{Config.Port}]: Connect failed!");
-                    return OnStateUpdated(ConnectionState.Disconnected, "Connect timeout or error.");
+                    return OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "Connect timeout or error.");
                 }
                 //连接成功
                 Log.Info($" [{Config.Ip} : {Config.Port}] Connect successful");
@@ -59,17 +59,17 @@ namespace DataReceiver.Models.Socket
 
                 //启动消息接收
                 receiveTask = Task.Run(() => { _ = ReceiveAsync(Cts.Token); });
-                return OnStateUpdated(ConnectionState.Connected, "Connection Successful!");
+                return OnStateUpdated(ConnectionState.Connected, Runtimes.State, "Connection Successful!");
             }
             catch (OperationCanceledException)
             {
                 Log.Error($"[{Config.Ip}:{Config.Port}]: Connection Task canceled.");
-                return OnStateUpdated(ConnectionState.Disconnected, "ConnectTask Cancelled");
+                return OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "ConnectTask Cancelled");
             }
             catch (Exception ex)
             {
                 Log.Error($"[{Config.Ip}:{Config.Port}]: Connection task was occured an error : {ex.Message}");
-                return OnStateUpdated(ConnectionState.Disconnected, $"Connect error: {ex.Message}");
+                return OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, $"Connect error: {ex.Message}");
             }
         }
 
@@ -77,7 +77,7 @@ namespace DataReceiver.Models.Socket
         {
             Log.Info($"[{Config.Ip}:{Config.Port}]: Waiting for disconnect.");
             CleanConnectionAsync();
-            OnStateUpdated(ConnectionState.Disconnected, "Disconnected.");
+            OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "Disconnected.");
         }
 
         public override async Task<int> SendAsync(byte[] data, CancellationToken ct = default)
@@ -140,14 +140,14 @@ namespace DataReceiver.Models.Socket
                     {
                         Log.Error($"[{Config.Ip}:{Config.Port}]: Socket occured an error : {e.Message}");
                         if (Socket is not null)
-                            OnStateUpdated(Runtimes.State, $"Receive data error: {e.Message} ");
+                            OnStateUpdated(Runtimes.State, Runtimes.State, $"Receive data error: {e.Message} ");
                         break;
                     }
                     //连接已关闭（被动或主动）
                     if (bytesRead == 0)
                     {
                         Log.Warn($"[{Config.Ip}:{Config.Port}]: Socket was disconnected.");
-                        OnStateUpdated(ConnectionState.Disconnected, $"Connection was disconnected: [{Config.Ip} : {Config.Port}]");
+                        OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, $"Connection was disconnected: [{Config.Ip} : {Config.Port}]");
                         break;
                     }
 

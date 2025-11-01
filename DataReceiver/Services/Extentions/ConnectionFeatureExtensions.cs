@@ -11,24 +11,24 @@ namespace DataReceiver.Services.Extentions
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionFeatureExtensions));
 
-        public static async Task TryReconnect(this IReactiveConnection connection)
+        public static async Task TryReconnect(this IConnection connection)
         {
             var reconnectFeature = connection.As<IReconnectCapable>();
             if (reconnectFeature != null) 
             {
                 Log.Info($"The IConnect is IReconnectCapable");
-                await reconnectFeature.StartReconnectAsync(); 
+                _ = reconnectFeature.StartReconnectAsync(); 
             }
             else Log.Info($"The IConnect is not IReconnectCapable");
         }
 
-        public static async Task TryStartHeartBeat(this IReactiveConnection connection, byte[] response)
+        public static async Task TryStartHeartBeat(this IConnection connection, byte[] response)
         {
             var heartBeatFeature = connection.As<IHeartBeatCapable>();
             if (heartBeatFeature != null) 
             {
                 Log.Info($"The IConnect is IHeartBeatCapable");
-                await heartBeatFeature.StartHeartBeatAsync(response); 
+                _ = heartBeatFeature.StartHeartBeatAsync(response); 
             }
             else Log.Info($"The IConnect is not IHeartBeatCapable");
         }
@@ -39,7 +39,7 @@ namespace DataReceiver.Services.Extentions
         /// <typeparam name="T">执行类型或接口</typeparam>
         /// <param name="connection">连接对象</param>
         /// <returns></returns>
-        public static T? As<T>(this IReactiveConnection connection) where T : class
+        public static T? As<T>(this IConnection connection) where T : class
         {
             if (connection is T self) return self;
             if (connection is ConnectionDecoratorBase decorator) return decorator.Inner.As<T>();
@@ -52,7 +52,7 @@ namespace DataReceiver.Services.Extentions
         /// <typeparam name="T">指定类型或功能</typeparam>
         /// <param name="connection">连接对象</param>
         /// <returns></returns>
-        public static bool IsHas<T>(this IReactiveConnection connection) where T : class
+        public static bool IsHas<T>(this IConnection connection) where T : class
             => connection.As<T>() is not null;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace DataReceiver.Services.Extentions
         /// </summary>
         /// <param name="connection">连接对象</param>
         /// <returns>最底层的连接对象</returns>
-        public static IReactiveConnection Unwrap(this IReactiveConnection connection)
+        public static IConnection Unwrap(this IConnection connection)
         {
             while (connection is ConnectionDecoratorBase decorator)
             {

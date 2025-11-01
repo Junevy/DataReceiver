@@ -43,13 +43,13 @@ namespace DataReceiver.ViewModels.Communication
             switch (currentItem)
             {
                 case "TCP":
-                    VMList.Add(App.Current.Services.GetRequiredService<TcpViewModel>());
+                    VMList.Add(App.Current.Services.GetRequiredService<TcpClientViewModel>());
                     break;
                 case "FTP":
-                    VMList.Add(App.Current.Services.GetRequiredService<FtpViewModel>());
+                    VMList.Add(App.Current.Services.GetRequiredService<FtpServerViewModel>());
                     break;
                 case "UDP":
-                    VMList.Add(App.Current.Services.GetRequiredService<TcpViewModel>());
+                    VMList.Add(App.Current.Services.GetRequiredService<TcpClientViewModel>());
                     break;
                 default:
                     currentItem = string.Empty;

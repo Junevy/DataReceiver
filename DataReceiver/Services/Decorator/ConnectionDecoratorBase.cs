@@ -5,10 +5,10 @@ using log4net;
 
 namespace DataReceiver.Services.Decorator
 {
-    public class ConnectionDecoratorBase(IReactiveConnection _inner) : IReactiveConnection
+    public class ConnectionDecoratorBase(IConnection _inner) : IConnection
     {
-        protected readonly IReactiveConnection inner = _inner;
-        public IReactiveConnection Inner => inner;
+        protected readonly IConnection inner = _inner;
+        public IConnection Inner => inner;
         public ConnectionRuntimes Runtimes => inner.Runtimes;
         protected static readonly ILog Log = LogManager.GetLogger(typeof(ConnectionDecoratorBase));
 
@@ -21,11 +21,5 @@ namespace DataReceiver.Services.Decorator
             => await inner.SendAsync(data);
 
         public virtual void Dispose() => inner.Dispose();
-
-        public ConnectionState OnStateUpdated(ConnectionState state, string message = "")
-            => inner.OnStateUpdated(state, message);
-
-        public int OnDataReceived(ReadOnlyMemory<byte> data, string message = "")
-            => inner.OnDataReceived(data, message);
     }
 }

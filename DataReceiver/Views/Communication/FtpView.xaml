@@ -6,12 +6,15 @@
              xmlns:local="clr-namespace:DataReceiver.Views.Communication"
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:DataReceiver.ViewModels.Communication"
-             d:DataContext="{d:DesignInstance Type=vm:FtpViewModel}"
+             d:DataContext="{d:DesignInstance Type=vm:FtpServerViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <!--<TextBlock Text="{Binding Message}" FontSize="20" Foreground="Red" Margin="20"/>-->
-        <!--<TextBlock Text="VideoSolid" Foreground="Red" Margin="20" FontSize="50" FontFamily="Segoe Fluent Icons"/>-->
-        <!--<Label Content="&#xe9a9"/>-->
-        <TextBlock FontFamily="Segoe Fluent Icons" FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Text="&#xE701;" />
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Content="Start" Command="{Binding ConnectCommand}"/>
+        <Button Grid.Row="1" Content="Stop" Command="{Binding DisconnectCommand}"/>
     </Grid>
 </UserControl>
