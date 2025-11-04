@@ -16,17 +16,16 @@ namespace DataReceiver.ViewModels.Communication
     public partial class TcpClientViewModel : ConnectionViewModelBase
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(TcpClientViewModel));
+
         private IConnection Decorator { get; set; }
         private TcpClientModel Model { get; set; }
         public TcpClientConfig Config => Model.Config;
         public ReconnectConfig ReconnectConfig { get; }
-
         public HeartBeatConfig HeartBeatConfig { get; }
 
         public TcpClientViewModel(TcpClientModel model,
-                            ReconnectConfig reconnectConfig,
-                            HeartBeatConfig heartBeatConfig)
-                            : base(model.Runtimes)
+            ReconnectConfig reconnectConfig, HeartBeatConfig heartBeatConfig)
+            : base(model.Runtimes)
         {
             Model = model;
             Decorator = model;
@@ -45,7 +44,7 @@ namespace DataReceiver.ViewModels.Communication
             Decorator = DecoratorFactory.CreateHeartBeatDecorator(Decorator, HeartBeatConfig);
 
             await Decorator.ConnectAsync();
-            _ =  Decorator.TryReconnect();
+            _ = Decorator.TryReconnect();
 
             var response = Encoding.UTF8.GetBytes(HeartBeatConfig.Response);
             _ = Decorator.TryStartHeartBeat(response);

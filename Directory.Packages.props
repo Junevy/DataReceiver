@@ -1,0 +1,41 @@
+
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  
+  <ItemGroup>
+     <!--Microsoft.Extensions 系列--> 
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="9.0.9" />
+    
+     <!--System 系列--> 
+    <PackageVersion Include="System.Buffers" Version="4.6.1" />
+    <PackageVersion Include="System.IO.Pipelines" Version="9.0.9" />
+    <PackageVersion Include="System.Memory" Version="4.6.3" />
+    <PackageVersion Include="System.Numerics.Vectors" Version="4.6.1" />
+    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.9" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.9" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+    <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
+    <PackageVersion Include="System.Reactive" Version="6.1.0" />
+    
+     <!--第三方库--> 
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="FubarDev.FtpServer" Version="3.1.2" />
+    <PackageVersion Include="FubarDev.FtpServer.FileSystem.DotNet" Version="3.1.2" />
+    <PackageVersion Include="HandyControl" Version="3.6.0-rc2" />
+    <PackageVersion Include="log4net" Version="3.2.0" />
+    <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.9" />
+  </ItemGroup>
+</Project>

@@ -2,11 +2,7 @@
 {
     public static class CleanupTaskManual
     {
-        static string targetPath = @"D:/Work";
-        static int daysThreshold = 30;
-        static int scanIntervalDays = 1;
-
-        static void test()
+        static void CleanTask(string targetPath, int daysThreshold, int scanIntervalDays)
         {
             Helper.GetInfo(targetPath, daysThreshold, scanIntervalDays);
 
@@ -20,7 +16,7 @@
             if (Console.ReadKey().Key != ConsoleKey.Y)
                 return;
 
-
+            Core.CleanupOldFiles(targetPath, daysThreshold, scanIntervalDays);
         }
     }
 }

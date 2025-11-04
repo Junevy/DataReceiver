@@ -27,7 +27,7 @@ namespace DataReceiver.Models.Socket.Config
         private bool enableAutoDelete = false;
 
         [ObservableProperty]
-        private int autoDeleteDays = 30;
+        private int keepDays = 30;
 
         [ObservableProperty]
         private TimeSpan inactiveTimeOut = TimeSpan.FromMinutes(5);

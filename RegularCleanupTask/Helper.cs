@@ -16,8 +16,7 @@
             Console.WriteLine("================================");
         }
 
-
-        static void Log(string message)
+        public static void Log(string message)
         {
             string currentLog = AppContext.BaseDirectory + DateTime.Now.ToString("yyyy-MM-dd") + "_cleanup.log";
 

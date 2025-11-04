@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/解决方案项/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Project Path="Common/Common.csproj" Id="2013adaa-b882-40fd-83de-e7a74a7b8385" />
   <Project Path="DataReceiver/DataReceiver.csproj" />
   <Project Path="RegularCleanupTask/RegularCleanupTask.csproj" Id="bd8bb3ed-40cd-499c-ba94-436f34babe1b" />
