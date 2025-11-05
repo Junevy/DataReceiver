@@ -9,13 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Common\Common.csproj" />
+	  <Folder Include="Configs\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="TestConfigs\appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
+	  <ProjectReference Include="..\Common\Common.csproj" />
+	  <ProjectReference Include="..\DataReceiver\DataReceiver.csproj" />
 	</ItemGroup>
 
 </Project>

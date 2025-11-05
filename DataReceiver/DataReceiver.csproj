@@ -24,7 +24,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Common\Common.csproj" />
-		<ProjectReference Include="..\RegularCleanupTask\RegularCleanupTask.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

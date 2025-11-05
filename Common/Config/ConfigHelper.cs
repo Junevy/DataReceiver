@@ -25,7 +25,7 @@ namespace Common
                 .AddJsonFile(ConfigPath, optional: false, reloadOnChange: true);
 
             var config = builder.Build().GetSection(typeof(T).Name).Get<T>();
-            return config == null ? throw new InvalidOperationException($"无法从配置文件中载入 {typeof(T).Name} 配置") : config;
+            return config == null ? throw new ArgumentNullException($"无法从配置文件中载入 {typeof(T).Name} 配置") : config;
         }
     }
 }

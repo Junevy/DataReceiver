@@ -30,6 +30,9 @@ namespace DataReceiver.Models.Socket.Config
         private int keepDays = 30;
 
         [ObservableProperty]
+        private int scanIntervalDays = 1;
+
+        [ObservableProperty]
         private TimeSpan inactiveTimeOut = TimeSpan.FromMinutes(5);
 
     }

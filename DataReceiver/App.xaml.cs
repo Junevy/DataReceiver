@@ -76,13 +76,20 @@ namespace DataReceiver
             container.AddTransient<FtpServerViewModel>();
             container.AddTransient<NavigationService>();
 
+            container.AddSingleton<FtpServerConfig>(_ => ConfigHelper.Build<FtpServerConfig>());
+
             // Model
+            //container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()));
+            //container.AddSingleton<FtpServerModel>(_ => new FtpServerModel(ConfigHelper.Build<FtpServerConfig>()));
+
             container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()));
-            container.AddSingleton<FtpServerModel>(_ => new FtpServerModel(ConfigHelper.Build<FtpServerConfig>()));
+            container.AddSingleton<FtpServerModel>();
+
 
             //// Config
             //container.AddTransient<ReconnectConfig>();
             //container.AddTransient<HeartBeatConfig>();
+
 
             Services = container.BuildServiceProvider()!;
 

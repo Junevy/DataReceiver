@@ -1,18 +1,17 @@
-﻿using Common;
+﻿using Microsoft.Extensions.DependencyInjection;
 using RegularCleanupTask;
-using RegularCleanupTask.TestConfigs;
 
+// 确保配置为单例
+var config = DataReceiver
+            .App.Current.Services
+            .GetRequiredService<DataReceiver.Models.Socket.Config.FtpServerConfig>();
 
-//var testconfig1 = ConfigHelper.Build<TcpClientConfig>();
+string targetPath = config.RootPath;
+int daysThreshold = config.KeepDays;
+int scanIntervalDays = config.ScanIntervalDays;
 
-
-string targetPath = @"C:/Work";
-int daysThreshold = 30;
-int scanIntervalDays = 1;
-
-
+// C 盘保护机制
 var rootPath = Path.GetPathRoot(targetPath)?.TrimEnd('\\') ?? "";
-
 if ("C:".Equals(rootPath))
 {
     Console.WriteLine("The target path cannot be on the C drive. Exiting the application.");
@@ -21,11 +20,13 @@ if ("C:".Equals(rootPath))
 }
 
 Helper.GetInfo(targetPath, daysThreshold, scanIntervalDays);
-var test = Core.GetLastDirectory(targetPath);
-var singleDir = test.Split(',');
 
+// 删除扫描出符合规则的文件夹
+var allDir = Core.GetLastDirectory(targetPath);
+var singleDir = allDir.Split(',');
 foreach (var dir in singleDir)
 {
+    // 避免误删目标路径
     if (!string.IsNullOrEmpty(dir) && dir != targetPath)
         Directory.Delete(dir, true);
 }
