@@ -15,7 +15,7 @@
                 return;
             }
 
-            GetLastDirectory(targetPath);
+            GetLastDirectory(targetPath, 1);
 
             try
             {
@@ -56,20 +56,20 @@
             }
         }
 
-        public static string GetLastDirectory(string path)
+        public static string GetLastDirectory(string path, int keepDays)
         {
             var directories = Directory.GetDirectories(path);
 
             if (directories.Length == 0)
             {
-                if (Directory.GetCreationTime(path) + TimeSpan.FromDays(30) < DateTime.Now)
+                if (Directory.GetCreationTime(path) + TimeSpan.FromDays(keepDays) < DateTime.Now)
                 lastDirs.Add(path);
                 return path;
             }
 
             foreach (var dir in directories)
             {
-                GetLastDirectory(dir);
+                GetLastDirectory(dir, keepDays);
             }
 
             return String.Join(",", [.. lastDirs]);

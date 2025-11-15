@@ -1,14 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RegularCleanupTask;
+﻿using RegularCleanupTask;
+using Services.Config;
 
 // 确保配置为单例
-var config = DataReceiver
-            .App.Current.Services
-            .GetRequiredService<DataReceiver.Models.Socket.Config.FtpServerConfig>();
-
-string targetPath = config.RootPath;
-int daysThreshold = config.KeepDays;
-int scanIntervalDays = config.ScanIntervalDays;
+string targetPath = ConfigService.GetNode("FtpServerConfig:RootPath");
+int.TryParse( ConfigService.GetNode("FtpServerConfig:KeepDays"), out int daysThreshold);
+int.TryParse( ConfigService.GetNode("FtpServerConfig:KeepDays"), out int checkIntervalHours);
 
 // C 盘保护机制
 var rootPath = Path.GetPathRoot(targetPath)?.TrimEnd('\\') ?? "";
@@ -19,10 +15,11 @@ if ("C:".Equals(rootPath))
     return;
 }
 
-Helper.GetInfo(targetPath, daysThreshold, scanIntervalDays);
+// 输出配置信息
+Helper.GetInfo(targetPath, daysThreshold, checkIntervalHours);
 
 // 删除扫描出符合规则的文件夹
-var allDir = Core.GetLastDirectory(targetPath);
+var allDir = Core.GetLastDirectory(targetPath, daysThreshold);
 var singleDir = allDir.Split(',');
 foreach (var dir in singleDir)
 {

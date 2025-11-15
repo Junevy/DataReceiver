@@ -1,5 +1,4 @@
-﻿using Common;
-using DataReceiver.Models.Config;
+﻿using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.FTP;
 using DataReceiver.Models.Socket.TCP;
@@ -19,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using NavigationService = DataReceiver.Services.Navigation.NavigationService;
+using Services.Config;
 
 namespace DataReceiver
 {
@@ -66,23 +66,23 @@ namespace DataReceiver
             container.AddTransient<HomeViewModel>();
             container.AddTransient<CommunicationViewModel>();
 
-            var test = ConfigHelper.Build<HeartBeatConfig>();
+            var test = ConfigService.Get<HeartBeatConfig>();
 
             container.AddTransient( _ => new TcpClientViewModel(
-                new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()), 
-                ConfigHelper.Build<ReconnectConfig>(),
-                ConfigHelper.Build<HeartBeatConfig>()));
+                new TcpClientModel(ConfigService.Get<TcpClientConfig>()),
+                ConfigService.Get<ReconnectConfig>(),
+                ConfigService.Get<HeartBeatConfig>()));
 
             container.AddTransient<FtpServerViewModel>();
             container.AddTransient<NavigationService>();
 
-            container.AddSingleton<FtpServerConfig>(_ => ConfigHelper.Build<FtpServerConfig>());
+            container.AddSingleton<FtpServerConfig>(_ => ConfigService.Get<FtpServerConfig>());
 
             // Model
             //container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()));
             //container.AddSingleton<FtpServerModel>(_ => new FtpServerModel(ConfigHelper.Build<FtpServerConfig>()));
 
-            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()));
+            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigService.Get<TcpClientConfig>()));
             container.AddSingleton<FtpServerModel>();
 
 

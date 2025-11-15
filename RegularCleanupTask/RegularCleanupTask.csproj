@@ -6,15 +6,16 @@
 		<LangVersion>12.0</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Folder Include="Configs\" />
+		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Common\Common.csproj" />
-	  <ProjectReference Include="..\DataReceiver\DataReceiver.csproj" />
+	  <ProjectReference Include="..\Services\Services.csproj" />
 	</ItemGroup>
 
 </Project>
