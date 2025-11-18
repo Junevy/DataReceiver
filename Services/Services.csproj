@@ -10,11 +10,6 @@
 
 	</PropertyGroup>
 
-
-	<ItemGroup>
-	  <None Remove="Config\appsettings.json" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" />
@@ -24,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Config\appsettings.json">
+	  <Content Include="Config\FtpServerConfig.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>	

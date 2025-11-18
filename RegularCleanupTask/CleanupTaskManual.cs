@@ -4,7 +4,7 @@
     {
         static void CleanTask(string targetPath, int daysThreshold, int scanIntervalDays)
         {
-            Helper.GetInfo(targetPath, daysThreshold, scanIntervalDays);
+            Core.GetInfo(targetPath, daysThreshold, scanIntervalDays);
 
             Console.WriteLine("\nPress 'S' start the App. Press ANY KEY to exit the App.\n");
             var key = Console.ReadKey();

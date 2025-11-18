@@ -14,10 +14,10 @@ namespace Services.Config
         /// <summary>
         /// 配置构建器
         /// </summary>
-        private static IConfigurationRoot Configer = 
+        private static readonly IConfigurationRoot Configer = 
                         new ConfigurationBuilder()
                         .SetBasePath(ConfigPath)
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile("FtpServerConfig.json", optional: false, reloadOnChange: true)
                         .Build();
 
         /// <summary>
