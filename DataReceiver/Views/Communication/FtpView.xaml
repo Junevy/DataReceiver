@@ -14,7 +14,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button Grid.Row="0" Content="Start" Command="{Binding ConnectCommand}"/>
+        <Button Grid.Row="0" Content="Start" Command="{Binding ConnectCommand}" Style="{StaticResource ButtonPrimary}"/>
         <Button Grid.Row="1" Content="Stop" Command="{Binding DisconnectCommand}"/>
     </Grid>
 </UserControl>

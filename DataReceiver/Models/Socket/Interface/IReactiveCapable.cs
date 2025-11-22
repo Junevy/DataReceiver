@@ -1,5 +1,4 @@
 ﻿using DataReceiver.Models.Socket.Common;
-using System.Reactive.Subjects;
 
 namespace DataReceiver.Models.Socket.Interface
 {

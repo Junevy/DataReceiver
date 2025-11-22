@@ -1,4 +1,5 @@
-﻿using DataReceiver.Models.Socket.Interface;
+﻿using DataReceiver.Models;
+using DataReceiver.Models.Socket.Interface;
 using DataReceiver.Services.Decorator;
 using log4net;
 using System.Text;
@@ -31,6 +32,29 @@ namespace DataReceiver.Services.Extentions
                 _ = heartBeatFeature.StartHeartBeatAsync(response); 
             }
             else Log.Info($"The IConnect is not IHeartBeatCapable");
+        }
+
+
+        public static void TryStartScheduleClean(this IConnection connection)
+        {
+            var scheduleCleanFeature = connection.As<ITaskSchedulerCapable>();
+            if (scheduleCleanFeature != null) 
+            {
+                Log.Info($"The IConnect is ITaskSchedulerCapable");
+                scheduleCleanFeature.RegisterTask(); 
+            }
+            else Log.Info($"The IConnect is not ITaskSchedulerCapable");
+        }
+
+        public static void TryStopScheduleClean(this IConnection connection)
+        {
+            var scheduleCleanFeature = connection.As<ITaskSchedulerCapable>();
+            if (scheduleCleanFeature != null)
+            {
+                Log.Info($"The IConnect is ITaskSchedulerCapable");
+                scheduleCleanFeature.UnregisterTask();
+            }
+            else Log.Info($"The IConnect is not ITaskSchedulerCapable");
         }
 
         /// <summary>

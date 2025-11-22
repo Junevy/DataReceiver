@@ -19,9 +19,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Config\FtpServerConfig.json">
+	  <Content Include="Config\appsettings.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="TaskSchedule\" />
 	</ItemGroup>	
 
 </Project>

@@ -1,13 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.FTP;
 using System.ComponentModel;
 
 namespace DataReceiver.ViewModels.Communication
 {
-    public partial class FtpServerViewModel(FtpServerModel model)
+    public partial class FtpServerViewModel(FtpServerModel model, TaskScheduleConfig taskScheduleConfig)
         : ConnectionViewModelBase(model.Runtimes)
     {
         private FtpServerModel Model { get; } = model;
+        public TaskScheduleConfig TaskScheduleConfig { get; } = taskScheduleConfig;
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
@@ -15,7 +17,8 @@ namespace DataReceiver.ViewModels.Communication
             await Model.ConnectAsync();
         }
 
-        [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
+        //[RelayCommand(CanExecute = nameof(IsCanDisconnect))]
+        [RelayCommand]
         public override async Task DisconnectAsync()
         {
             await Model.DisconnectAsync();

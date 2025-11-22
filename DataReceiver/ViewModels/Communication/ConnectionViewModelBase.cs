@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Common;
-using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
 using DataReceiver.Models.Socket.Interface;
 using DataReceiver.ViewModels.Base;

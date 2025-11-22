@@ -10,15 +10,19 @@ using DataReceiver.Views;
 using DataReceiver.Views.Communication;
 using DataReceiver.Views.Data;
 using DataReceiver.Views.Home;
+using FubarDev.FtpServer;
+using FubarDev.FtpServer.AccountManagement;
+using FubarDev.FtpServer.FileSystem.DotNet;
 using log4net;
 using log4net.Config;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using NavigationService = DataReceiver.Services.Navigation.NavigationService;
-using Services.Config;
 
 namespace DataReceiver
 {
@@ -26,7 +30,13 @@ namespace DataReceiver
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(App));
         public static new App Current => (App)Application.Current;
-        public IServiceProvider Services;
+        public IServiceProvider Services { get; private set; }
+
+        // 需要检查目录是否存在
+        public string ConfigPath =>
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                         "DataReceiverConfigs");
+        public readonly string configName = "appsettings.json";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -38,6 +48,15 @@ namespace DataReceiver
             //    throw new Exception(" BoolToColor 转换器未正确注册！");
             //}
             InitialLogger();
+
+            // Check appsettings config.
+            if (!Directory.Exists(ConfigPath) || !File.Exists(Path.Combine(ConfigPath, configName)))
+            {
+                Log.Fatal("Config directory or config files does not existed! Please execute \"install\" script!");
+                MessageBox.Show("Config directory or config files does not existed! Please execute \"install\" script!");
+                Current.Shutdown();
+            }
+
             BuildServices();
             MainWindow = Services.GetService<MainView>();
             MainWindow!.Show();
@@ -50,9 +69,32 @@ namespace DataReceiver
         {
             var container = new ServiceCollection();
 
-            // View
-            container.AddSingleton<Frame>(_
-                => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
+
+            /* ==============================================================
+             * Config
+             * ============================================================= */
+            var configuration = new ConfigurationBuilder()
+                        .SetBasePath(ConfigPath)
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                        .Build();
+            container.AddSingleton<IConfiguration>(configuration);
+
+            container.Configure<TcpClientConfig>(configuration.GetSection(nameof(TcpClientConfig)));
+            container.Configure<ReconnectConfig>(configuration.GetSection(nameof(ReconnectConfig)));
+            container.Configure<HeartBeatConfig>(configuration.GetSection(nameof(HeartBeatConfig)));
+            container.Configure<FtpServerConfig>(configuration.GetSection(nameof(FtpServerConfig)));
+
+            container.AddSingleton(sp => sp.GetRequiredService<IOptions<TcpClientConfig>>().Value);
+            container.AddSingleton(sp => sp.GetRequiredService<IOptions<ReconnectConfig>>().Value);
+            container.AddSingleton(sp => sp.GetRequiredService<IOptions<HeartBeatConfig>>().Value);
+            container.AddSingleton(sp => sp.GetRequiredService<IOptions<FtpServerConfig>>().Value);
+
+            container.AddSingleton<TaskScheduleConfig>();
+
+            /* ==============================================================
+             * View
+             * ============================================================= */
+            container.AddSingleton(sp => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
             container.AddSingleton<MainView>();
             container.AddSingleton<DataView>();
             container.AddSingleton<HomeView>();
@@ -60,40 +102,69 @@ namespace DataReceiver
             container.AddTransient<TcpView>();
             container.AddTransient<FtpView>();
 
-            // ViewModel
+
+            /* ==============================================================
+             * ViewModel
+             * ============================================================= */
             container.AddTransient<MainViewModel>();
             container.AddTransient<DataViewModel>();
             container.AddTransient<HomeViewModel>();
             container.AddTransient<CommunicationViewModel>();
-
-            var test = ConfigService.Get<HeartBeatConfig>();
-
-            container.AddTransient( _ => new TcpClientViewModel(
-                new TcpClientModel(ConfigService.Get<TcpClientConfig>()),
-                ConfigService.Get<ReconnectConfig>(),
-                ConfigService.Get<HeartBeatConfig>()));
-
             container.AddTransient<FtpServerViewModel>();
-            container.AddTransient<NavigationService>();
+            container.AddTransient<TcpClientViewModel>();
 
-            container.AddSingleton<FtpServerConfig>(_ => ConfigService.Get<FtpServerConfig>());
 
-            // Model
-            //container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigHelper.Build<TcpClientConfig>()));
-            //container.AddSingleton<FtpServerModel>(_ => new FtpServerModel(ConfigHelper.Build<FtpServerConfig>()));
-
-            container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigService.Get<TcpClientConfig>()));
+            /* ==============================================================
+             * Model
+             * ============================================================= */
+            container.AddTransient<TcpClientModel>();
             container.AddSingleton<FtpServerModel>();
 
+            container.AddSingleton<NavigationService>();
 
-            //// Config
-            //container.AddTransient<ReconnectConfig>();
-            //container.AddTransient<HeartBeatConfig>();
+            /* ==============================================================
+             * Ftp Server
+             * ============================================================= */
+            var config = configuration.GetSection(nameof(FtpServerConfig)).Get<FtpServerConfig>()
+                ?? new FtpServerConfig();
+            container.AddFtpServer(builder =>
+            {
+                builder.UseDotNetFileSystem();
+                if (config.AllowAnonymous)
+                    builder.EnableAnonymousAuthentication();
+            });
+            //var ftpServerBuilder = Services.GetRequiredService<IFtpServerBuilder>();
 
+            // Configure the FTP server
+            container.Configure<FtpServerOptions>(opt =>
+            {
+                opt.ServerAddress = config.Ip;
+                opt.Port = config.Port;
+                opt.MaxActiveConnections = config.MaxConnections;
+                opt.ConnectionInactivityCheckInterval = config.InactiveCheckInterval;
+            });
+            // use Config.RootPath as root folder
+            container.Configure<DotNetFileSystemOptions>(opt =>
+            {
+                opt.RootPath = config.RootPath;
+                opt.FlushAfterWrite = true;  // 写入后立即刷新
+                opt.StreamBufferSize = config.BufferSize * 1000;
+            });
+            // Config connection parameters
+            container.Configure<FtpConnectionOptions>(opt =>
+            {
+                //opt.DefaultEncoding = Config.Encoding;
+                opt.DefaultEncoding = System.Text.Encoding.UTF8;
+                opt.InactivityTimeout = config.InactiveTimeOut;
+            });
+            // Authentication
+            container.AddSingleton<IMembershipProvider>(
+                new UserShipProvider(config.UserName, config.Password)
+            );
 
             Services = container.BuildServiceProvider()!;
 
-            Log.Info("Service container initialized.");
+            Log.Info("Service provider initialized.");
         }
 
 
@@ -118,3 +189,38 @@ namespace DataReceiver
         }
     }
 }
+
+
+#region old code
+//container.AddTransient<NavigationService>();
+
+//// View
+//container.AddSingleton<Frame>(_
+//    => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
+//container.AddSingleton<MainView>();
+//container.AddSingleton<DataView>();
+//container.AddSingleton<HomeView>();
+//container.AddSingleton<CommunicationView>();
+//container.AddTransient<TcpView>();
+//container.AddTransient<FtpView>();
+
+//// ViewModel
+//container.AddTransient<MainViewModel>();
+//container.AddTransient<DataViewModel>();
+//container.AddTransient<HomeViewModel>();
+//container.AddTransient<CommunicationViewModel>();
+//container.AddTransient<FtpServerViewModel>();
+//container.AddTransient(_ => new TcpClientViewModel(
+//    new TcpClientModel(ConfigService.Get<TcpClientConfig>()),
+//    ConfigService.Get<ReconnectConfig>(),
+//    ConfigService.Get<HeartBeatConfig>()));
+
+//// Model
+//container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigService.Get<TcpClientConfig>()));
+//container.AddSingleton<FtpServerModel>();
+//container.AddSingleton<FtpServerConfig>(_ => ConfigService.Get<FtpServerConfig>());
+//var test = ConfigService.Get<HeartBeatConfig>();
+
+//container.Configure
+
+#endregion

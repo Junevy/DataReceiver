@@ -23,14 +23,16 @@ namespace DataReceiver.Models.Socket.Config
         [ObservableProperty]
         private TimeSpan inactiveCheckInterval = TimeSpan.FromMinutes(1);
 
-        [ObservableProperty]
-        private bool enableAutoDelete = false;
+        //[ObservableProperty]
+        //private bool enableScheduleClean = false;
 
         [ObservableProperty]
         private int keepDays = 30;
 
-        [ObservableProperty]
-        private int scanIntervalDays = 1;
+
+
+        //[ObservableProperty]
+        //private int scanIntervalDays = 1;
 
         [ObservableProperty]
         private TimeSpan inactiveTimeOut = TimeSpan.FromMinutes(5);

@@ -1,5 +1,6 @@
 ﻿using DataReceiver.Models.Config;
 using DataReceiver.Models.Socket.Config;
+using DataReceiver.Models.Socket.FTP;
 using DataReceiver.Models.Socket.Interface;
 using DataReceiver.Services.Decorator;
 using log4net;
@@ -35,5 +36,10 @@ namespace DataReceiver.Services.Factory
             Log.Info("The HeartBeat task is unenable.");
             return connection;
         }
+
+        //public static IConnection CreateScheduleCleanDecorator(IConnection conn)
+        //{
+        //    return new FtpServerModel(conn);
+        //}
     }
 }

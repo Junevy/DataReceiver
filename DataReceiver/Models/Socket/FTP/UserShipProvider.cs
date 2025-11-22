@@ -4,7 +4,7 @@ using System.Security.Claims;
 namespace DataReceiver.Models.Socket.FTP
 {
     /// <summary>
-    /// 用于验证FTP 登录权限。RootPath <see cref="FtpServerConfig"/>
+    /// 回调方法，用于验证FTP 登录权限。RootPath。用户登录或执行上传文件操作时执行。 <see cref="FtpServerConfig"/>
     /// </summary>
     /// <param name="userName">公共用户名</param>
     /// <param name="password">公共密码</param>

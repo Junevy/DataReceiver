@@ -20,6 +20,8 @@
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 		<PackageReference Include="System.IO.Pipelines" />
 		<PackageReference Include="System.Reactive" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+		<PackageReference Include="TaskScheduler" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,6 +35,10 @@
 		<None Update="Assets\Configs\appsettings.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Services\Common\" />
 	</ItemGroup>
 
 </Project>

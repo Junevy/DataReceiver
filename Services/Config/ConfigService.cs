@@ -7,7 +7,7 @@ namespace Services.Config
         /// <summary>
         /// 配置文件相对路径
         /// </summary>
-        private static readonly string ConfigPath =
+        public static readonly string ConfigPath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
                          "DataReceiverConfigs");
 
@@ -17,8 +17,10 @@ namespace Services.Config
         private static readonly IConfigurationRoot Configer = 
                         new ConfigurationBuilder()
                         .SetBasePath(ConfigPath)
-                        .AddJsonFile("FtpServerConfig.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                         .Build();
+        public static IConfigurationRoot Configuration => Configer;
+
 
         /// <summary>
         /// 从Json 中载入Config
