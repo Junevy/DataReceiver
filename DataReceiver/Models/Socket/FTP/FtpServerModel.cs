@@ -1,12 +1,9 @@
 ﻿using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
 using FubarDev.FtpServer;
-using FubarDev.FtpServer.AccountManagement;
-using FubarDev.FtpServer.FileSystem.DotNet;
 using log4net;
-using Microsoft.Extensions.DependencyInjection;
 using System.IO;
-
+using System.Net;
 using FtpServerConfig = DataReceiver.Models.Socket.Config.FtpServerConfig;
 
 namespace DataReceiver.Models.Socket.FTP
@@ -14,15 +11,10 @@ namespace DataReceiver.Models.Socket.FTP
     public class FtpServerModel : ConnectionBase<IFtpServer, FtpServerConfig>
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(FtpServerModel));
-
-        //public IFtpServer Socket { get; set; } = server;
-        //private readonly ConfigProvider<FtpServerConfig> _configProvider = configProvider;
-
-        public FtpServerModel(FtpServerConfig config, IFtpServer server): base(config)
+        public FtpServerModel(FtpServerConfig config, IFtpServer server) : base(config)
         {
             Socket = server;
         }
-
 
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
@@ -37,17 +29,37 @@ namespace DataReceiver.Models.Socket.FTP
 
             if (Cts is null || Cts.IsCancellationRequested)
                 Cts = new();
-            
+
             try
             {
-                await Socket.StartAsync(Cts.Token);
+                //Socket Paused.
+                if (Socket.Status == FtpServiceStatus.Paused)
+                    await Socket.ContinueAsync(Cts.Token);
+
+                // Socket waiting to start.
+                else if (Socket.Status == FtpServiceStatus.ReadyToRun)
+                    await Socket.StartAsync(Cts.Token);
+
+                else
+                {
+                    Log.Error("Ftp server status error : it's not Paused or ReadtoRun!");
+                    throw new InvalidOperationException("Ftp server status error : it's not Paused or ReadtoRun!");
+                }
+
             }
-            catch (OperationCanceledException) { Log.Warn("FTP task canceled!"); }
+            catch (OperationCanceledException) 
+            { 
+                Log.Warn("FTP task canceled!");
+                OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, $"FTP Server canceled.");
+                return ConnectionState.Disconnected;
+            }
             catch (Exception e)
             {
                 OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, $"Start FTP Server error : {e.Message}");
                 Log.Error(e);
+                return ConnectionState.Disconnected;
             }
+
             OnStateUpdated(ConnectionState.Connected, Runtimes.State, "Start FTP Server successful!");
             Log.Info("Start FTP Server successful!");
             return ConnectionState.Connected;
@@ -56,18 +68,13 @@ namespace DataReceiver.Models.Socket.FTP
         public override async Task DisconnectAsync()
         {
             Log.Info("Waiting for clean the FTP server.");
-            try { Socket.StopAsync(Cts.Token); } catch (Exception e) { Log.Warn($"Clean the Socket error :{e.Message} "); }
-            try
-            {
-                if (Cts is not null && !Cts.IsCancellationRequested)
-                {
-                    Cts.Cancel();
-                    Cts.Dispose();
-                }
-
-                //Server?.Dispose();
-            }
-            catch (Exception e) { Log.Warn($"Clean the FTP server error :{e.Message} "); }
+            try { 
+                Socket?.PauseAsync( 
+                    (Cts == null || Cts.IsCancellationRequested) 
+                    ? CancellationToken.None 
+                    : Cts.Token);
+            } 
+            catch (Exception e) { Log.Warn($"Clean the Socket error :{e.Message} "); }
             OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "FTP Server disconnected!");
         }
 
@@ -75,7 +82,7 @@ namespace DataReceiver.Models.Socket.FTP
         {
             Log.Warn("Disposing the object.");
             DisconnectAsync().GetAwaiter().GetResult();
-            base.Dispose();
+            //base.Dispose();
         }
 
         public override Task<int> SendAsync(byte[] data, CancellationToken ct = default)

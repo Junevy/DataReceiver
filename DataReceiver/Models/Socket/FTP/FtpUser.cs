@@ -1,5 +1,4 @@
-﻿using FubarDev.FtpServer.AccountManagement;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace DataReceiver.Models.Socket.FTP
 {

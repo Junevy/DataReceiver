@@ -65,6 +65,10 @@ namespace DataReceiver.ViewModels.Communication
             Runtimes.PropertyChanged += OnRuntimesPropertyChanged;
         }
 
+        /// <summary>
+        /// 订阅Socket接收到的数据        
+        /// </summary>
+        /// <param name="observabler">需要订阅数据流的对象</param>
         public virtual void SubscribeData(IReactiveCapable observabler)
         {
             observabler.DataObservable.ObserveOn(SynchronizationContext.Current)
@@ -79,15 +83,17 @@ namespace DataReceiver.ViewModels.Communication
                 }).DisposeWith(disposables);
         }
 
+        /// <summary>
+        /// 订阅Socket状态的变化，并更新
+        /// </summary>
+        /// <param name="observabler">需要订阅状态的Socket</param>
         public virtual void SubscribeState(IReactiveCapable observabler)
         {
             observabler.StateObservable.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(e =>
                 {
                     Log.Info($"State changed {Runtimes.State} to : {e.NewState}");
-
                     Runtimes.State = e.NewState;
-
                 }).DisposeWith(disposables);
         }
 

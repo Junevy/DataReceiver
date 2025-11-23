@@ -5,11 +5,18 @@ using System.ComponentModel;
 
 namespace DataReceiver.ViewModels.Communication
 {
-    public partial class FtpServerViewModel(FtpServerModel model, TaskScheduleConfig taskScheduleConfig)
-        : ConnectionViewModelBase(model.Runtimes)
+    public partial class FtpServerViewModel : ConnectionViewModelBase
     {
-        private FtpServerModel Model { get; } = model;
-        public TaskScheduleConfig TaskScheduleConfig { get; } = taskScheduleConfig;
+        private FtpServerModel Model { get; }
+        public TaskScheduleConfig TaskScheduleConfig { get; }
+
+        public FtpServerViewModel(FtpServerModel model, TaskScheduleConfig taskScheduleConfig) : base(model.Runtimes)
+        {
+            Model = model;
+            TaskScheduleConfig = taskScheduleConfig;
+            SubscribeState(Model);
+            //SubscribeData(Model);
+        }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
@@ -18,7 +25,7 @@ namespace DataReceiver.ViewModels.Communication
         }
 
         //[RelayCommand(CanExecute = nameof(IsCanDisconnect))]
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof (IsCanDisconnect))]
         public override async Task DisconnectAsync()
         {
             await Model.DisconnectAsync();
