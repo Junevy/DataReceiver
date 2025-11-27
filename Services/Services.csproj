@@ -16,16 +16,14 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+		<PackageReference Include="TaskScheduler" />
+
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="Config\appsettings.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="TaskSchedule\" />
 	</ItemGroup>	
 
 </Project>

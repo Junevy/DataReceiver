@@ -1,5 +1,4 @@
-﻿using DataReceiver.Models;
-using DataReceiver.Models.Socket.Interface;
+﻿using DataReceiver.Models.Socket.Interface;
 using DataReceiver.Services.Decorator;
 using log4net;
 using System.Text;
@@ -15,10 +14,10 @@ namespace DataReceiver.Services.Extentions
         public static async Task TryReconnect(this IConnection connection)
         {
             var reconnectFeature = connection.As<IReconnectCapable>();
-            if (reconnectFeature != null) 
+            if (reconnectFeature != null)
             {
                 Log.Info($"The IConnect is IReconnectCapable");
-                _ = reconnectFeature.StartReconnectAsync(); 
+                _ = reconnectFeature.StartReconnectAsync();
             }
             else Log.Info($"The IConnect is not IReconnectCapable");
         }
@@ -26,35 +25,12 @@ namespace DataReceiver.Services.Extentions
         public static async Task TryStartHeartBeat(this IConnection connection, byte[] response)
         {
             var heartBeatFeature = connection.As<IHeartBeatCapable>();
-            if (heartBeatFeature != null) 
+            if (heartBeatFeature != null)
             {
                 Log.Info($"The IConnect is IHeartBeatCapable");
-                _ = heartBeatFeature.StartHeartBeatAsync(response); 
+                _ = heartBeatFeature.StartHeartBeatAsync(response);
             }
             else Log.Info($"The IConnect is not IHeartBeatCapable");
-        }
-
-
-        public static void TryStartScheduleClean(this IConnection connection)
-        {
-            var scheduleCleanFeature = connection.As<ITaskSchedulerCapable>();
-            if (scheduleCleanFeature != null) 
-            {
-                Log.Info($"The IConnect is ITaskSchedulerCapable");
-                scheduleCleanFeature.RegisterTask(); 
-            }
-            else Log.Info($"The IConnect is not ITaskSchedulerCapable");
-        }
-
-        public static void TryStopScheduleClean(this IConnection connection)
-        {
-            var scheduleCleanFeature = connection.As<ITaskSchedulerCapable>();
-            if (scheduleCleanFeature != null)
-            {
-                Log.Info($"The IConnect is ITaskSchedulerCapable");
-                scheduleCleanFeature.UnregisterTask();
-            }
-            else Log.Info($"The IConnect is not ITaskSchedulerCapable");
         }
 
         /// <summary>

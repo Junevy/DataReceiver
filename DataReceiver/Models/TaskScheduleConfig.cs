@@ -5,6 +5,8 @@ namespace DataReceiver.Models.Socket.Config
 {
     public partial class TaskScheduleConfig : ObservableValidator
     {
+        public event Action<bool>? OnStateChanged;
+
         [ObservableProperty]
         private bool isEnable = false;
 
@@ -32,5 +34,9 @@ namespace DataReceiver.Models.Socket.Config
         [ObservableProperty]
         private DateTime startBoundary = DateTime.Now + TimeSpan.FromHours(2); // 默认每天凌晨2点执行
 
+        partial void OnIsEnableChanged(bool value)
+        {
+            OnStateChanged?.Invoke(value);
+        }
     }
 }

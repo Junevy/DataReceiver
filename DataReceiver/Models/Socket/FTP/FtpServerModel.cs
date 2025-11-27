@@ -16,6 +16,12 @@ namespace DataReceiver.Models.Socket.FTP
             Socket = server;
         }
 
+        /// <summary>
+        /// Start and connect the FTP server.
+        /// </summary>
+        /// <param name="ct">Token</param>
+        /// <returns>States of the connection.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public override async Task<ConnectionState> ConnectAsync(CancellationToken ct = default)
         {
             Log.Info("Starting config and open FTP Server.");
@@ -65,6 +71,11 @@ namespace DataReceiver.Models.Socket.FTP
             return ConnectionState.Connected;
         }
 
+
+        /// <summary>
+        /// Pause the FTP server.
+        /// </summary>
+        /// <returns></returns>
         public override async Task DisconnectAsync()
         {
             Log.Info("Waiting for clean the FTP server.");
@@ -78,11 +89,14 @@ namespace DataReceiver.Models.Socket.FTP
             OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "FTP Server disconnected!");
         }
 
+        /// <summary>
+        /// Dispose the FTP server. When dispoed, the server can not be restart again.
+        /// </summary>
         public override void Dispose()
         {
             Log.Warn("Disposing the object.");
             DisconnectAsync().GetAwaiter().GetResult();
-            //base.Dispose();
+            base.Dispose();
         }
 
         public override Task<int> SendAsync(byte[] data, CancellationToken ct = default)

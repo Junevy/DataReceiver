@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.FTP;
+using Services.TaskSchedule;
 using System.ComponentModel;
 
 namespace DataReceiver.ViewModels.Communication
@@ -9,13 +10,24 @@ namespace DataReceiver.ViewModels.Communication
     {
         private FtpServerModel Model { get; }
         public TaskScheduleConfig TaskScheduleConfig { get; }
+        public FtpServerConfig Config => Model.Config;
 
         public FtpServerViewModel(FtpServerModel model, TaskScheduleConfig taskScheduleConfig) : base(model.Runtimes)
         {
             Model = model;
             TaskScheduleConfig = taskScheduleConfig;
             SubscribeState(Model);
-            //SubscribeData(Model);
+
+            TaskScheduleConfig.ExePath 
+                = "D:\\Desktop\\WorkSpace\\WPF\\DataReceiver" +
+                "\\RegularCleanupTask\\bin\\Debug\\net472\\RegularCleanupTask.exe";
+            TaskScheduleConfig.TaskName = "RegularCleanupTask";
+            TaskScheduleConfig.Description = "Data Receiver Regular Cleanup Task";
+            TaskScheduleConfig.OnStateChanged += v =>
+            {
+                    if (v) RegisterTask();
+                    else UnregisterTask();
+            };
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
@@ -25,10 +37,26 @@ namespace DataReceiver.ViewModels.Communication
         }
 
         //[RelayCommand(CanExecute = nameof(IsCanDisconnect))]
-        [RelayCommand(CanExecute = nameof (IsCanDisconnect))]
+        [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         public override async Task DisconnectAsync()
         {
             await Model.DisconnectAsync();
+        }
+
+        [RelayCommand]
+        public void RegisterTask()
+        {
+            TaskScheduleService.RegisterTask(
+                TaskScheduleConfig.Description,
+                TaskScheduleConfig.ExePath,
+                TaskScheduleConfig.IntervalDays,
+                TaskScheduleConfig.TaskName);
+        }
+
+        [RelayCommand]
+        public void UnregisterTask()
+        {
+            TaskScheduleService.UnregisterTask(TaskScheduleConfig.TaskName);
         }
 
         public override Task SendAsync()
@@ -53,6 +81,8 @@ namespace DataReceiver.ViewModels.Communication
                 });
             }
         }
+
+        //public void OnTask
 
         public override void Dispose()
         {

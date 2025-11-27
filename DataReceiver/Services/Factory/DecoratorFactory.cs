@@ -36,10 +36,5 @@ namespace DataReceiver.Services.Factory
             Log.Info("The HeartBeat task is unenable.");
             return connection;
         }
-
-        //public static IConnection CreateScheduleCleanDecorator(IConnection conn)
-        //{
-        //    return new FtpServerModel(conn);
-        //}
     }
 }

@@ -3,18 +3,165 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:DataReceiver.Views.Communication"
+             xmlns:cvt="clr-namespace:DataReceiver.Helper"
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:DataReceiver.ViewModels.Communication"
              d:DataContext="{d:DesignInstance Type=vm:FtpServerViewModel}"
+             FontFamily="Arial"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
 
-        <Button Grid.Row="0" Content="Start" Command="{Binding ConnectCommand}" Style="{StaticResource ButtonPrimary}"/>
-        <Button Grid.Row="1" Content="Stop" Command="{Binding DisconnectCommand}"/>
-    </Grid>
+    <UserControl.Resources>
+        <cvt:ColorConverter x:Key="NumConverter"/>
+        <cvt:AndBooleanConverter x:Key="AndBooleanConverter" />
+    </UserControl.Resources>
+
+    <hc:SimplePanel>
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="70"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+
+                <!--ip-->
+                <hc:ComboBox hc:InfoElement.ShowClearButton="True"
+                              hc:TitleElement.TitlePlacement="Left"
+                              hc:TitleElement.Title="Host"
+                              hc:TitleElement.MarginOnTheLeft="10"
+                              hc:InfoElement.Necessary="True"
+                              FontSize="14"
+                              MinWidth="260"
+                              IsEditable="True"
+                              IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                              Text="{Binding Config.Ip}"  
+                              hc:Margin="5"/>
+
+                <!--端口-->
+                <hc:ComboBox hc:InfoElement.ShowClearButton="True"
+                              hc:TitleElement.TitlePlacement="Left"
+                              hc:TitleElement.Title="Port"
+                              hc:TitleElement.MarginOnTheLeft="10"
+                              hc:InfoElement.Necessary="True"
+                              FontSize="14"
+                              MinWidth="200"
+                              Text="{Binding Config.Port}"
+                              IsEditable="True"
+                              IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
+                              hc:Margin="5"/>
+
+                <!--开始按钮-->
+                <Button x:Name="Connect" 
+                              MinWidth="95" Height="36"
+                              Style="{StaticResource ButtonSuccess}" 
+                              Command="{Binding ConnectCommand}" 
+                              Content="Start"
+                              FontSize="16"
+                              FontWeight="Medium"
+                              hc:IconElement.Geometry="{StaticResource connect_geom}"
+                              hc:IconElement.Width="15"
+                              Margin="30,0,10,0"/>
+
+                <!--停止按钮-->
+                <Button MinWidth="95" Height="36" x:Name="Disconnect"
+                              Style="{StaticResource ButtonDanger}" 
+                              Command="{Binding DisconnectCommand}" 
+                              Content="Stop"
+                              FontSize="16"
+                              FontWeight="Medium"
+                              hc:IconElement.Geometry="{StaticResource disconnect_geom}"
+                              hc:IconElement.Width="15"
+                              Margin="10,0,10,0"/>
+
+                <!--状态图标-->
+                <Path x:Name="state_icon"
+                              Stroke="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
+                              Fill="{Binding Runtimes.State, Converter={StaticResource NumConverter}}"
+                              Data="{StaticResource state_geom}"   
+                              Stretch="Uniform"
+                              Height="30"
+                              Width="30" Margin="10,0,0,0" HorizontalAlignment="Right"/>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="10" HorizontalAlignment="Stretch">
+                <TextBlock Text="General" Style="{StaticResource TextBlockSubTitle}" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="25"/>
+                <ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding TaskScheduleConfig.IsEnable}" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Left"> Start Clean Task</ToggleButton>
+                
+                <!--interval-->
+                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Interval Days"
+                                            hc:TitleElement.TitleWidth="100"
+                                            hc:TitleElement.TitlePlacement="Left"
+                                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                                            FontSize="14"
+                                            Text="{Binding TaskScheduleConfig.IntervalDays}"
+                                            IsEnabled="{Binding TaskScheduleConfig.IsEnable}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The interval days of the cleanup program start."
+                                            hc:InfoElement.ContentHeight="30" />
+
+                <!--task name-->
+                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Task Name"
+                                            hc:TitleElement.TitleWidth="100"
+
+                                            hc:TitleElement.TitlePlacement="Left"
+                                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                                            FontSize="14"
+                                            Text="{Binding TaskScheduleConfig.TaskName}"
+                                            IsEnabled="{Binding TaskScheduleConfig.IsEnable}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The interval days of the cleanup program start."
+                                            hc:InfoElement.ContentHeight="30" />
+
+                <!--description-->
+                <hc:TextBox hc:InfoElement.ShowClearButton="True"
+                                            hc:TitleElement.Title="Desciption"
+                                            hc:TitleElement.TitleWidth="100"
+
+                                            hc:TitleElement.TitlePlacement="Left"
+                                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                                            FontSize="14"
+                                            Text="{Binding TaskScheduleConfig.Description}"
+                                            IsEnabled="{Binding TaskScheduleConfig.IsEnable}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The interval days of the cleanup program start."
+                                            hc:InfoElement.ContentHeight="30" />
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--exe path-->
+                    <hc:TextBox Grid.Column="0" hc:InfoElement.ShowClearButton="True"  VerticalAlignment="Center"
+                                            hc:TitleElement.Title="Exe Path"
+                                            hc:TitleElement.TitlePlacement="Left"
+                                            hc:TitleElement.TitleWidth="100"
+                                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                                            FontSize="14"
+                                            Text="{Binding TaskScheduleConfig.ExePath}"
+                                            IsEnabled="{Binding TaskScheduleConfig.IsEnable}"
+                                            hc:Margin="0,0,0,20"
+                                            ToolTip="The interval days of the cleanup program start."
+                                            hc:InfoElement.ContentHeight="30" />
+                    <Button Grid.Column="1" Style="{StaticResource ButtonBaseStyle}" 
+                            Foreground="Black" Margin="0,0,0,20"
+                            hc:IconElement.Geometry="{StaticResource folder_geom}"
+                            hc:IconElement.Width="10">Choose Directory</Button>
+
+                </Grid>
+
+            </StackPanel>
+
+        </Grid>
+
+    </hc:SimplePanel>
+
+    
 </UserControl>
