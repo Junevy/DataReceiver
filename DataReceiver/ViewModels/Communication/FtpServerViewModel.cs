@@ -27,7 +27,7 @@ namespace DataReceiver.ViewModels.Communication
                     if (v) RegisterTask();
                     else UnregisterTask();
             };
-            //TaskScheduleConfig.PropertyChanged += OnTaskPropertyChanged;
+            TaskScheduleConfig.PropertyChanged += OnTaskPropertyChanged;
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
@@ -77,9 +77,7 @@ namespace DataReceiver.ViewModels.Communication
         /// </summary>
         [RelayCommand]
         public void SaveConfig()
-        {
-            ConfigService.SaveSection(nameof(TaskScheduleConfig));
-        }
+            => ConfigService.SaveSection(TaskScheduleConfig, nameof(TaskScheduleConfig));
 
         public override Task SendAsync()
             => throw new NotImplementedException();
@@ -99,6 +97,11 @@ namespace DataReceiver.ViewModels.Communication
                     DisconnectCommand.NotifyCanExecuteChanged();
                 });
             }
+        }
+
+        public void OnTaskPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            TaskScheduleConfig.IsEdited = true;
         }
 
         /// <summary>

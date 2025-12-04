@@ -8,6 +8,9 @@ namespace DataReceiver.Models.Socket.Config
         public event Action<bool>? OnStateChanged;
 
         [ObservableProperty]
+        private bool isEdited = false;
+
+        [ObservableProperty]
         private bool isEnable = false;
 
         //[ObservableObject]

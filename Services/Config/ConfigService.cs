@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace Services.Config
 {
@@ -43,10 +46,28 @@ namespace Services.Config
             return config ?? throw new ArgumentNullException($"无法从配置文件中载入 {node} 配置");
         }
 
-        public static bool SaveSection(string sectionName)
+        /// <summary>
+        /// 更新某个Section
+        /// </summary>
+        /// <typeparam name="T">需要更新的Section</typeparam>
+        /// <param name="sectionName"></param>
+        /// <returns></returns>
+        public static bool SaveSection<T>(T config, string sectionName)
         {
+            try
+            {
+                var jsonPath = Path.Combine(ConfigPath, "appsettings.json");
+                var jsonText = File.ReadAllText(jsonPath);
 
-            return false;
+                var root = JsonNode.Parse(jsonText)!.AsObject();
+                root[sectionName] = JsonNode.Parse(JsonSerializer.Serialize(config));
+                File.WriteAllText(jsonPath, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }

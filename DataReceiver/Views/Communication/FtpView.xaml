@@ -194,6 +194,13 @@
                                 IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
                                 >Choose Directory</Button>
                     </Grid>
+                    <Button Grid.Column="1" Style="{StaticResource ButtonBaseStyle}" 
+                                Foreground="Black" Margin="0,0,0,20"
+                                hc:IconElement.Geometry="{StaticResource folder_geom}"
+                                hc:IconElement.Width="10"
+                                Command="{Binding SaveConfigCommand}"
+                                IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
+                                >Choose Directory</Button>
                 </StackPanel>
             </Border>
         </Grid>
