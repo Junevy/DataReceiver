@@ -42,5 +42,11 @@ namespace Services.Config
             var config = Configer.GetSection(node).Value;
             return config ?? throw new ArgumentNullException($"无法从配置文件中载入 {node} 配置");
         }
+
+        public static bool SaveSection(string sectionName)
+        {
+
+            return false;
+        }
     }
 }

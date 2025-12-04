@@ -18,6 +18,7 @@ using log4net.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Services.Dialog;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -83,13 +84,15 @@ namespace DataReceiver
             container.Configure<ReconnectConfig>(configuration.GetSection(nameof(ReconnectConfig)));
             container.Configure<HeartBeatConfig>(configuration.GetSection(nameof(HeartBeatConfig)));
             container.Configure<FtpServerConfig>(configuration.GetSection(nameof(FtpServerConfig)));
+            container.Configure<TaskScheduleConfig>(configuration.GetSection(nameof(TaskScheduleConfig)));
 
             container.AddSingleton(sp => sp.GetRequiredService<IOptions<TcpClientConfig>>().Value);
             container.AddSingleton(sp => sp.GetRequiredService<IOptions<ReconnectConfig>>().Value);
             container.AddSingleton(sp => sp.GetRequiredService<IOptions<HeartBeatConfig>>().Value);
             container.AddSingleton(sp => sp.GetRequiredService<IOptions<FtpServerConfig>>().Value);
+            container.AddSingleton(sp => sp.GetRequiredService<IOptions<TaskScheduleConfig>>().Value);
 
-            container.AddSingleton<TaskScheduleConfig>();
+            //container.AddSingleton<TaskScheduleConfig>();
 
             /* ==============================================================
              * View
@@ -120,7 +123,13 @@ namespace DataReceiver
             container.AddTransient<TcpClientModel>();
             container.AddSingleton<FtpServerModel>();
 
+
+            /* ==============================================================
+             * Services
+             * ============================================================= */
             container.AddSingleton<NavigationService>();
+            container.AddSingleton<IDialogService, DialogService>();
+
 
             /* ==============================================================
              * Ftp Server
@@ -189,38 +198,3 @@ namespace DataReceiver
         }
     }
 }
-
-
-#region old code
-//container.AddTransient<NavigationService>();
-
-//// View
-//container.AddSingleton<Frame>(_
-//    => new Frame { NavigationUIVisibility = NavigationUIVisibility.Hidden });
-//container.AddSingleton<MainView>();
-//container.AddSingleton<DataView>();
-//container.AddSingleton<HomeView>();
-//container.AddSingleton<CommunicationView>();
-//container.AddTransient<TcpView>();
-//container.AddTransient<FtpView>();
-
-//// ViewModel
-//container.AddTransient<MainViewModel>();
-//container.AddTransient<DataViewModel>();
-//container.AddTransient<HomeViewModel>();
-//container.AddTransient<CommunicationViewModel>();
-//container.AddTransient<FtpServerViewModel>();
-//container.AddTransient(_ => new TcpClientViewModel(
-//    new TcpClientModel(ConfigService.Get<TcpClientConfig>()),
-//    ConfigService.Get<ReconnectConfig>(),
-//    ConfigService.Get<HeartBeatConfig>()));
-
-//// Model
-//container.AddTransient<TcpClientModel>(_ => new TcpClientModel(ConfigService.Get<TcpClientConfig>()));
-//container.AddSingleton<FtpServerModel>();
-//container.AddSingleton<FtpServerConfig>(_ => ConfigService.Get<FtpServerConfig>());
-//var test = ConfigService.Get<HeartBeatConfig>();
-
-//container.Configure
-
-#endregion

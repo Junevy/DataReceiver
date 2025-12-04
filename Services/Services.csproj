@@ -24,6 +24,10 @@
 	  <Content Include="Config\appsettings.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Windows.Forms" />
 	</ItemGroup>	
 
 </Project>

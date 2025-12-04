@@ -10,6 +10,9 @@ namespace DataReceiver.Models.Socket.Config
         [ObservableProperty]
         private bool isEnable = false;
 
+        //[ObservableObject]
+        public bool CanEdit => !IsEnable;
+
         [ObservableProperty]
         private string exePath = string.Empty;
 
@@ -32,11 +35,8 @@ namespace DataReceiver.Models.Socket.Config
         private short intervalDays = 1;
 
         [ObservableProperty]
-        private DateTime startBoundary = DateTime.Now + TimeSpan.FromHours(2); // 默认每天凌晨2点执行
+        private TimeSpan startBoundary = TimeSpan.FromHours(4); // 默认每天凌晨2点执行
 
-        partial void OnIsEnableChanged(bool value)
-        {
-            OnStateChanged?.Invoke(value);
-        }
+        partial void OnIsEnableChanged(bool value) => OnStateChanged?.Invoke(value);
     }
 }

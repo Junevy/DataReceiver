@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DataReceiver.Models.Config;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataReceiver.Models.Socket.Config
 {
@@ -9,9 +10,13 @@ namespace DataReceiver.Models.Socket.Config
         private string rootPath = @$"D:/FTP/Default/{DateTime.Now:yyyy-MM-dd}";
 
         [ObservableProperty]
+        [Required(ErrorMessage = "公共用户名不能为空")]
+        [NotifyDataErrorInfo] 
         private string userName = "admin";
 
         [ObservableProperty]
+        [Required(ErrorMessage = "公共密码不能为空")]
+        [NotifyDataErrorInfo]
         private string password = "123456";
 
         [ObservableProperty]

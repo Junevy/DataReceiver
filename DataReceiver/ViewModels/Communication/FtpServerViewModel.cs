@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.FTP;
+using Services.Config;
+using Services.Dialog;
 using Services.TaskSchedule;
 using System.ComponentModel;
 
@@ -11,38 +13,35 @@ namespace DataReceiver.ViewModels.Communication
         private FtpServerModel Model { get; }
         public TaskScheduleConfig TaskScheduleConfig { get; }
         public FtpServerConfig Config => Model.Config;
+        private readonly IDialogService dialog;
 
-        public FtpServerViewModel(FtpServerModel model, TaskScheduleConfig taskScheduleConfig) : base(model.Runtimes)
+        public FtpServerViewModel(FtpServerModel model, 
+            TaskScheduleConfig taskScheduleConfig, IDialogService dialogService) : base(model.Runtimes)
         {
             Model = model;
             TaskScheduleConfig = taskScheduleConfig;
             SubscribeState(Model);
-
-            TaskScheduleConfig.ExePath 
-                = "D:\\Desktop\\WorkSpace\\WPF\\DataReceiver" +
-                "\\RegularCleanupTask\\bin\\Debug\\net472\\RegularCleanupTask.exe";
-            TaskScheduleConfig.TaskName = "RegularCleanupTask";
-            TaskScheduleConfig.Description = "Data Receiver Regular Cleanup Task";
+            dialog = dialogService;
             TaskScheduleConfig.OnStateChanged += v =>
             {
                     if (v) RegisterTask();
                     else UnregisterTask();
             };
+            //TaskScheduleConfig.PropertyChanged += OnTaskPropertyChanged;
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
         public override async Task ConnectAsync()
-        {
-            await Model.ConnectAsync();
-        }
+            => await Model.ConnectAsync();
 
         //[RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         public override async Task DisconnectAsync()
-        {
-            await Model.DisconnectAsync();
-        }
+            => await Model.DisconnectAsync();
 
+        /// <summary>
+        /// 注册定时任务
+        /// </summary>
         [RelayCommand]
         public void RegisterTask()
         {
@@ -53,19 +52,40 @@ namespace DataReceiver.ViewModels.Communication
                 TaskScheduleConfig.TaskName);
         }
 
+        /// <summary>
+        /// 注销定时任务
+        /// </summary>
         [RelayCommand]
-        public void UnregisterTask()
-        {
-            TaskScheduleService.UnregisterTask(TaskScheduleConfig.TaskName);
-        }
+        public void UnregisterTask() 
+            => TaskScheduleService.UnregisterTask(TaskScheduleConfig.TaskName);
 
-        public override Task SendAsync()
+        /// <summary>
+        /// 选择工作目录（存储FTP文件的目录及需要定时清理的目录）
+        /// </summary>
+        [RelayCommand]
+        public void SelectFolder()
         {
-            throw new NotImplementedException();
+            string? folder = dialog.SelectFolder();
+            if (!string.IsNullOrEmpty(folder))
+            {
+                TaskScheduleConfig.WorkingDirectory = folder;
+            }
         }
 
         /// <summary>
-        /// 当Runtimes 参数发生变化时，通知命令更新其状态
+        /// 修改并保存配置文件
+        /// </summary>
+        [RelayCommand]
+        public void SaveConfig()
+        {
+            ConfigService.SaveSection(nameof(TaskScheduleConfig));
+        }
+
+        public override Task SendAsync()
+            => throw new NotImplementedException();
+
+        /// <summary>
+        /// 当Runtimes 参数（State）发生变化时，更新命令的可执行状态
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -77,13 +97,13 @@ namespace DataReceiver.ViewModels.Communication
                 {
                     ConnectCommand.NotifyCanExecuteChanged();
                     DisconnectCommand.NotifyCanExecuteChanged();
-                    //SendCommand.NotifyCanExecuteChanged();
                 });
             }
         }
 
-        //public void OnTask
-
+        /// <summary>
+        /// 释放FTP Server对象
+        /// </summary>
         public override void Dispose()
         {
             Model.Dispose();

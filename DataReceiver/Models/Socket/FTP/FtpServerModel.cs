@@ -3,7 +3,6 @@ using DataReceiver.Models.Socket.Common;
 using FubarDev.FtpServer;
 using log4net;
 using System.IO;
-using System.Net;
 using FtpServerConfig = DataReceiver.Models.Socket.Config.FtpServerConfig;
 
 namespace DataReceiver.Models.Socket.FTP
@@ -53,8 +52,8 @@ namespace DataReceiver.Models.Socket.FTP
                 }
 
             }
-            catch (OperationCanceledException) 
-            { 
+            catch (OperationCanceledException)
+            {
                 Log.Warn("FTP task canceled!");
                 OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, $"FTP Server canceled.");
                 return ConnectionState.Disconnected;
@@ -79,12 +78,13 @@ namespace DataReceiver.Models.Socket.FTP
         public override async Task DisconnectAsync()
         {
             Log.Info("Waiting for clean the FTP server.");
-            try { 
-                Socket?.PauseAsync( 
-                    (Cts == null || Cts.IsCancellationRequested) 
-                    ? CancellationToken.None 
+            try
+            {
+                Socket?.PauseAsync(
+                    (Cts == null || Cts.IsCancellationRequested)
+                    ? CancellationToken.None
                     : Cts.Token);
-            } 
+            }
             catch (Exception e) { Log.Warn($"Clean the Socket error :{e.Message} "); }
             OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "FTP Server disconnected!");
         }
