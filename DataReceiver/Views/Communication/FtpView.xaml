@@ -20,12 +20,12 @@
     <hc:SimplePanel>
         <Grid Background="White">
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="70"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="6*"/>
+                <RowDefinition MaxHeight="50"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,0,10,0" HorizontalAlignment="Stretch">
                 <!--ip-->
                 <hc:ComboBox hc:InfoElement.ShowClearButton="True"
                               hc:TitleElement.TitlePlacement="Left"
@@ -86,11 +86,9 @@
             </StackPanel>
 
             <Border CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="{StaticResource border_brush}"
-                    Grid.Row="1" Margin="10,10,10,5" HorizontalAlignment="Stretch">
+                    Grid.Row="1" Margin="10,30,10,5" HorizontalAlignment="Stretch">
                 <StackPanel Margin="10">
-                    <!--<TextBlock Text="General" Style="{StaticResource TextBlockSubTitle}" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="25"/>-->
-                    <!--<ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding TaskScheduleConfig.IsEnable}" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Left">Start Clean Task</ToggleButton>-->
-
+                   
                     <!--user Name-->
                     <hc:TextBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.Title="User Name"
@@ -100,7 +98,7 @@
                             FontSize="14"
                             Text="{Binding Config.UserName}"
                             IsEnabled="{Binding ElementName=Connect, Path=IsEnabled}"
-                            hc:Margin="0,0,0,20"
+                            hc:Margin="0,10,0,20"
                             ToolTip="The interval days of the cleanup program start."
                             hc:InfoElement.ContentHeight="30" />
 
@@ -121,17 +119,17 @@
 
 
             <Border CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="{StaticResource border_brush}"
-                    Grid.Row="2" Margin="10,5,10,10" HorizontalAlignment="Stretch">
+                    Grid.Row="2" Margin="10,30,10,10" HorizontalAlignment="Stretch">
                 <StackPanel Margin="10">
                     <!--<TextBlock Text="General" Style="{StaticResource TextBlockSubTitle}" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="25"/>-->
-                    <ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding TaskScheduleConfig.IsEnable}" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Left">Start Clean Task</ToggleButton>
+                    <ToggleButton Style="{StaticResource ToggleButtonSwitch}" IsChecked="{Binding TaskScheduleConfig.IsEnable}" FontSize="16" Margin="0,15,0,20" HorizontalAlignment="Left">Start Clean Task</ToggleButton>
 
                     <!--interval-->
                     <hc:TextBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.Title="Interval Days"
-                            hc:TitleElement.TitleWidth="100"
+                            hc:TitleElement.TitleWidth="130"
                             hc:TitleElement.TitlePlacement="Left"
-                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.CanEdit}"
                             FontSize="14"
                             Text="{Binding TaskScheduleConfig.IntervalDays}"
                             IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
@@ -142,10 +140,10 @@
                     <!--task name-->
                     <hc:TextBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.Title="Task Name"
-                            hc:TitleElement.TitleWidth="100"
+                            hc:TitleElement.TitleWidth="130"
 
                             hc:TitleElement.TitlePlacement="Left"
-                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.CanEdit}"
                             FontSize="14"
                             Text="{Binding TaskScheduleConfig.TaskName}"
                             IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
@@ -156,10 +154,10 @@
                     <!--description-->
                     <hc:TextBox hc:InfoElement.ShowClearButton="True"
                             hc:TitleElement.Title="Desciption"
-                            hc:TitleElement.TitleWidth="100"
+                            hc:TitleElement.TitleWidth="130"
 
                             hc:TitleElement.TitlePlacement="Left"
-                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.CanEdit}"
                             FontSize="14"
                             Text="{Binding TaskScheduleConfig.StartBoundary}"
                             IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
@@ -178,29 +176,37 @@
                         <hc:TextBox Grid.Column="0" hc:InfoElement.ShowClearButton="True"  VerticalAlignment="Center"
                             hc:TitleElement.Title="Directory Path"
                             hc:TitleElement.TitlePlacement="Left"
-                            hc:TitleElement.TitleWidth="100"
-                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.IsEnable}"
+                            hc:TitleElement.TitleWidth="130"
+                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.CanEdit}"
                             FontSize="14"
-                            Text="{Binding TaskScheduleConfig.WorkingDirectory}"
+                            Text="{Binding Config.RootPath}"
                             IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
                             hc:Margin="0,0,0,20"
                             ToolTip="The interval days of the cleanup program start."
                             hc:InfoElement.ContentHeight="30" />
                         <Button Grid.Column="1" Style="{StaticResource ButtonBaseStyle}" 
-                                Foreground="Black" Margin="0,0,0,20"
+                                HorizontalAlignment="Stretch"
+                                Foreground="Black" Margin="10,0,0,20"
                                 hc:IconElement.Geometry="{StaticResource folder_geom}"
                                 hc:IconElement.Width="10"
                                 Command="{Binding SelectFolderCommand}"
                                 IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
                                 >Choose Directory</Button>
                     </Grid>
-                    <Button Grid.Column="1" Style="{StaticResource ButtonBaseStyle}" 
-                                Foreground="Black" Margin="0,0,0,20"
-                                hc:IconElement.Geometry="{StaticResource folder_geom}"
-                                hc:IconElement.Width="10"
-                                Command="{Binding SaveConfigCommand}"
-                                IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
-                                >Choose Directory</Button>
+
+                    <!--directory path-->
+                    <hc:TextBox Grid.Column="0" hc:InfoElement.ShowClearButton="True"  VerticalAlignment="Center"
+                            hc:TitleElement.Title="Keep days"
+                            hc:TitleElement.TitlePlacement="Left"
+                            hc:TitleElement.TitleWidth="130"
+                            hc:InfoElement.Necessary="{Binding TaskScheduleConfig.CanEdit}"
+                            FontSize="14"
+                            Text="{Binding Config.KeepDays}"
+                            IsEnabled="{Binding TaskScheduleConfig.CanEdit}"
+                            hc:Margin="0,0,0,20"
+                            ToolTip="The keep days of these files."
+                            hc:InfoElement.ContentHeight="30" />
+
                 </StackPanel>
             </Border>
         </Grid>

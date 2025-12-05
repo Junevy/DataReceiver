@@ -14,7 +14,8 @@ namespace DataReceiver.Models.Config
 
         [ObservableProperty]
         [Required(ErrorMessage = "端口号不能为空")]
-        [Range(1025, 65535, ErrorMessage = "端口号必须在1025到65535之间")]
+        [RegularExpression(@"^(21|([1-9][0-9]{3,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))$",
+            ErrorMessage = "端口号必须是21或1025-65535之间的值")]
         [NotifyDataErrorInfo]
         private int port = 9008;
 

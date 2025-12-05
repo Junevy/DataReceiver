@@ -7,6 +7,8 @@ namespace DataReceiver.Models.Socket.Config
     public partial class FtpServerConfig : CommunicationConfig
     {
         [ObservableProperty]
+        [Required(ErrorMessage = "路径不能为空")]
+        [NotifyDataErrorInfo]
         private string rootPath = @$"D:/FTP/Default/{DateTime.Now:yyyy-MM-dd}";
 
         [ObservableProperty]
@@ -28,16 +30,11 @@ namespace DataReceiver.Models.Socket.Config
         [ObservableProperty]
         private TimeSpan inactiveCheckInterval = TimeSpan.FromMinutes(1);
 
-        //[ObservableProperty]
-        //private bool enableScheduleClean = false;
-
         [ObservableProperty]
+        [Required(ErrorMessage = "保留天数不能为空")]
+        [RegularExpression(@"^(36[0-5]|3[0-5][0-9]|[12][0-9]{2}|[1-9][0-9]?)$", ErrorMessage = "保留天数必须大于0天并且小于365天")]
+        [NotifyDataErrorInfo]
         private int keepDays = 30;
-
-
-
-        //[ObservableProperty]
-        //private int scanIntervalDays = 1;
 
         [ObservableProperty]
         private TimeSpan inactiveTimeOut = TimeSpan.FromMinutes(5);

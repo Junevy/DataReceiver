@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DataReceiver.Models.Socket.Config;
 using DataReceiver.Models.Socket.FTP;
+using HandyControl.Controls;
 using Services.Config;
 using Services.Dialog;
 using Services.TaskSchedule;
@@ -15,7 +16,7 @@ namespace DataReceiver.ViewModels.Communication
         public FtpServerConfig Config => Model.Config;
         private readonly IDialogService dialog;
 
-        public FtpServerViewModel(FtpServerModel model, 
+        public FtpServerViewModel(FtpServerModel model,
             TaskScheduleConfig taskScheduleConfig, IDialogService dialogService) : base(model.Runtimes)
         {
             Model = model;
@@ -24,20 +25,36 @@ namespace DataReceiver.ViewModels.Communication
             dialog = dialogService;
             TaskScheduleConfig.OnStateChanged += v =>
             {
-                    if (v) RegisterTask();
-                    else UnregisterTask();
+                if (v) 
+                {
+                    RegisterTask();
+                    Growl.Success($"Auto clean task registered.");
+                }
+                else
+                {
+                    UnregisterTask();
+                    Growl.Warning($"Auto clean task canceled.");
+                }
             };
-            TaskScheduleConfig.PropertyChanged += OnTaskPropertyChanged;
+
+            TaskScheduleConfig.PropertyChanged += OnConfigPropertyChanged;
+            Config.PropertyChanged += OnConfigPropertyChanged;
+            Title = "FTP Server - Stop";
         }
 
         [RelayCommand(CanExecute = nameof(IsCanConnect))]
-        public override async Task ConnectAsync()
-            => await Model.ConnectAsync();
+        public override async Task ConnectAsync() 
+        { 
+            await Model.ConnectAsync();
+            Title = "FTP Server - Running";
+        }
 
-        //[RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         [RelayCommand(CanExecute = nameof(IsCanDisconnect))]
         public override async Task DisconnectAsync()
-            => await Model.DisconnectAsync();
+        {
+            await Model.DisconnectAsync();
+            Title = "FTP Server - Stop";
+        }
 
         /// <summary>
         /// 注册定时任务
@@ -56,7 +73,7 @@ namespace DataReceiver.ViewModels.Communication
         /// 注销定时任务
         /// </summary>
         [RelayCommand]
-        public void UnregisterTask() 
+        public void UnregisterTask()
             => TaskScheduleService.UnregisterTask(TaskScheduleConfig.TaskName);
 
         /// <summary>
@@ -68,16 +85,35 @@ namespace DataReceiver.ViewModels.Communication
             string? folder = dialog.SelectFolder();
             if (!string.IsNullOrEmpty(folder))
             {
-                TaskScheduleConfig.WorkingDirectory = folder;
+                Config.RootPath = folder;
             }
         }
 
         /// <summary>
-        /// 修改并保存配置文件
+        /// 当 Config 的参数发生变化时，自动保存到本地Json文件中
         /// </summary>
-        [RelayCommand]
-        public void SaveConfig()
-            => ConfigService.SaveSection(TaskScheduleConfig, nameof(TaskScheduleConfig));
+        /// <param name="sender">参数发生变化的对象（Config）</param>
+        /// <param name="e">发生变化的信息（含参数名）</param>
+        private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender == TaskScheduleConfig)
+            {
+                SaveConfig(TaskScheduleConfig, nameof(TaskScheduleConfig));
+            }
+            else if (sender == Config)
+            {
+                SaveConfig(Config, nameof(FtpServerConfig));
+            }
+        }
+
+        /// <summary>
+        /// Config 参数发生变化时，即时保存到本地Json文件中
+        /// </summary>
+        /// <typeparam name="T">Config 对象类型</typeparam>
+        /// <param name="config">Config 对象</param>
+        /// <param name="sectionName">Config 名称（Section Name of Json）</param>
+        public void SaveConfig<T>(T config, string sectionName)
+            => ConfigService.SaveSection(config, sectionName);
 
         public override Task SendAsync()
             => throw new NotImplementedException();
@@ -99,16 +135,13 @@ namespace DataReceiver.ViewModels.Communication
             }
         }
 
-        public void OnTaskPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            TaskScheduleConfig.IsEdited = true;
-        }
-
         /// <summary>
-        /// 释放FTP Server对象
+        /// 释放FTP Server对象，释放后，本次程序的生命周期内不可再次启动（Bug，待修复）。
         /// </summary>
         public override void Dispose()
         {
+            Config.PropertyChanged -= OnConfigPropertyChanged;
+            TaskScheduleConfig.PropertyChanged -= OnConfigPropertyChanged;
             Model.Dispose();
             base.Dispose();
         }

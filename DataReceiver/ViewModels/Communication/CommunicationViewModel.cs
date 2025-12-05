@@ -56,7 +56,7 @@ namespace DataReceiver.ViewModels.Communication
                     return;
             }
             Log.Info($"Current navigate to page: {(currentItem)}");
-            Growl.Info($"{currentItem} added!");
+            Growl.Info($"{currentItem} Initialized!");
             currentItem = string.Empty;
             AddSubPageCommand.NotifyCanExecuteChanged();
         }

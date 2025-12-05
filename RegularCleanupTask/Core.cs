@@ -97,7 +97,7 @@
         }
 
         /// <summary>
-        /// 获取文件最后一级目录
+        /// 获取文件最后一级目录（递归获取）
         /// </summary>
         /// <param name="path">路径</param>
         /// <param name="keepDays">保留天数</param>

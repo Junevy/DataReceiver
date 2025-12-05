@@ -9,13 +9,14 @@
       d:DataContext="{d:DesignInstance Type=vm:CommunicationViewModel}"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       d:DesignHeight="450" d:DesignWidth="800"
+      FontFamily="Arial"
       xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers"
       Title="SocketView">
 
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MaxWidth="120"/>
+            <ColumnDefinition MaxWidth="130"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -39,7 +40,7 @@
 
             <!--侧边栏-->
             <hc:TransitioningContentControl Grid.Row="0">
-                <hc:SideMenu Width="120"
+                <hc:SideMenu Width="130"
                              ExpandMode="ShowAll" AutoSelect="True">
                     <hc:Interaction.Triggers>
                         <hc:EventTrigger EventName="SelectionChanged">
@@ -57,7 +58,7 @@
                                   Height="25"/>
                         </hc:SideMenuItem.Icon>
 
-                        <hc:SideMenuItem Header="TCP" x:Name="TCP" FontFamily="Consolas">
+                        <hc:SideMenuItem Header="TCP Client" x:Name="TCP">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource tcp_geom}" 
                                       Stroke="{DynamicResource icon_foreground}" 
@@ -67,7 +68,7 @@
                             </hc:SideMenuItem.Icon>
                         </hc:SideMenuItem>
 
-                        <hc:SideMenuItem Header="FTP" x:Name="FTP">
+                        <hc:SideMenuItem Header="FTP Server" x:Name="FTP">
                             <hc:SideMenuItem.Icon>
                                 <Path Data="{StaticResource ftp_geom}" 
                                   Stroke="{DynamicResource icon_foreground}" 
