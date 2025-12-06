@@ -6,10 +6,10 @@
 ** 项目基于.Net 8，编译Target 为 .Net framework 4.7.2 ** 
 
 ## 已实现的功能：
-1. TCP Client：包含基本通讯、通讯日志、心跳、重连功能； <br>
-<img width="1350" height="732" alt="image" src="https://github.com/user-attachments/assets/5fda739c-b0ff-44e7-a314-c913f82c27cb" /> <br>
-2. FTP Server：基于FubarDev，使用公共用户验证（可在UserShip中管理、维护用户），实现简单的文件管理。同时，因个人需要，又额外添加了一个定时清理文件的功能（注册Windows的TaskSchedule）； <br> 
-<img width="1500" height="813" alt="image" src="https://github.com/user-attachments/assets/81661573-f1d1-4566-9623-c3c359011bf5" /> <br>
+1. TCP Client：包含基本通讯、通讯日志、心跳、重连功能； <br><br>
+<img width="1350" height="732" alt="image" src="https://github.com/user-attachments/assets/5fda739c-b0ff-44e7-a314-c913f82c27cb" /> <br><br>
+2. FTP Server：基于FubarDev，使用公共用户验证（可在UserShip中管理、维护用户），实现简单的文件管理。同时，因个人需要，又额外添加了一个定时清理文件的功能（注册Windows的TaskSchedule）； <br> <br>
+<img width="1500" height="813" alt="image" src="https://github.com/user-attachments/assets/81661573-f1d1-4566-9623-c3c359011bf5" /> <br><br>
 3. 已配置好Log4Net，记录程序日志；
    
 ## 未来会做的事情：
