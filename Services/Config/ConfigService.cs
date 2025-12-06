@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.RegularExpressions;
 
 namespace Services.Config
 {
@@ -11,13 +10,13 @@ namespace Services.Config
         /// 配置文件相对路径
         /// </summary>
         public static readonly string ConfigPath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                          "DataReceiverConfigs");
 
         /// <summary>
         /// 配置构建器
         /// </summary>
-        private static readonly IConfigurationRoot Configer = 
+        private static readonly IConfigurationRoot Configer =
                         new ConfigurationBuilder()
                         .SetBasePath(ConfigPath)
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

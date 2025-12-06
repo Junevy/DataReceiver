@@ -17,4 +17,6 @@
 
     <SolidColorBrush x:Key="default_background" Color="White"/>
 
+    <SolidColorBrush x:Key="menu_background" Color="#4169E1"/>
+
 </ResourceDictionary>

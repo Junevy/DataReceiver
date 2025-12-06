@@ -49,11 +49,11 @@
                         </hc:EventTrigger>
                     </hc:Interaction.Triggers>
 
-                    <hc:SideMenuItem Header="常用协议" FontSize="14" >
+                    <hc:SideMenuItem Header="常用协议" FontSize="16" FontWeight="Bold" >
                         <hc:SideMenuItem.Icon>
                             <Path Data="{StaticResource menu_geom}" 
-                                  Stroke="#000080" 
-                                  Stretch="Uniform" Fill="#000080" 
+                                  Stroke="{DynamicResource menu_background}" 
+                                  Stretch="Uniform" Fill="{DynamicResource menu_background}" 
                                   Width="25" 
                                   Height="25"/>
                         </hc:SideMenuItem.Icon>

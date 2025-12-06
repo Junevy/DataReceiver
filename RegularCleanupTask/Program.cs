@@ -41,7 +41,6 @@ foreach (var dir in singleDir)
     }
 }
 
-
 Console.WriteLine("Cleanup task was completed, press any key to exit.");
 Core.Log(Environment.NewLine);
 Console.ReadKey();

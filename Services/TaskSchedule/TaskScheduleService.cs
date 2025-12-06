@@ -18,6 +18,7 @@ namespace Services.TaskSchedule
                 td.Principal.LogonType = TaskLogonType.ServiceAccount;
 
                 td.RegistrationInfo.Description = description;
+                td.RegistrationInfo.Author = "DataReceiver";
                 td.Actions.Add(new ExecAction(exePath, null)); // 立即执行一次，防止任务未创建前就错过触发时间
                 td.Triggers.Add(new DailyTrigger()
                 {

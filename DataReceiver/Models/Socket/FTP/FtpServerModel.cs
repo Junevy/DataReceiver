@@ -1,7 +1,6 @@
 ﻿using DataReceiver.Models.Socket.Base;
 using DataReceiver.Models.Socket.Common;
 using FubarDev.FtpServer;
-using HandyControl.Controls;
 using log4net;
 using System.IO;
 using FtpServerConfig = DataReceiver.Models.Socket.Config.FtpServerConfig;
@@ -14,7 +13,6 @@ namespace DataReceiver.Models.Socket.FTP
         public FtpServerModel(FtpServerConfig config, IFtpServer server) : base(config)
         {
             Socket = server;
-            
         }
 
         /// <summary>
