@@ -3,7 +3,7 @@
 > 开始写通讯的时候，就在思考是否应该写个简单的导航框架，于是，这个项目便诞生了！ <br><br>
 > 导航框架写完后，在框架内写了个FTP Server（基于FubarDev）和TCP Client。 <br><br>
 
-** 项目基于.Net 8，编译Target 为 .Net framework 4.7.2 ** 
+**项目基于.Net 8，编译Target 为 .Net framework 4.7.2** 
 
 ## 已实现的功能：
 1. TCP Client：包含基本通讯、通讯日志、心跳、重连功能； <br><br>
