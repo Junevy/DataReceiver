@@ -42,12 +42,15 @@ namespace DataReceiver.Models.Socket.TCP
                 //连接
                 using var anyTask = await Task.WhenAny(timeoutTask, Socket.ConnectAsync(Config.Ip, Config.Port))
                     .ConfigureAwait(false);
+
+                //连接失败
                 if (anyTask == timeoutTask || !Socket.Connected)
                 {
                     Socket.Close();
                     Log.Warn($" [{Config.Ip}:{Config.Port}]: Connect failed!");
                     return OnStateUpdated(ConnectionState.Disconnected, Runtimes.State, "Connect timeout or error.");
                 }
+
                 //连接成功
                 Log.Info($" [{Config.Ip} : {Config.Port}] Connect successful");
                 Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
@@ -152,7 +155,7 @@ namespace DataReceiver.Models.Socket.TCP
                     }
 
                     Runtimes.LastActivityTime = DateTime.Now.ToString("yyyy-MM-ss HH:mm:ss");
-                    OnDataReceived(buffer, "Data received.");
+                    OnDataReceived(buffer.AsSpan(0, bytesRead).ToArray(), "Data received.");
                 }
                 return -1;
             }

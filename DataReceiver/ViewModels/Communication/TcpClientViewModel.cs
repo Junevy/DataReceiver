@@ -44,10 +44,12 @@ namespace DataReceiver.ViewModels.Communication
             Decorator = DecoratorFactory.CreateHeartBeatDecorator(Decorator, HeartBeatConfig);
 
             await Decorator.ConnectAsync();
-            _ = Decorator.TryReconnect();
+            Task.Run(async () => { await Decorator.TryReconnect(); });
 
             var response = Encoding.UTF8.GetBytes(HeartBeatConfig.Response);
-            _ = Decorator.TryStartHeartBeat(response);
+            //await Decorator.TryStartHeartBeat(response);
+            Task.Run(async () => { await Decorator.TryStartHeartBeat(response); });
+
 
             Title = $"[{Config.Ip} : {Config.Port}]";
         }

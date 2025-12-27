@@ -8,6 +8,7 @@ namespace DataReceiver.Services.Decorator
     public class ReconnectDecorator(IConnection inner, ReconnectConfig config) 
         : ConnectionDecoratorBase(inner), IReconnectCapable
     {
+        private int retryCount = 0;
         private static readonly new ILog Log = LogManager.GetLogger(typeof(ReconnectDecorator));
         public ReconnectConfig Config { get; } = config;
         public CancellationTokenSource TokenSource { get; private set; } = new();
@@ -16,7 +17,7 @@ namespace DataReceiver.Services.Decorator
         {
             Log.Info("Waiting for disconnect.");
             StopReconnect();
-            _ = inner.DisconnectAsync();
+            await inner.DisconnectAsync();
         }
 
         public async Task StartReconnectAsync()
@@ -24,7 +25,7 @@ namespace DataReceiver.Services.Decorator
             Log.Info("Waiting for start reconnect task.");
             if (Config.Delay <= 0 || Runtimes.Reconnecting) return;
             if (TokenSource == null || TokenSource.IsCancellationRequested)
-                TokenSource = new();
+                return;
             Runtimes.Reconnecting = true;
 
             while (!TokenSource.IsCancellationRequested && Config.IsEnable)
@@ -32,8 +33,11 @@ namespace DataReceiver.Services.Decorator
                 try
                 {
                     await Task.Delay(Config.Delay, TokenSource.Token);
-                    if (Runtimes.State != ConnectionState.Connected)
-                        await Inner.ConnectAsync();
+                    if (Runtimes.State != ConnectionState.Connected )
+                    {
+                        var result = await Inner.ConnectAsync();
+                        retryCount++;
+                    }
                 }
                 catch (OperationCanceledException)
                 {

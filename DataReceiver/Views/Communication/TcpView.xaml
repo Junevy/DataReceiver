@@ -119,8 +119,11 @@
                                             IsEnabled="{Binding Source={x:Reference EnableMaxRetryLimit}, Path=IsChecked}"
                                             ToolTip="The max count of retry to reconnect."
                                             hc:InfoElement.ContentHeight="40" />
+
+                                        <Separator Margin="30,30,30,5"/>
                                     </StackPanel>
 
+                                    <!--心跳设置-->
                                     <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,0,5,30">
                                         <TextBlock Margin="0,0,0,10" Text="HeartBeat" FontSize="20" Style="{StaticResource TextBlockSubTitle}" HorizontalAlignment="Left"/>
                                         <!--heartbeat enable-->
@@ -199,6 +202,8 @@
                                                     hc:InfoElement.ContentHeight="40"/>
                                             </StackPanel>
                                         </Grid>
+                                        <Separator Margin="30,30,30,5"/>
+
                                     </StackPanel>
 
                                     <!--others-->

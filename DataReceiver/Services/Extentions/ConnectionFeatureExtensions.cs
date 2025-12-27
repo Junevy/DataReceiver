@@ -17,7 +17,7 @@ namespace DataReceiver.Services.Extentions
             if (reconnectFeature != null)
             {
                 Log.Info($"The IConnect is IReconnectCapable");
-                _ = reconnectFeature.StartReconnectAsync();
+                await reconnectFeature.StartReconnectAsync();
             }
             else Log.Info($"The IConnect is not IReconnectCapable");
         }
@@ -28,7 +28,7 @@ namespace DataReceiver.Services.Extentions
             if (heartBeatFeature != null)
             {
                 Log.Info($"The IConnect is IHeartBeatCapable");
-                _ = heartBeatFeature.StartHeartBeatAsync(response);
+                await heartBeatFeature.StartHeartBeatAsync(response);
             }
             else Log.Info($"The IConnect is not IHeartBeatCapable");
         }

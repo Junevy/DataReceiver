@@ -5,7 +5,7 @@ using log4net;
 
 namespace DataReceiver.Services.Decorator
 {
-    class HeartBeatDecorator(IConnection inner, HeartBeatConfig config)
+    public class HeartBeatDecorator(IConnection inner, HeartBeatConfig config)
         : ConnectionDecoratorBase(inner), IHeartBeatCapable
     {
         private int flag = 0;
@@ -17,7 +17,7 @@ namespace DataReceiver.Services.Decorator
         {
             Log.Info("Waiting for disconnect.");
             StopHeartBeat();
-            _ = inner.DisconnectAsync();
+            await inner.DisconnectAsync();
         }
 
         public async Task StartHeartBeatAsync(byte[] response)
@@ -27,10 +27,12 @@ namespace DataReceiver.Services.Decorator
             flag = 0;
 
             if (TokenSource == null || TokenSource.IsCancellationRequested)
-                TokenSource = new();
+                //TokenSource = new();
+                return;
+
             response ??= [0x50, 0x6f, 0x6e, 0x67];  // Pong
 
-            while (!TokenSource.IsCancellationRequested)
+            while (!TokenSource.IsCancellationRequested && Config.IsEnable)
             {
                 try
                 {
@@ -42,7 +44,7 @@ namespace DataReceiver.Services.Decorator
                         if (flag >= Config.MaxFailedCount && Config.EnableTimeout)
                         {
                             Log.Warn($"Filed count achived: {flag}, waiting for disconnect the socket.");
-                            _ = DisconnectAsync();
+                            await DisconnectAsync();
                             break;
                         }
                     }
